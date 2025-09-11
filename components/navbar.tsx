@@ -138,7 +138,8 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.12 }}
-                        className="absolute left-0 top-full mt-2 w-28 rounded-md border bg-background shadow-lg overflow-hidden"
+                        className="absolute left-1/2 top-full mt-2 w-28 rounded-md border bg-background shadow-lg overflow-hidden"
+                        style={{ x: "-50%" }}
                         role="menu"
                       >
                         <ul className="divide-y">
@@ -187,7 +188,8 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.12 }}
-                        className="absolute left-0 top-full mt-2 w-28 rounded-md border bg-background shadow-lg overflow-hidden"
+                        className="absolute left-1/2 top-full mt-2 w-28 rounded-md border bg-background shadow-lg overflow-hidden"
+                        style={{ x: "-50%" }}
                         role="menu"
                       >
                         <ul className="divide-y">
