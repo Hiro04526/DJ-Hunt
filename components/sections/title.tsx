@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { TypeAnimation } from "react-type-animation"
+import EqualDurationTypewriter from "@/components/equal-duration-typewriter"
 
 export function TitleSection() {
   return (
@@ -33,18 +33,15 @@ export function TitleSection() {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="text-xl md:text-2xl font-secondary text-[#191919] mb-6"
           >
-            <TypeAnimation
-              sequence={[
-                "Building beautiful web experiences",
-                1000,
-                "Crafting intuitive interfaces",
-                1000,
-                "Creating engaging animations",
-                1000,
+            <EqualDurationTypewriter
+              lines={[
+                "Catching you from across the airwaves",
+                "Shining from the heart of the metro",
+                "Serving up the hottest college radio",
               ]}
-              wrapper="span"
-              speed={50}
-              repeat={Infinity}
+              typeMs={2000}
+              holdMs={1000}
+              backspaceMs={1000}
             />
           </motion.div>
         </div>

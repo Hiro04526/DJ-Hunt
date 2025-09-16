@@ -41,40 +41,15 @@ export function DJSection() {
   }, []);
 
   return (
-    <section id="djs" className="bg-gradient-to-br from-background to-secondary/30 transition-colors duration-300 overflow-hidden">
+    <section id="djs" className="bg-[#569429]">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
         className="relative min-h-screen flex flex-col items-center justify-center"
       >
-        {/* Animated background */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 animate-gradient" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/20 via-secondary/20 to-background animate-pulse" />
-        </div>
 
         <div className="container mx-auto px-4 mb-6 z-10">
-          <div className="text-center mb-4">
-            <motion.h2
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="text-5xl font-bold mt-4 mb-4 pb-2 bg-clip-text text-primary"
-            >
-              Featured Projects
-            </motion.h2>
-
-            <motion.p
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
-            >
-              Explore a collection of innovative projects that showcase my expertise in cutting-edge web technologies and creative problem-solving.
-            </motion.p>
-          </div>
-
           {/* Project Cards */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
