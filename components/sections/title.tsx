@@ -1,10 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ChevronDown } from "lucide-react"
 import { TypeAnimation } from "react-type-animation"
 
-export function HeroSection() {
+export function TitleSection() {
   return (
     <motion.section
       initial={{ opacity: 0 }}
