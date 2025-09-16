@@ -71,7 +71,7 @@ export function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         className={cn(
-          "fixed top-0 z-50 w-full transition-all duration-300 bg-[#191919]"
+          "fixed top-0 z-50 w-full transition-all duration-300 bg-navbar"
         )}
       >
         <div className="w-full px-4">

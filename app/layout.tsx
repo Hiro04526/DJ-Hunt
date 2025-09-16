@@ -30,7 +30,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${kenyanCoffee.variable} ${raleway.variable}`}  // ⬅️ expose font CSS vars
     >
       <body className="font-primary">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider 
+          attribute="class" 
+          defaultTheme="system" 
+          enableSystem 
+          disableTransitionOnChange
+        >
           <div className="relative min-h-screen">
             <Navbar />
             <main>{children}</main>
