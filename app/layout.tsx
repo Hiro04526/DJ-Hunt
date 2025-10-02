@@ -7,19 +7,19 @@ import { Footer } from "@/components/footer";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "Hiro Ishikawa's Portfolio",
-  description: "Explore Hiro's work, skills, and side projects.",
-  metadataBase: new URL("https://hiro-ishikawa-portfolio.vercel.app"),
+  title: "Green Giant FM",
+  description: "DLSU Radio: Green Giant FM (GGFM) is De La Salle University-Manila's Official Radio Station, located and broadcasting live at Br. Bloemen Hall!",
+  metadataBase: new URL("https://dj-hunt-gilt.vercel.app/"),
   icons: { icon: "/assets/favicon.ico" },
   openGraph: {
-    title: "Hiro Ishikawa's Portfolio",
-    description: "Explore Hiro's work, skills, and side projects.",
-    url: "https://hiro-ishikawa-portfolio.vercel.app",
-    siteName: "Hiro Ishikawa's Portfolio",
-    images: [{ url: "/assets/og-image.png", width: 1200, height: 630, alt: "Hiro Ishikawa's Portfolio" }],
+    title: "Green Giant FM",
+    description: "DLSU Radio: Green Giant FM (GGFM) is De La Salle University-Manila's Official Radio Station, located and broadcasting live at Br. Bloemen Hall!",
+    url: "https://dj-hunt-gilt.vercel.app/",
+    siteName: "Green Giant FM",
+    images: [{ url: "/assets/Raffy.png", width: 1200, height: 630, alt: "Green Giant FM" }],
     type: "website",
   },
-  themeColor: "#9457EB",
+  themeColor: "#569429",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${kenyanCoffee.variable} ${raleway.variable}`}  // ⬅️ expose font CSS vars
+      className={`${kenyanCoffee.variable} ${raleway.variable}`}
     >
       <body className="font-primary">
         <ThemeProvider 
