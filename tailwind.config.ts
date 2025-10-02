@@ -11,7 +11,6 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        // Kenyan Coffee (primary) and Raleway (secondary) are exposed as CSS vars by next/font
         primary: ["var(--font-primary)", ...fontFamily.sans],
         secondary: ["var(--font-secondary)", ...fontFamily.sans],
       },

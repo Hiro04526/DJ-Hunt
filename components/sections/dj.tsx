@@ -4,41 +4,75 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { FaChevronRight } from 'react-icons/fa'
+import { FaChevronRight } from "react-icons/fa"
 
 type DJ = {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  details: string;
-};
+  id: number
+  name: string
+  description: string
+  image: string
+  details: string
+  videoshoot: string
+}
 
 export function DJSection() {
-  // Define selectedProject state to accept Project type or null
-  const [selectedDJ, setSelectedDJ] = useState<DJ | null>(null);
-  const [DJs, setDJs] = useState<DJ[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [selectedDJ, setSelectedDJ] = useState<DJ | null>(null)
+  const [DJs, setDJs] = useState<DJ[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchDJs() {
       try {
-        const res = await fetch("/api/djs");
-        const result = await res.json();
-        if (res.ok) {
-          setDJs(result.data);
+        const res = await fetch("/api/djs", { cache: "no-store" })
+        const result = await res.json()
+        console.log("GET /api/djs →", result)
+
+        if (res.ok && Array.isArray(result.data)) {
+          setDJs(result.data as DJ[])
         } else {
-          setError(result.error || "Failed to fetch DJs");
+          setError(result.error || "Unexpected response shape")
         }
       } catch (err) {
-        setError("Something went wrong while fetching DJs");
+        console.error(err)
+        setError("Something went wrong while fetching DJs")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     }
-    fetchDJs();
-  }, []);
+    fetchDJs()
+  }, [])
+
+  const isFacebookVideo = (raw: string) => {
+    try {
+      const u = new URL(raw)
+      const host = u.hostname.replace(/^www\./, "")
+      return host === "facebook.com" || host === "fb.watch" || host.endsWith(".facebook.com")
+    } catch {
+      const s = raw.toLowerCase()
+      return s.includes("facebook.com") || s.includes("fb.watch")
+    }
+  }
+
+  const isMp4Video = (url: string) => {
+    try {
+      const clean = url.split("?")[0].toLowerCase().trim()
+      return clean.endsWith(".mp4")
+    } catch {
+      return false
+    }
+  }
+
+  const buildFacebookEmbedSrc = (videoUrl: string) => {
+    const base = "https://www.facebook.com/plugins/video.php"
+    const params = new URLSearchParams({
+      href: videoUrl,
+      show_text: "false",
+      width: "1280",
+      height: "720",
+    })
+    return `${base}?${params.toString()}`
+  }
 
   return (
     <section id="djs" className="bg-[#569429]">
@@ -48,9 +82,14 @@ export function DJSection() {
         transition={{ duration: 0.5 }}
         className="relative min-h-screen flex flex-col items-center justify-center"
       >
+        <div className="container mx-auto px-4 z-10">
+          {loading && <p className="text-white/90 mb-4">Loading…</p>}
+          {error && <p className="text-red-100 mb-4">{error}</p>}
+          {!loading && !error && DJs.length === 0 && (
+            <p className="text-white/90 mb-4">No DJs found.</p>
+          )}
 
-        <div className="container mx-auto px-4 mb-6 z-10">
-          {/* Project Cards */}
+          {/* Cards */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -60,7 +99,11 @@ export function DJSection() {
             {DJs.map((DJ, index) => (
               <motion.div
                 key={DJ.id}
-                className={`bg-[#569429] p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2`}
+                className="
+                  rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2
+                  bg-white text-neutral-900
+                  dark:bg-[#0d0d0d] dark:text-white
+                "
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 + index * 0.1, duration: 0.6 }}
@@ -70,61 +113,101 @@ export function DJSection() {
                 <motion.img
                   src={DJ.image}
                   alt={DJ.name}
-                  className="w-full h-48 object-cover rounded-t-lg mb-4"
+                  className="w-full h-100 object-cover rounded-t-lg"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
                 />
-                <motion.h3
-                  className={`text-2xl font-semibold mt-4 text-white`}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.8 + index * 0.1, duration: 0.5 }}
-                >
-                  {DJ.name}
-                </motion.h3>
-                <motion.p
-                  className={`mt-2 text-white opacity-90`}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 1 + index * 0.1, duration: 0.5 }}
-                >
-                  {DJ.description}
-                </motion.p>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.2 + index * 0.1, duration: 0.5 }}
-                  className="mt-4"
-                >
-                  <Button 
-                    size="lg" 
-                    className={`group bg-white/20 hover:bg-white/30 text-white`}
-                    onClick={() => setSelectedDJ(DJ)}
+                <div className="p-6">
+                  <motion.h3
+                    className="text-2xl font-semibold"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.8 + index * 0.1, duration: 0.5 }}
                   >
-                    View Details
-                    <FaChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </motion.div>
+                    {DJ.name}
+                  </motion.h3>
+                  <motion.p
+                    className="mt-2 text-neutral-700 dark:text-neutral-300"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 1 + index * 0.1, duration: 0.5 }}
+                  >
+                    {DJ.description}
+                  </motion.p>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.2 + index * 0.1, duration: 0.5 }}
+                    className="mt-4"
+                  >
+                    {/* Theme-aware button */}
+                    <Button
+                      size="lg"
+                      className="
+                        group
+                        bg-neutral-900 text-white hover:bg-neutral-800
+                        dark:bg-white/20 dark:text-white dark:hover:bg-white/30
+                      "
+                      onClick={() => setSelectedDJ(DJ)}
+                    >
+                      View Details
+                      <FaChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </motion.div>
+                </div>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </motion.div>
 
-      {/* Project Details Modal */}
+      {/* Details Modal */}
       <AnimatePresence>
         {selectedDJ && (
           <Dialog open={!!selectedDJ} onOpenChange={() => setSelectedDJ(null)}>
-            <DialogContent className="sm:max-w-[625px]">
+            <DialogContent
+              className="
+                sm:max-w-[1080px]
+                bg-white text-neutral-900
+                dark:bg-[#0f0f0f] dark:text-white
+                border border-neutral-200 dark:border-neutral-800
+              "
+            >
               <DialogHeader>
                 <DialogTitle>{selectedDJ.name}</DialogTitle>
-                <div className="text-sm text-muted-foreground">
-                  <img 
-                    src={selectedDJ.image} 
-                    alt={selectedDJ.name} 
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                  />
+                <div className="text-sm text-neutral-700 dark:text-neutral-300">
+                  <div className="w-full max-w-[1920px] aspect-[16/9] mx-auto rounded-lg overflow-hidden mb-4">
+                    {isFacebookVideo(selectedDJ.videoshoot) ? (
+                      <iframe
+                        key={selectedDJ.videoshoot}
+                        src={buildFacebookEmbedSrc(selectedDJ.videoshoot)}
+                        width="100%"
+                        height="100%"
+                        style={{ border: "none", overflow: "hidden" }}
+                        scrolling="no"
+                        frameBorder={0}
+                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    ) : isMp4Video(selectedDJ.videoshoot) ? (
+                      <video
+                        key={selectedDJ.videoshoot}
+                        src={selectedDJ.videoshoot}
+                        className="w-full h-full object-cover rounded-lg"
+                        controls
+                        playsInline
+                        preload="metadata"
+                        poster={selectedDJ.image}
+                        crossOrigin="anonymous"
+                      >
+                        <source src={selectedDJ.videoshoot} type="video/mp4" />
+                      </video>
+                    ) : (
+                      <p className="text-center">Video format not supported.</p>
+                    )}
+                  </div>
+
                   <p className="mb-4">{selectedDJ.details}</p>
                 </div>
               </DialogHeader>

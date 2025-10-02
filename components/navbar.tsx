@@ -15,13 +15,11 @@ const navItems = [
   { name: "RADIO TALENT", path: "/Radio-Talent" },
 ]
 
-const postsMenu = [
-  { label: "PR", href: "/Posts/PR" },
-]
+const postsMenu = [{ label: "PR", href: "/Posts/PR" }]
 
 const pollsMenu = [
-  { label: "HITLIST", href: "/Polls/Hitlist"},
-  { label: "DJ HUNT", href: "/Polls/DJ-Hunt"},
+  { label: "HITLIST", href: "/Polls/Hitlist" },
+  { label: "DJ HUNT", href: "/Polls/DJ-Hunt" },
 ]
 
 export function Navbar() {
@@ -41,13 +39,11 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // close menus on route change and when mobile nav toggles
   useEffect(() => {
     setOpenMenu(null)
     setIsMobileMenuOpen(false)
   }, [pathname])
 
-  // click outside closes desktop dropdowns
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
       if (!dropdownRef.current) return
@@ -71,7 +67,9 @@ export function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         className={cn(
-          "fixed top-0 z-50 w-full transition-all duration-300 bg-navbar"
+          "fixed top-0 z-50 w-full transition-all duration-300",
+          "bg-white text-black", // light
+          "dark:bg-[#111111] dark:text-white" // dark
         )}
       >
         <div className="w-full px-4">
@@ -79,12 +77,13 @@ export function Navbar() {
             {/* Logo */}
             <Link href="/" className="w-32 h-32 relative">
               <Image
-                src="/assets/GGFM Logo_White.png"
+                src={theme === "dark" ? "/assets/GGFM Logo_White.png" : "/assets/GGFM Logo_Black.png"}
                 alt="Logo"
                 fill
                 loading="lazy"
                 quality={70}
-                className="object-contain"
+                className="object-contain transition-opacity duration-300"
+                key={theme} 
               />
             </Link>
 
@@ -99,7 +98,7 @@ export function Navbar() {
                       "relative text-3xl font-medium transition-colors hover:text-primary",
                       pathname === item.path
                         ? "text-primary"
-                        : "text-muted-foreground"
+                        : "text-gray-800 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
                     )}
                   >
                     {item.name}
@@ -112,7 +111,7 @@ export function Navbar() {
                   </Link>
                 ))}
 
-                {/* POSTS (dropdown under trigger) */}
+                {/* POSTS (dropdown) */}
                 <div className="relative" onMouseLeave={() => setOpenMenu(null)}>
                   <button
                     type="button"
@@ -120,11 +119,13 @@ export function Navbar() {
                       "inline-flex items-center gap-1 text-3xl font-medium transition-colors",
                       (openMenu === "posts" || groupActive(postsMenu))
                         ? "text-primary"
-                        : "text-muted-foreground hover:text-primary"
+                        : "text-gray-800 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
                     )}
                     aria-haspopup="menu"
                     aria-expanded={openMenu === "posts"}
-                    onClick={() => setOpenMenu(v => v === "posts" ? null : "posts")}
+                    onClick={() =>
+                      setOpenMenu((v) => (v === "posts" ? null : "posts"))
+                    }
                     onMouseEnter={() => setOpenMenu("posts")}
                   >
                     POSTS <ChevronDown className="h-6 w-6" />
@@ -138,17 +139,20 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.12 }}
-                        className="absolute left-1/2 top-full mt-2 w-28 rounded-md border bg-background shadow-lg overflow-hidden"
+                        className="absolute left-1/2 top-full mt-2 w-28 rounded-md border 
+                                   bg-white dark:bg-[#222222] shadow-lg overflow-hidden"
                         style={{ x: "-50%" }}
                         role="menu"
                       >
-                        <ul className="divide-y">
-                          {postsMenu.map(it => (
+                        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                          {postsMenu.map((it) => (
                             <li key={it.href}>
                               <Link
                                 href={it.href}
                                 className={cn(
-                                  "block px-4 py-2 text-center text-3xl bg-[#363636] hover:bg-accent transition",
+                                  "block px-4 py-2 text-center text-3xl transition",
+                                  "bg-white hover:bg-gray-100 text-black",
+                                  "dark:bg-[#1a1a1a] dark:hover:bg-[#2a2a2a] dark:text-white",
                                   linkActive(it.href) && "text-primary"
                                 )}
                               >
@@ -162,7 +166,7 @@ export function Navbar() {
                   </AnimatePresence>
                 </div>
 
-                {/* POLLS (dropdown under trigger) */}
+                {/* POLLS (dropdown) */}
                 <div className="relative" onMouseLeave={() => setOpenMenu(null)}>
                   <button
                     type="button"
@@ -170,11 +174,13 @@ export function Navbar() {
                       "inline-flex items-center gap-1 text-3xl font-medium transition-colors",
                       (openMenu === "polls" || groupActive(pollsMenu))
                         ? "text-primary"
-                        : "text-muted-foreground hover:text-primary"
+                        : "text-gray-800 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
                     )}
                     aria-haspopup="menu"
                     aria-expanded={openMenu === "polls"}
-                    onClick={() => setOpenMenu(v => v === "polls" ? null : "polls")}
+                    onClick={() =>
+                      setOpenMenu((v) => (v === "polls" ? null : "polls"))
+                    }
                     onMouseEnter={() => setOpenMenu("polls")}
                   >
                     POLLS <ChevronDown className="h-6 w-6" />
@@ -188,17 +194,20 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.12 }}
-                        className="absolute left-1/2 top-full mt-2 w-28 rounded-md border bg-background shadow-lg overflow-hidden"
+                        className="absolute left-1/2 top-full mt-2 w-28 rounded-md border 
+                                   bg-white dark:bg-[#222222] shadow-lg overflow-hidden"
                         style={{ x: "-50%" }}
                         role="menu"
                       >
-                        <ul className="divide-y">
-                          {pollsMenu.map(it => (
+                        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+                          {pollsMenu.map((it) => (
                             <li key={it.href}>
                               <Link
                                 href={it.href}
                                 className={cn(
-                                  "block px-4 py-2 text-center text-3xl bg-[#191919] hover:bg-accent transition",
+                                  "block px-4 py-2 text-center text-3xl transition",
+                                  "bg-white hover:bg-gray-100 text-black",
+                                  "dark:bg-[#1a1a1a] dark:hover:bg-[#2a2a2a] dark:text-white",
                                   linkActive(it.href) && "text-primary"
                                 )}
                               >
@@ -246,7 +255,8 @@ export function Navbar() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="md:hidden border-t bg-background/95 backdrop-blur-md shadow-lg"
+              className="md:hidden border-t backdrop-blur-md shadow-lg 
+                         bg-white/95 dark:bg-[#111111]/95"
             >
               <div className="container mx-auto px-4 py-3 space-y-1">
                 {navItems.map((item) => (
@@ -254,8 +264,11 @@ export function Navbar() {
                     key={item.path}
                     href={item.path}
                     className={cn(
-                      "block rounded-md px-3 py-2 text-sm transition hover:bg-accent",
-                      linkActive(item.path) && "text-primary"
+                      "block rounded-md px-3 py-2 text-sm transition",
+                      "hover:bg-gray-200 dark:hover:bg-[#222222]",
+                      linkActive(item.path)
+                        ? "text-primary"
+                        : "text-black dark:text-white"
                     )}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -263,8 +276,8 @@ export function Navbar() {
                   </Link>
                 ))}
 
-                {/* POSTS collapsible (subpages only) */}
-                <details className="rounded-md border p-2">
+                {/* POSTS collapsible */}
+                <details className="rounded-md border p-2 dark:border-gray-700">
                   <summary className="flex cursor-pointer items-center justify-between px-1 py-1 text-sm font-medium">
                     POSTS <ChevronDown className="h-4 w-4" />
                   </summary>
@@ -274,8 +287,11 @@ export function Navbar() {
                         key={it.href}
                         href={it.href}
                         className={cn(
-                          "block rounded-md px-3 py-2 text-sm transition hover:bg-accent",
-                          linkActive(it.href) && "text-primary"
+                          "block rounded-md px-3 py-2 text-sm transition",
+                          "hover:bg-gray-200 dark:hover:bg-[#222222]",
+                          linkActive(it.href)
+                            ? "text-primary"
+                            : "text-black dark:text-white"
                         )}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
@@ -285,8 +301,8 @@ export function Navbar() {
                   </div>
                 </details>
 
-                {/* POLLS collapsible (subpages only) */}
-                <details className="rounded-md border p-2">
+                {/* POLLS collapsible */}
+                <details className="rounded-md border p-2 dark:border-gray-700">
                   <summary className="flex cursor-pointer items-center justify-between px-1 py-1 text-sm font-medium">
                     POLLS <ChevronDown className="h-4 w-4" />
                   </summary>
@@ -296,8 +312,11 @@ export function Navbar() {
                         key={it.href}
                         href={it.href}
                         className={cn(
-                          "block rounded-md px-3 py-2 text-sm transition hover:bg-accent",
-                          linkActive(it.href) && "text-primary"
+                          "block rounded-md px-3 py-2 text-sm transition",
+                          "hover:bg-gray-200 dark:hover:bg-[#222222]",
+                          linkActive(it.href)
+                            ? "text-primary"
+                            : "text-black dark:text-white"
                         )}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >

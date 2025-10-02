@@ -11,7 +11,7 @@ export async function PATCH(req: NextRequest) {
 
   const body = await req.json();
   const { data, error } = await supabaseAdmin
-    .from("djs")
+    .from("DJs")
     .update(body)
     .eq("id", Number(id))
     .select()
