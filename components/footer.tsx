@@ -10,7 +10,7 @@ export function Footer() {
       <div className="bg-white text-[#111111]">
         <div className="mx-auto max-w-5xl px-4 py-8 sm:py-10">
           <h2
-            className="text-3xl sm:text-4xl md:text-6xl font-medium mb-4 sm:mb-6 leading-tight text-center"
+            className="text-3xl sm:text-5xl md:text-6xl font-medium mb-4 sm:mb-6 leading-tight text-center"
           >
             Keep it locked with us!
           </h2>
@@ -23,49 +23,49 @@ export function Footer() {
               aria-label="Twitter"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaTwitter className="text-2xl sm:text-3xl" />
+              <FaTwitter className="text-2xl sm:text-4xl md:text-5xl" />
             </a>
             <a
               href="#"
               aria-label="Facebook"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaFacebookF className="text-2xl sm:text-3xl" />
+              <FaFacebookF className="text-2xl sm:text-4xl md:text-5xl" />
             </a>
             <a
               href="#"
               aria-label="YouTube"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaYoutube className="text-2xl sm:text-3xl" />
+              <FaYoutube className="text-2xl sm:text-4xl md:text-5xl" />
             </a>
             <a
               href="#"
               aria-label="Spotify"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaSpotify className="text-2xl sm:text-3xl" />
+              <FaSpotify className="text-2xl sm:text-4xl md:text-5xl" />
             </a>
             <a
               href="#"
               aria-label="Instagram"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaInstagram className="text-2xl sm:text-3xl" />
+              <FaInstagram className="text-2xl sm:text-4xl md:text-5xl" />
             </a>
             <a
               href="#"
               aria-label="LinkedIn"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaLinkedinIn className="text-2xl sm:text-3xl" />
+              <FaLinkedinIn className="text-2xl sm:text-4xl md:text-5xl" />
             </a>
             <a
               href="mailto:publicrelations.ggfm@gmail.com"
               aria-label="Email"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaEnvelope className="text-2xl sm:text-3xl" />
+              <FaEnvelope className="text-2xl sm:text-4xl md:text-5xl" />
             </a>
           </div>
         </div>
