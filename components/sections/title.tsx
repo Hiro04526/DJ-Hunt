@@ -57,7 +57,7 @@ export function TitleSection() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className={`text-xl md:text-2xl font-secondary mb-6 transition-colors duration-500 ${
+            className={`text-lg md:text-2xl font-secondary mb-4 transition-colors duration-500 ${
               isDark ? "text-[#111111]" : "text-white"
             }`}
           >
