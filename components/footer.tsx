@@ -7,22 +7,67 @@ export function Footer() {
   return (
     <footer className="w-full">
       {/* TOP SECTION */}
-      <div className="bg-white text-[#111111] text-center py-10">
-        <h2
-          className="text-6xl md:text-6xl font-medium mb-6"
-        >
-          Keep it locked with us!
-        </h2>
+      <div className="bg-white text-[#111111]">
+        <div className="mx-auto max-w-5xl px-4 py-8 sm:py-10">
+          <h2
+            className="text-3xl sm:text-4xl md:text-6xl font-medium mb-4 sm:mb-6 leading-tight text-center"
+          >
+            Keep it locked with us!
+          </h2>
 
-        {/* Social Media Icons */}
-        <div className="flex justify-center space-x-6 md:space-x-10 text-[#569429] text-5xl">
-          <a href="#" aria-label="Twitter"><FaTwitter /></a>
-          <a href="#" aria-label="Facebook"><FaFacebookF /></a>
-          <a href="#" aria-label="YouTube"><FaYoutube /></a>
-          <a href="#" aria-label="Spotify"><FaSpotify /></a>
-          <a href="#" aria-label="Instagram"><FaInstagram /></a>
-          <a href="#" aria-label="LinkedIn"><FaLinkedinIn /></a>
-          <a href="mailto:publicrelations.ggfm@gmail.com" aria-label="Email"><FaEnvelope /></a>
+          {/* Social Media Icons */}
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6">
+            {/* Each icon is a button-sized link for better tap targets */}
+            <a
+              href="#"
+              aria-label="Twitter"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
+            >
+              <FaTwitter className="text-2xl sm:text-3xl" />
+            </a>
+            <a
+              href="#"
+              aria-label="Facebook"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
+            >
+              <FaFacebookF className="text-2xl sm:text-3xl" />
+            </a>
+            <a
+              href="#"
+              aria-label="YouTube"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
+            >
+              <FaYoutube className="text-2xl sm:text-3xl" />
+            </a>
+            <a
+              href="#"
+              aria-label="Spotify"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
+            >
+              <FaSpotify className="text-2xl sm:text-3xl" />
+            </a>
+            <a
+              href="#"
+              aria-label="Instagram"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
+            >
+              <FaInstagram className="text-2xl sm:text-3xl" />
+            </a>
+            <a
+              href="#"
+              aria-label="LinkedIn"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
+            >
+              <FaLinkedinIn className="text-2xl sm:text-3xl" />
+            </a>
+            <a
+              href="mailto:publicrelations.ggfm@gmail.com"
+              aria-label="Email"
+              className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
+            >
+              <FaEnvelope className="text-2xl sm:text-3xl" />
+            </a>
+          </div>
         </div>
       </div>
 
