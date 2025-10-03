@@ -16,56 +16,56 @@ export function Footer() {
           </h2>
 
           {/* Social Media Icons */}
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6">
+          <div className="flex justify-center gap-3 sm:gap-4 md:gap-6">
             {/* Each icon is a button-sized link for better tap targets */}
             <a
               href="#"
               aria-label="Twitter"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaTwitter className="text-3xl md:text-5xl" />
+              <FaTwitter className="text-4xl md:text-5xl" />
             </a>
             <a
               href="#"
               aria-label="Facebook"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaFacebookF className="text-3xl md:text-5xl" />
+              <FaFacebookF className="text-4xl md:text-5xl" />
             </a>
             <a
               href="#"
               aria-label="YouTube"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaYoutube className="text-3xl md:text-5xl" />
+              <FaYoutube className="text-4xl md:text-5xl" />
             </a>
             <a
               href="#"
               aria-label="Spotify"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaSpotify className="text-3xl md:text-5xl" />
+              <FaSpotify className="text-4xl md:text-5xl" />
             </a>
             <a
               href="#"
               aria-label="Instagram"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaInstagram className="text-3xl md:text-5xl" />
+              <FaInstagram className="text-4xl md:text-5xl" />
             </a>
             <a
               href="#"
               aria-label="LinkedIn"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaLinkedinIn className="text-3xl md:text-5xl" />
+              <FaLinkedinIn className="text-4xl md:text-5xl" />
             </a>
             <a
               href="mailto:publicrelations.ggfm@gmail.com"
               aria-label="Email"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaEnvelope className="text-3xl md:text-5xl" />
+              <FaEnvelope className="text-4xl md:text-5xl" />
             </a>
           </div>
         </div>
