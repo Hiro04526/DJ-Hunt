@@ -171,9 +171,11 @@ export function DJSection() {
             <DialogContent
               className="
                 sm:max-w-[1080px]
+                max-h-[90vh] overflow-y-auto
                 bg-white text-neutral-900
                 dark:bg-[#0f0f0f] dark:text-white
                 border border-neutral-200 dark:border-neutral-800
+                p-6
               "
             >
               <DialogHeader>
@@ -185,7 +187,6 @@ export function DJSection() {
 
                 <div className="flex flex-col items-center space-y-2 mt-12">
                   <h1 className="text-xl m-0">Solo Videoshoot</h1>
-                  
                   <div className="[&>*]:m-0 [&>p]:m-0 [&>div]:m-0 text-sm text-neutral-700 dark:text-neutral-300">
                     <div className="flex justify-center mx-auto rounded-lg overflow-visible">
                       {isFacebookVideo(selectedDJ.videoshoot) ? (
@@ -218,6 +219,42 @@ export function DJSection() {
                       ) : (
                         <p className="text-center">Video format not supported.</p>
                       )}
+                    </div>
+
+                    <div className="flex flex-col md:flex-row justify-center items-start md:items-center gap-6 md:gap-8 w-full mt-6">
+                      <div className="flex flex-col items-center md:items-start w-full md:w-1/2">
+                        <h2 className="w-full text-lg font-semibold mb-2 text-center">Segue</h2>
+                        <div className="w-full rounded-lg overflow-hidden">
+                          <div className="relative aspect-[16/9]">
+                            <iframe
+                              src={buildFacebookEmbedSrc("https://www.facebook.com/goinkss/videos/748888000554843")}
+                              className="absolute inset-0 w-full h-full"
+                              style={{ border: "none", overflow: "hidden" }}
+                              scrolling="no"
+                              frameBorder={0}
+                              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                              allowFullScreen
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-center md:items-start w-full md:w-1/2">
+                        <h2 className="w-full text-lg font-semibold mb-2 text-center">Voiceover Challenge</h2>
+                        <div className="w-full rounded-lg overflow-hidden">
+                          <div className="relative aspect-[16/9]">
+                            <iframe
+                              src={buildFacebookEmbedSrc("https://www.facebook.com/goinkss/videos/999999999999999")}
+                              className="absolute inset-0 w-full h-full"
+                              style={{ border: "none", overflow: "hidden" }}
+                              scrolling="no"
+                              frameBorder={0}
+                              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                              allowFullScreen
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className="flex w-full justify-start">
