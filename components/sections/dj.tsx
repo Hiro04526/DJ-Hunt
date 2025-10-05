@@ -177,43 +177,52 @@ export function DJSection() {
               "
             >
               <DialogHeader>
-                <DialogTitle>{selectedDJ.name}</DialogTitle>
-                <div className="flex justify-center">
+                <DialogTitle className="flex justify-start text-2xl">{selectedDJ.name}</DialogTitle>
+                <div className="flex flex-col items-center space-y-2">
+                  <h1 className="text-xl m-0">Stinger</h1>
                   <AudioPlayer src={selectedDJ.stinger} />
                 </div>
-                <div className="text-sm text-neutral-700 dark:text-neutral-300">
-                  <div className="flex min-h-fit justify-center mx-auto rounded-lg overflow-hidden">
-                    {isFacebookVideo(selectedDJ.videoshoot) ? (
-                      <iframe
-                        key={selectedDJ.videoshoot}
-                        src={buildFacebookEmbedSrc(selectedDJ.videoshoot)}
-                        width="50%"
-                        height="50%"
-                        style={{ border: "none", overflow: "hidden" }}
-                        scrolling="no"
-                        frameBorder={0}
-                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                        allowFullScreen
-                      />
-                    ) : isMp4Video(selectedDJ.videoshoot) ? (
-                      <video
-                        key={selectedDJ.videoshoot}
-                        src={selectedDJ.videoshoot}
-                        className="w-1/2 h-1/2 object-cover rounded-lg"
-                        controls
-                        playsInline
-                        preload="metadata"
-                        poster={selectedDJ.image}
-                        crossOrigin="anonymous"
-                      >
-                        <source src={selectedDJ.videoshoot} type="video/mp4" />
-                      </video>
-                    ) : (
-                      <p className="text-center">Video format not supported.</p>
-                    )}
-                  </div>
 
-                  <p className="mb-4">{selectedDJ.details}</p>
+                <div className="flex flex-col items-center space-y-2 mt-12">
+                  <h1 className="text-xl m-0">Solo Videoshoot</h1>
+                  
+                  <div className="[&>*]:m-0 [&>p]:m-0 [&>div]:m-0 text-sm text-neutral-700 dark:text-neutral-300">
+                    <div className="flex justify-center mx-auto rounded-lg overflow-visible">
+                      {isFacebookVideo(selectedDJ.videoshoot) ? (
+                        <div className="w-full md:w-1/2 mx-auto rounded-lg overflow-hidden">
+                          <div className="relative aspect-[16/9]">
+                            <iframe
+                              key={selectedDJ.videoshoot}
+                              src={buildFacebookEmbedSrc(selectedDJ.videoshoot)}
+                              className="absolute inset-0 w-full h-full"
+                              style={{ border: "none", overflow: "hidden" }}
+                              scrolling="no"
+                              frameBorder={0}
+                              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                              allowFullScreen
+                            />
+                          </div>
+                        </div>
+                      ) : isMp4Video(selectedDJ.videoshoot) ? (
+                        <video
+                          key={selectedDJ.videoshoot}
+                          src={selectedDJ.videoshoot}
+                          className="w-full md:w-1/2 object-cover rounded-lg"
+                          controls
+                          playsInline
+                          preload="metadata"
+                          crossOrigin="anonymous"
+                        >
+                          <source src={selectedDJ.videoshoot} type="video/mp4" />
+                        </video>
+                      ) : (
+                        <p className="text-center">Video format not supported.</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex w-full justify-start">
+                    <p>{selectedDJ.details}</p>
+                  </div>
                 </div>
               </DialogHeader>
             </DialogContent>

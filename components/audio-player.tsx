@@ -39,7 +39,7 @@ export default function AudioPlayer({ src }: Props) {
 
   return (
     <div
-      className="w-full max-w-2xl p-4 rounded-xl shadow-md flex items-center gap-4 bg-white text-[#111111] dark:bg-[#111111] dark:text-white transition-colors"
+      className="w-full max-w-2xl rounded-xl shadow-md flex items-center gap-4 bg-white text-[#111111] dark:bg-[#111111] dark:text-white transition-colors"
     >
       <audio
         ref={audioRef}
