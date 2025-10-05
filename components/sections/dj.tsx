@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FaChevronRight } from "react-icons/fa"
+import AudioPlayer from "@/components/audio-player"
 
 type DJ = {
   id: number
@@ -13,6 +14,7 @@ type DJ = {
   image: string
   details: string
   videoshoot: string
+  stinger: string
 }
 
 export function DJSection() {
@@ -176,14 +178,17 @@ export function DJSection() {
             >
               <DialogHeader>
                 <DialogTitle>{selectedDJ.name}</DialogTitle>
+                <div className="flex justify-center">
+                  <AudioPlayer src={selectedDJ.stinger} />
+                </div>
                 <div className="text-sm text-neutral-700 dark:text-neutral-300">
-                  <div className="w-full max-w-[1920px] aspect-[16/9] mx-auto rounded-lg overflow-hidden mb-4">
+                  <div className="flex min-h-fit justify-center mx-auto rounded-lg overflow-hidden">
                     {isFacebookVideo(selectedDJ.videoshoot) ? (
                       <iframe
                         key={selectedDJ.videoshoot}
                         src={buildFacebookEmbedSrc(selectedDJ.videoshoot)}
-                        width="100%"
-                        height="100%"
+                        width="50%"
+                        height="50%"
                         style={{ border: "none", overflow: "hidden" }}
                         scrolling="no"
                         frameBorder={0}
@@ -194,7 +199,7 @@ export function DJSection() {
                       <video
                         key={selectedDJ.videoshoot}
                         src={selectedDJ.videoshoot}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-1/2 h-1/2 object-cover rounded-lg"
                         controls
                         playsInline
                         preload="metadata"

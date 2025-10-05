@@ -3,7 +3,7 @@ import { supabaseAdmin } from "@/lib/server/supabaseAdmin"
 
 export async function PATCH(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const id = pathname.split("/").pop();  // Extracts the last part (id)
+  const id = pathname.split("/").pop();
 
   if (!id || !isAdminCookie(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
