@@ -1,7 +1,5 @@
-"use client"
-
 import { useRef, useState } from "react"
-import { FaPlay, FaPause, FaVolumeUp } from "react-icons/fa"
+import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute } from "react-icons/fa"
 
 type Props = {
   src: string | null | undefined
@@ -13,6 +11,7 @@ export default function AudioPlayer({ src }: Props) {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [volume, setVolume] = useState(1)
+  const [isMuted, setIsMuted] = useState(false)
 
   const togglePlay = async () => {
     const el = audioRef.current
@@ -30,6 +29,17 @@ export default function AudioPlayer({ src }: Props) {
     }
   }
 
+  const toggleMute = () => {
+    const el = audioRef.current
+    if (!el) return
+    setIsMuted(!isMuted)
+    if (isMuted) {
+      el.volume = volume
+    } else {
+      el.volume = 0
+    }
+  }
+
   const format = (t: number) => {
     if (!isFinite(t)) return "0:00"
     const m = Math.floor(t / 60)
@@ -38,9 +48,7 @@ export default function AudioPlayer({ src }: Props) {
   }
 
   return (
-    <div
-      className="w-full max-w-2xl rounded-xl shadow-md flex items-center gap-4 bg-white text-[#111111] dark:bg-[#111111] dark:text-white transition-colors"
-    >
+    <div className="w-full max-w-2xl rounded-xl flex items-center gap-4 bg-white text-[#111111] dark:bg-[#111111] dark:text-white transition-colors">
       <audio
         ref={audioRef}
         src={src || undefined}
@@ -62,41 +70,53 @@ export default function AudioPlayer({ src }: Props) {
 
       {/* Progress and Time */}
       <div className="flex flex-1 flex-col gap-1">
-        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
-          <span>{format(currentTime)}</span>
-          <span>{format(duration)}</span>
+        <div className="flex items-center justify-center text-sm">
+          <p>{format(currentTime)}</p>
+
+          <input
+            type="range"
+            min={0}
+            max={duration || 0}
+            value={currentTime}
+            onChange={(e) => {
+              const t = Number(e.target.value)
+              if (audioRef.current) audioRef.current.currentTime = t
+              setCurrentTime(t)
+            }}
+            className="mx-1.5 w-full accent-[#569429]"
+            aria-label="Seek"
+            disabled={!src}
+          />
+
+          <p>{format(duration)}</p>
         </div>
-        <input
-          type="range"
-          min={0}
-          max={duration || 0}
-          value={currentTime}
-          onChange={(e) => {
-            const t = Number(e.target.value)
-            if (audioRef.current) audioRef.current.currentTime = t
-            setCurrentTime(t)
-          }}
-          className="w-full accent-[#569429] dark:accent-[#81c75b]"
-          aria-label="Seek"
-          disabled={!src}
-        />
       </div>
 
       {/* Volume */}
-      <div className="flex items-center gap-2 w-32">
-        <FaVolumeUp className="text-gray-700 dark:text-gray-300" aria-hidden />
+      <div className="flex items-center gap-2 w-32 relative group">
+        <div onClick={toggleMute} className="cursor-pointer">
+          {isMuted || volume === 0 ? (
+            <FaVolumeMute />
+          ) : (
+            <FaVolumeUp />
+          )}
+        </div>
+
+        {/* Volume Slider */}
         <input
           type="range"
           min={0}
           max={1}
           step={0.01}
-          value={volume}
+          value={isMuted ? 0 : volume}
           onChange={(e) => {
             const v = Number(e.target.value)
             setVolume(v)
             if (audioRef.current) audioRef.current.volume = v
+            if (v === 0) setIsMuted(true)
+            else setIsMuted(false)
           }}
-          className="w-full accent-[#569429] dark:accent-[#81c75b]"
+          className="w-full accent-[#569429]"
           aria-label="Volume"
           disabled={!src}
         />

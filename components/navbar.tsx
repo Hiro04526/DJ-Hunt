@@ -98,7 +98,7 @@ export function Navbar() {
                       "relative text-3xl font-medium transition-colors hover:text-primary",
                       pathname === item.path
                         ? "text-primary"
-                        : "text-gray-800 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
+                        : "hover:text-primary dark:hover:text-primary"
                     )}
                   >
                     {item.name}
@@ -119,7 +119,7 @@ export function Navbar() {
                       "inline-flex items-center gap-1 text-3xl font-medium transition-colors",
                       (openMenu === "posts" || groupActive(postsMenu))
                         ? "text-primary"
-                        : "text-gray-800 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
+                        : "hover:text-primary dark:hover:text-primary"
                     )}
                     aria-haspopup="menu"
                     aria-expanded={openMenu === "posts"}
@@ -174,7 +174,7 @@ export function Navbar() {
                       "inline-flex items-center gap-1 text-3xl font-medium transition-colors",
                       (openMenu === "polls" || groupActive(pollsMenu))
                         ? "text-primary"
-                        : "text-gray-800 dark:text-gray-300 hover:text-primary dark:hover:text-primary"
+                        : "hover:text-primary dark:hover:text-primary"
                     )}
                     aria-haspopup="menu"
                     aria-expanded={openMenu === "polls"}

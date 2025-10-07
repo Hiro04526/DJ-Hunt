@@ -130,7 +130,7 @@ export function DJSection() {
                     {DJ.name}
                   </motion.h3>
                   <motion.p
-                    className="mt-2 text-neutral-700 dark:text-neutral-300"
+                    className="mt-2"
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 1 + index * 0.1, duration: 0.5 }}
@@ -180,17 +180,17 @@ export function DJSection() {
             >
               <DialogHeader>
                 <DialogTitle className="flex justify-start text-2xl">{selectedDJ.name}</DialogTitle>
-                <div className="flex flex-col items-center space-y-2">
+                <div className="flex flex-col items-center">
                   <h1 className="text-xl m-0">Stinger</h1>
                   <AudioPlayer src={selectedDJ.stinger} />
                 </div>
 
                 <div className="flex flex-col items-center space-y-2 mt-12">
                   <h1 className="text-xl m-0">Solo Videoshoot</h1>
-                  <div className="[&>*]:m-0 [&>p]:m-0 [&>div]:m-0 text-sm text-neutral-700 dark:text-neutral-300">
+                  <div className="[&>*]:m-0 [&>p]:m-0 [&>div]:m-0 text-sm">
                     <div className="flex justify-center mx-auto rounded-lg overflow-visible">
                       {isFacebookVideo(selectedDJ.videoshoot) ? (
-                        <div className="w-full md:w-1/2 mx-auto rounded-lg overflow-hidden">
+                        <div className="w-full h-full md:w-1/3 mx-auto rounded-lg overflow-hidden">
                           <div className="relative aspect-[16/9]">
                             <iframe
                               key={selectedDJ.videoshoot}
@@ -208,7 +208,7 @@ export function DJSection() {
                         <video
                           key={selectedDJ.videoshoot}
                           src={selectedDJ.videoshoot}
-                          className="w-full md:w-1/2 object-cover rounded-lg"
+                          className="w-full md:w-1/3 object-cover rounded-lg"
                           controls
                           playsInline
                           preload="metadata"
@@ -222,8 +222,8 @@ export function DJSection() {
                     </div>
 
                     <div className="flex flex-col md:flex-row justify-center items-start md:items-center gap-6 md:gap-8 w-full mt-6">
-                      <div className="flex flex-col items-center md:items-start w-full md:w-1/2">
-                        <h2 className="w-full text-lg font-semibold mb-2 text-center">Segue</h2>
+                      <div className="flex flex-col items-center md:items-start w-full md:w-1/3">
+                        <h1 className="w-full text-xl my-2 text-center">Segue</h1>
                         <div className="w-full rounded-lg overflow-hidden">
                           <div className="relative aspect-[16/9]">
                             <iframe
@@ -239,8 +239,8 @@ export function DJSection() {
                         </div>
                       </div>
 
-                      <div className="flex flex-col items-center md:items-start w-full md:w-1/2">
-                        <h2 className="w-full text-lg font-semibold mb-2 text-center">Voiceover Challenge</h2>
+                      <div className="flex flex-col items-center md:items-start w-full md:w-1/3">
+                        <h1 className="w-full text-xl my-2 text-center">Voiceover Challenge</h1>
                         <div className="w-full rounded-lg overflow-hidden">
                           <div className="relative aspect-[16/9]">
                             <iframe

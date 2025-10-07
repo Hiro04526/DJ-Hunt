@@ -1,7 +1,9 @@
 "use client"
 
 import Image from "next/image"
-import { FaFacebookF, FaTwitter, FaYoutube, FaSpotify, FaInstagram, FaLinkedinIn, FaEnvelope } from "react-icons/fa"
+import { FaFacebookF, FaYoutube, FaSpotify, FaInstagram, FaLinkedinIn, FaEnvelope } from "react-icons/fa"
+import { FaXTwitter } from "react-icons/fa6"
+import { SiGmail } from 'react-icons/si';
 
 export function Footer() {
   return (
@@ -20,10 +22,10 @@ export function Footer() {
             {/* Each icon is a button-sized link for better tap targets */}
             <a
               href="#"
-              aria-label="Twitter"
+              aria-label="X"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaTwitter className="text-4xl md:text-5xl" />
+              <FaXTwitter className="text-4xl md:text-5xl" />
             </a>
             <a
               href="#"
@@ -61,11 +63,12 @@ export function Footer() {
               <FaLinkedinIn className="text-4xl md:text-5xl" />
             </a>
             <a
-              href="mailto:publicrelations.ggfm@gmail.com"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=publicrelations.ggfm@gmail.com" 
+              target="_blank"
               aria-label="Email"
               className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <FaEnvelope className="text-4xl md:text-5xl" />
+              <SiGmail className="text-4xl md:text-5xl" />
             </a>
           </div>
         </div>
@@ -100,13 +103,23 @@ export function Footer() {
 
         {/* Right: Contact + Accreditation */}
         <div className="text-center space-y-2">
-          <p className="text-base font-secondary">
+          <p 
+            className="text-base font-secondary"
+          >
             Contact us at{" "}
-            <a href="mailto:publicrelations.ggfm@gmail.com" className="underline">
+            <a 
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=publicrelations.ggfm@gmail.com" 
+              target="_blank" 
+              className="underline"
+            >
               publicrelations.ggfm@gmail.com
             </a>
           </p>
-          <p className="text-base font-secondary">Accredited by the Student Media Office</p>
+          <p 
+            className="text-base font-secondary"
+          >
+            Accredited by the Student Media Office
+          </p>
 
           <div className="flex justify-center space-x-4 mt-3">
             <Image
