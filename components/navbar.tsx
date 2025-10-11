@@ -53,13 +53,70 @@ export function Navbar() {
     return () => document.removeEventListener("mousedown", onDocClick)
   }, [openMenu])
 
-  if (!mounted) return null
+  const linkActive = (p: string) => pathname === p || pathname.startsWith(p + "/")
+  const groupActive = (menu: { href: string }[]) => menu.some((i) => linkActive(i.href))
 
-  const linkActive = (p: string) =>
-    pathname === p || pathname.startsWith(p + "/")
+  const StaticNavbar = () => (
+    <nav
+      className={cn(
+        "fixed top-0 z-50 w-full transition-all duration-300",
+        "bg-white text-black",
+        "dark:bg-[#111111] dark:text-white"
+      )}
+    >
+      <div className="w-full px-4">
+        <div className="flex h-16 items-center justify-between">
+          <Link href="/" className="w-32 h-32 relative">
+            <Image
+              src="/assets/GGFM Logo_Black.png"
+              alt="DLSU Radio: Green Giant FM"
+              fill
+              priority
+              className="object-contain block dark:hidden"
+            />
+            <Image
+              src="/assets/GGFM Logo_White.png"
+              alt="DLSU Radio: Green Giant FM"
+              fill
+              priority
+              className="object-contain hidden dark:block"
+            />
+          </Link>
 
-  const groupActive = (menu: { href: string }[]) =>
-    menu.some((i) => linkActive(i.href))
+          <div className="flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-8">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={cn(
+                    "relative text-2xl font-medium transition-colors hover:text-primary",
+                    linkActive(item.path) ? "text-primary" : "hover:text-primary dark:hover:text-primary"
+                  )}
+                >
+                  {item.name}
+                </Link>
+              ))}
+
+              <span className="text-2xl font-medium opacity-80 select-none">POSTS</span>
+              <span className="text-2xl font-medium opacity-80 select-none">POLLS</span>
+            </div>
+
+            <Button variant="ghost" size="icon" aria-label="Toggle theme" disabled>
+              <Sun className="h-6 w-6 hidden dark:block" />
+              <Moon className="h-6 w-6 block dark:hidden" />
+            </Button>
+
+            <Button variant="ghost" size="icon" className="md:hidden" disabled>
+              <Menu className="h-6 w-6" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  )
+
+  if (!mounted) return <StaticNavbar />
 
   return (
     <LayoutGroup>
@@ -68,8 +125,8 @@ export function Navbar() {
         animate={{ y: 0 }}
         className={cn(
           "fixed top-0 z-50 w-full transition-all duration-300",
-          "bg-white text-black", // light
-          "dark:bg-[#111111] dark:text-white" // dark
+          "bg-white text-black",
+          "dark:bg-[#111111] dark:text-white"
         )}
       >
         <div className="w-full px-4">
@@ -77,13 +134,18 @@ export function Navbar() {
             {/* Logo */}
             <Link href="/" className="w-32 h-32 relative">
               <Image
-                src={theme === "dark" ? "/assets/GGFM Logo_White.png" : "/assets/GGFM Logo_Black.png"}
-                alt="Logo"
+                src="/assets/GGFM Logo_Black.png"
+                alt="DLSU Radio: Green Giant FM"
                 fill
-                loading="lazy"
-                quality={70}
-                className="object-contain transition-opacity duration-300"
-                key={theme} 
+                priority
+                className="object-contain block dark:hidden"
+              />
+              <Image
+                src="/assets/GGFM Logo_White.png"
+                alt="DLSU Radio: Green Giant FM"
+                fill
+                priority
+                className="object-contain hidden dark:block"
               />
             </Link>
 
@@ -95,10 +157,8 @@ export function Navbar() {
                     key={item.path}
                     href={item.path}
                     className={cn(
-                      "relative text-3xl font-medium transition-colors hover:text-primary",
-                      pathname === item.path
-                        ? "text-primary"
-                        : "hover:text-primary dark:hover:text-primary"
+                      "relative text-2xl font-medium transition-colors hover:text-primary",
+                      pathname === item.path ? "text-primary" : "hover:text-primary dark:hover:text-primary"
                     )}
                   >
                     {item.name}
@@ -116,16 +176,14 @@ export function Navbar() {
                   <button
                     type="button"
                     className={cn(
-                      "inline-flex items-center gap-1 text-3xl font-medium transition-colors",
+                      "inline-flex items-center gap-1 text-2xl font-medium transition-colors",
                       (openMenu === "posts" || groupActive(postsMenu))
                         ? "text-primary"
                         : "hover:text-primary dark:hover:text-primary"
                     )}
                     aria-haspopup="menu"
                     aria-expanded={openMenu === "posts"}
-                    onClick={() =>
-                      setOpenMenu((v) => (v === "posts" ? null : "posts"))
-                    }
+                    onClick={() => setOpenMenu((v) => (v === "posts" ? null : "posts"))}
                     onMouseEnter={() => setOpenMenu("posts")}
                   >
                     POSTS <ChevronDown className="h-6 w-6" />
@@ -150,7 +208,7 @@ export function Navbar() {
                               <Link
                                 href={it.href}
                                 className={cn(
-                                  "block px-4 py-2 text-center text-3xl transition",
+                                  "block px-4 py-2 text-center text-2xl transition",
                                   "bg-white hover:bg-gray-100 text-black",
                                   "dark:bg-[#1a1a1a] dark:hover:bg-[#2a2a2a] dark:text-white",
                                   linkActive(it.href) && "text-primary"
@@ -171,16 +229,14 @@ export function Navbar() {
                   <button
                     type="button"
                     className={cn(
-                      "inline-flex items-center gap-1 text-3xl font-medium transition-colors",
+                      "inline-flex items-center gap-1 text-2xl font-medium transition-colors",
                       (openMenu === "polls" || groupActive(pollsMenu))
                         ? "text-primary"
                         : "hover:text-primary dark:hover:text-primary"
                     )}
                     aria-haspopup="menu"
                     aria-expanded={openMenu === "polls"}
-                    onClick={() =>
-                      setOpenMenu((v) => (v === "polls" ? null : "polls"))
-                    }
+                    onClick={() => setOpenMenu((v) => (v === "polls" ? null : "polls"))}
                     onMouseEnter={() => setOpenMenu("polls")}
                   >
                     POLLS <ChevronDown className="h-6 w-6" />
@@ -205,7 +261,7 @@ export function Navbar() {
                               <Link
                                 href={it.href}
                                 className={cn(
-                                  "block px-4 py-2 text-center text-3xl transition",
+                                  "block px-4 py-2 text-center text-2xl transition",
                                   "bg-white hover:bg-gray-100 text-black",
                                   "dark:bg-[#1a1a1a] dark:hover:bg-[#2a2a2a] dark:text-white",
                                   linkActive(it.href) && "text-primary"
@@ -229,19 +285,17 @@ export function Navbar() {
                 aria-label="Toggle theme"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               >
-                {theme === "dark" ? (
-                  <Sun className="h-7 w-7" />
-                ) : (
-                  <Moon className="h-7 w-7" />
-                )}
+                <Sun className="h-6 w-6 hidden dark:block" />
+                <Moon className="h-6 w-6 block dark:hidden" />
               </Button>
+
               <Button
                 variant="ghost"
                 size="icon"
                 className="md:hidden"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
-                <Menu className="h-7 w-7" />
+                <Menu className="h-6 w-6" />
               </Button>
             </div>
           </div>
@@ -266,9 +320,7 @@ export function Navbar() {
                     className={cn(
                       "block rounded-md px-3 py-2 text-sm transition",
                       "hover:bg-gray-200 dark:hover:bg-[#222222]",
-                      linkActive(item.path)
-                        ? "text-primary"
-                        : "text-black dark:text-white"
+                      linkActive(item.path) ? "text-primary" : "text-black dark:text-white"
                     )}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -289,9 +341,7 @@ export function Navbar() {
                         className={cn(
                           "block rounded-md px-3 py-2 text-sm transition",
                           "hover:bg-gray-200 dark:hover:bg-[#222222]",
-                          linkActive(it.href)
-                            ? "text-primary"
-                            : "text-black dark:text-white"
+                          linkActive(it.href) ? "text-primary" : "text-black dark:text-white"
                         )}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
@@ -314,9 +364,7 @@ export function Navbar() {
                         className={cn(
                           "block rounded-md px-3 py-2 text-sm transition",
                           "hover:bg-gray-200 dark:hover:bg-[#222222]",
-                          linkActive(it.href)
-                            ? "text-primary"
-                            : "text-black dark:text-white"
+                          linkActive(it.href) ? "text-primary" : "text-black dark:text-white"
                         )}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >

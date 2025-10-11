@@ -1,9 +1,6 @@
 "use client"
 
-import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
 import { useTheme } from "next-themes"
 import Image from "next/image"
 import { FaFacebookF, FaYoutube, FaSpotify, FaInstagram, FaLinkedinIn } from "react-icons/fa"
@@ -30,29 +27,7 @@ export function Footer() {
 
   return (
     <footer className="w-full">
-      <div className="bg-white text-black dark:bg-[#191919] dark:text-white px-8 py-10 grid md:grid-cols-2 gap-4">
-        {/* Left: Logo + Info */}
-        <div className="flex flex-col gap-4">
-          <div className="relative h-[60px] w-auto">
-            <Image
-              src={theme === "dark" ? "/assets/GGFM Logo_White.png" : "/assets/GGFM Logo_Black.png"}
-              alt="DLSU Radio: Green Giant FM"
-              fill
-              className="object-contain"
-            />
-          </div>
-
-          <div>
-            <h2 className="flex justify-center font-medium mb-2 text-2xl underline text-black dark:text-white underline-offset-4">
-              ADDRESS
-            </h2>
-            <p className="flex justify-center text-base leading-relaxed text-black dark:text-white font-secondary">
-              Br. Bloemen Hall, De La Salle University, 2401 Taft Ave., Malate, Manila, 1004 Metro Manila
-            </p>
-          </div>
-        </div>
-
-        {/* Right: Social Links */}
+      <div className="bg-white text-black dark:bg-[#191919] dark:text-white px-8 py-10 grid gap-4">
         <div className="flex flex-col gap-4">
           <h2 className="flex justify-center text-4xl md:text-6xl font-medium leading-tight">
             Keep it locked with us!
@@ -65,24 +40,35 @@ export function Footer() {
                 <a
                   key={i}
                   href="#"
-                  className="inline-flex h-[66px] w-[66px] items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
+                  className="inline-flex h-12 w-12 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
                 >
-                  <Icon className="text-4xl md:text-[66px]" />
+                  <Icon className="text-4xl md:text-5xl" />
                 </a>
               )
             )}
             <a
               href="https://mail.google.com/mail/?view=cm&fs=1&to=publicrelations.ggfm@gmail.com"
               target="_blank"
-              className="inline-flex h-16 w-16 items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
+              className="inline-flex h-12 w-12 first-line:items-center justify-center rounded-full text-[#569429] hover:opacity-90 transition"
             >
-              <SiGmail className="text-4xl md:text-[66px]" />
+              <SiGmail className="text-4xl md:text-5xl" />
             </a>
           </div>
         </div>
+        
+        <div className="flex flex-col gap-4">
+          <div>
+            <h2 className="flex justify-center font-medium mb-2 text-2xl underline text-black dark:text-white underline-offset-4">
+              ADDRESS
+            </h2>
+            <p className="flex justify-center text-base leading-relaxed text-black dark:text-white font-secondary">
+              Br. Bloemen Hall, De La Salle University, 2401 Taft Ave., Malate, Manila, 1004 Metro Manila
+            </p>
+          </div>
+        </div>
 
-        <div className="md:col-span-2 flex justify-center">
-          <p className="text-base text-black dark:text-white font-secondary">
+        <div className="flex justify-center">
+          <p className="text-base text-black dark:text-white font-secondary text-center">
             Contact us at {" "}
             <a
               href="https://mail.google.com/mail/?view=cm&fs=1&to=publicrelations.ggfm@gmail.com"
@@ -92,6 +78,23 @@ export function Footer() {
               publicrelations.ggfm@gmail.com
             </a>
           </p>
+        </div>
+
+        <div className="relative h-[72px] w-auto">
+          <Image
+            src="/assets/GGFM Logo_Black.png"
+            alt="DLSU Radio: Green Giant FM"
+            fill
+            priority
+            className="object-contain block dark:hidden"
+          />
+          <Image
+            src="/assets/GGFM Logo_White.png"
+            alt="DLSU Radio: Green Giant FM"
+            fill
+            priority
+            className="object-contain hidden dark:block"
+          />
         </div>
       </div>
     </footer>
