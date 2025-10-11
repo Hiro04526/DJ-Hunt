@@ -124,7 +124,7 @@ export function DJSection() {
                 />
                 <div className="p-6">
                   <motion.h3
-                    className="text-2xl font-semibold"
+                    className="text-4xl font-semibold"
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.8 + index * 0.1, duration: 0.5 }}
@@ -143,7 +143,7 @@ export function DJSection() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.2 + index * 0.1, duration: 0.5 }}
-                    className="mt-4"
+                    className="mt-4 flex justify-center"
                   >
                     {/* Theme-aware button */}
                     <Button
