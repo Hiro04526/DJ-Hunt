@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FaChevronRight } from "react-icons/fa"
 import AudioPlayer from "@/components/audio-player"
+import { DJVotingForm } from "@/components/voting-form"
 
 type DJ = {
   id: number
@@ -22,6 +23,7 @@ export function DJSection() {
   const [DJs, setDJs] = useState<DJ[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isVotingOpen, setIsVotingOpen] = useState(false)
 
   useEffect(() => {
     async function fetchDJs() {
@@ -82,7 +84,7 @@ export function DJSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="relative min-h-screen flex flex-col items-center justify-center"
+        className="mb-8 relative min-h-screen flex flex-col items-center justify-center"
       >
         <div className="container mx-auto px-4 z-10">
           {loading && <p className="text-white/90 mb-4">Loading…</p>}
@@ -148,8 +150,8 @@ export function DJSection() {
                       size="lg"
                       className="
                         group
-                        bg-neutral-900 text-white hover:bg-neutral-800
-                        dark:bg-white/20 dark:text-white dark:hover:bg-white/30
+                        bg-[#191919] text-white hover:bg-[#252525]
+                        dark:bg-white dark:text-black dark:hover:brightness-95
                       "
                       onClick={() => setSelectedDJ(DJ)}
                     >
@@ -162,6 +164,16 @@ export function DJSection() {
             ))}
           </motion.div>
         </div>
+
+        <Button
+          size="lg"
+          className="text-xl 
+            bg-[#191919] hover:bg-[#252525] text-white
+            dark:bg-white dark:hover:brightness-95 dark:text-black"
+          onClick={() => setIsVotingOpen(true)}
+        >
+          Vote
+        </Button>
       </motion.div>
 
       {/* Details Modal */}
@@ -265,6 +277,20 @@ export function DJSection() {
             </DialogContent>
           </Dialog>
         )}
+      </AnimatePresence>
+
+      {/* Voting Form Modal */}
+      <AnimatePresence>
+        <Dialog open={isVotingOpen} onOpenChange={setIsVotingOpen}>
+          <DialogContent
+            className="max-w-[800px] bg-white text-neutral-900 dark:bg-[#0f0f0f] dark:text-white border border-neutral-200 dark:border-neutral-800 p-6"
+          >
+            <DialogHeader>
+              <DialogTitle className="text-2xl text-center">Vote for Your Favorite DJs</DialogTitle>
+            </DialogHeader>
+            <DJVotingForm djs={DJs.map(({ id, name, image }) => ({ id, name, image }))} />
+          </DialogContent>
+        </Dialog>
       </AnimatePresence>
     </section>
   )
