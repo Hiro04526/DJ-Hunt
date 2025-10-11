@@ -51,7 +51,7 @@ export function Footer() {
                   inline-flex items-center justify-center
                   rounded-full text-[#569429] hover:opacity-90 transition
                   h-12 w-12 sm:h-12 sm:w-12 md:h-12 md:w-12
-                  basis-1/4 md:basis-auto
+                  basis-1/5 md:basis-auto
                 "
               >
                 <Icon className="text-3xl md:text-4xl" />
