@@ -1,5 +1,6 @@
-"use client";
-import { useEffect, useState } from "react";
+"use client"
+
+import { useEffect, useState } from "react"
 
 type Props = {
   lines: string[];

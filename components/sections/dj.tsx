@@ -197,7 +197,7 @@ export function DJSection() {
                   <AudioPlayer src={selectedDJ.stinger} />
                 </div>
 
-                <div className="flex flex-col items-center space-y-2 mt-12">
+                <div className="flex flex-col items-center space-y-2">
                   <h1 className="text-xl m-0">Solo Videoshoot</h1>
                   <div className="[&>*]:m-0 [&>p]:m-0 [&>div]:m-0 text-sm">
                     <div className="flex justify-center mx-auto rounded-lg overflow-visible">

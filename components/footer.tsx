@@ -25,7 +25,7 @@ export function Footer() {
     <footer className="w-full">
       <div className="bg-white text-black dark:bg-[#191919] dark:text-white">
         {/* Container */}
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-8 sm:py-10 space-y-8">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-8 sm:py-10 space-y-4">
 
           {/* Title */}
           <h2 className="text-center text-3xl sm:text-4xl md:text-6xl font-medium leading-tight">
@@ -50,17 +50,17 @@ export function Footer() {
                 className="
                   inline-flex items-center justify-center
                   rounded-full text-[#569429] hover:opacity-90 transition
-                  h-12 w-12 sm:h-12 sm:w-12 md:h-12 md:w-12
+                  h-12 w-12 md:h-16 md:w-16
                   basis-1/5 md:basis-auto
                 "
               >
-                <Icon className="text-3xl md:text-4xl" />
+                <Icon className="text-3xl md:text-5xl" />
               </a>
             ))}
           </div>
 
           {/* Address */}
-          <div className="max-w-prose mx-auto text-center">
+          <div className="max-w-fit mx-auto text-center">
             <h3 className="font-medium mb-2 text-2xl underline underline-offset-4">
               ADDRESS
             </h3>

@@ -6,7 +6,6 @@ import { useTheme } from "next-themes"
 import { useState, useEffect } from "react"
 
 export function TitleSection() {
-  const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => setMounted(true), [])
@@ -20,8 +19,6 @@ export function TitleSection() {
     )
   }
 
-  const isDark = resolvedTheme === "dark"
-
   return (
     <motion.section
       initial={{ opacity: 0 }}
@@ -33,9 +30,7 @@ export function TitleSection() {
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <div
-          className={`absolute inset-0 transition-colors duration-500 ${
-            isDark ? "bg-white" : "bg-[#111111]"
-          }`}
+          className="absolute inset-0 transition-colors duration-500 bg-[#111111] dark:bg-white"
         />
       </div>
 
@@ -46,9 +41,7 @@ export function TitleSection() {
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className={`text-6xl md:text-8xl font-medium mt-4 mb-6 transition-colors duration-500 ${
-              isDark ? "text-[#111111]" : "text-white"
-            }`}
+            className="text-6xl md:text-8xl font-medium mt-4 mb-6 transition-colors duration-500 text-white dark:text-[#111111]"
           >
             DJ HUNT
           </motion.h1>
@@ -57,9 +50,7 @@ export function TitleSection() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className={`text-lg md:text-2xl font-secondary mb-4 transition-colors duration-500 ${
-              isDark ? "text-[#111111]" : "text-white"
-            }`}
+            className="text-lg md:text-2xl font-secondary mb-4 transition-colors duration-500 text-white dark:text-[#111111]"
           >
             <EqualDurationTypewriter
               lines={[

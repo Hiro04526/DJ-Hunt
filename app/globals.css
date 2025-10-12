@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   :root {
@@ -53,13 +53,11 @@
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+@layer utilities {
+  .font-primary { font-family: var(--font-primary), ui-sans-serif, system-ui}
+  .font-secondary { font-family: var(--font-secondary), ui-sans-serif, system-ui}
+  .bg-background { background-color: hsl(var(--background)) }
+  .text-foreground { color: hsl(var(--foreground)) }
 }
 
 .animate-gradient {

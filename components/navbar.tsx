@@ -285,8 +285,8 @@ export function Navbar() {
                 aria-label="Toggle theme"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               >
-                <Sun className="h-6 w-6 hidden dark:block" />
-                <Moon className="h-6 w-6 block dark:hidden" />
+                <Sun className="h-6 w-6 hidden dark:block hover:cursor-pointer" />
+                <Moon className="h-6 w-6 block dark:hidden hover:cursor-pointer" />
               </Button>
 
               <Button
@@ -310,7 +310,7 @@ export function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               className="md:hidden border-t backdrop-blur-md shadow-lg 
-                         bg-white/95 dark:bg-[#111111]/95"
+                         bg-white dark:bg-[#111111]"
             >
               <div className="container mx-auto px-4 py-3 space-y-1">
                 {navItems.map((item) => (
@@ -328,51 +328,35 @@ export function Navbar() {
                   </Link>
                 ))}
 
-                {/* POSTS collapsible */}
-                <details className="rounded-md border p-2 dark:border-gray-700">
-                  <summary className="flex cursor-pointer items-center justify-between px-1 py-1 text-sm font-medium">
-                    POSTS <ChevronDown className="h-4 w-4" />
-                  </summary>
-                  <div className="mt-2 space-y-1 pl-2">
-                    {postsMenu.map((it) => (
-                      <Link
-                        key={it.href}
-                        href={it.href}
-                        className={cn(
-                          "block rounded-md px-3 py-2 text-sm transition",
-                          "hover:bg-gray-200 dark:hover:bg-[#222222]",
-                          linkActive(it.href) ? "text-primary" : "text-black dark:text-white"
-                        )}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {it.label}
-                      </Link>
-                    ))}
-                  </div>
-                </details>
+                {postsMenu.map((it) => (
+                  <Link
+                    key={it.href}
+                    href={it.href}
+                    className={cn(
+                      "block rounded-md px-3 py-2 text-sm transition",
+                      "hover:bg-gray-200 dark:hover:bg-[#222222]",
+                      linkActive(it.href) ? "text-primary" : "text-black dark:text-white"
+                    )}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {it.label}
+                  </Link>
+                ))}
 
-                {/* POLLS collapsible */}
-                <details className="rounded-md border p-2 dark:border-gray-700">
-                  <summary className="flex cursor-pointer items-center justify-between px-1 py-1 text-sm font-medium">
-                    POLLS <ChevronDown className="h-4 w-4" />
-                  </summary>
-                  <div className="mt-2 space-y-1 pl-2">
-                    {pollsMenu.map((it) => (
-                      <Link
-                        key={it.href}
-                        href={it.href}
-                        className={cn(
-                          "block rounded-md px-3 py-2 text-sm transition",
-                          "hover:bg-gray-200 dark:hover:bg-[#222222]",
-                          linkActive(it.href) ? "text-primary" : "text-black dark:text-white"
-                        )}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {it.label}
-                      </Link>
-                    ))}
-                  </div>
-                </details>
+                {pollsMenu.map((it) => (
+                  <Link
+                    key={it.href}
+                    href={it.href}
+                    className={cn(
+                      "block rounded-md px-3 py-2 text-sm transition",
+                      "hover:bg-gray-200 dark:hover:bg-[#222222]",
+                      linkActive(it.href) ? "text-primary" : "text-black dark:text-white"
+                    )}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {it.label}
+                  </Link>
+                ))}
               </div>
             </motion.div>
           )}

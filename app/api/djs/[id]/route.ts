@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import { supabaseAdmin } from "@/lib/server/supabaseAdmin"
 
 export async function PATCH(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  const id = pathname.split("/").pop();
+  const { pathname } = req.nextUrl
+  const id = pathname.split("/").pop()
 
   if (!id || !isAdminCookie(req)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
