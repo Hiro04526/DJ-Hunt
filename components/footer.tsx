@@ -48,7 +48,7 @@ export function Footer() {
                 rel={external ? "noopener noreferrer" : undefined}
                 aria-label={label}
                 className="
-                  inline-flex items-center justify-center
+                  inline-flex items-center justify-center hover:scale-105
                   rounded-full text-[#569429] hover:opacity-90 transition
                   h-12 w-12 md:h-16 md:w-16
                   basis-1/5 md:basis-auto

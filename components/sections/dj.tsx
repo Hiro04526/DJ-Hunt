@@ -150,8 +150,8 @@ export function DJSection() {
                       size="lg"
                       className="
                         group
-                        bg-[#191919] text-white hover:bg-[#252525]
-                        dark:bg-white dark:text-black dark:hover:brightness-95
+                        bg-[#191919] text-white hover:shadow-[0_0_25px_#00FF84] hover:scale-105
+                        dark:bg-white dark:text-black
                       "
                       onClick={() => setSelectedDJ(DJ)}
                     >
@@ -166,13 +166,16 @@ export function DJSection() {
         </div>
 
         <Button
-          size="lg"
-          className="text-xl 
-            bg-[#191919] hover:bg-[#252525] text-white
-            dark:bg-white dark:hover:brightness-95 dark:text-black"
+          size="xl"
+          className="
+            px-10 py-5 text-2xl font-extrabold tracking-widest
+            rounded-md bg-[#191919] text-white
+            hover:shadow-[0_0_25px_#00FF84] hover:scale-105
+            transition-all duration-300 dark:bg-white dark:text-black
+          "
           onClick={() => setIsVotingOpen(true)}
         >
-          Vote
+          VOTE
         </Button>
       </motion.div>
 

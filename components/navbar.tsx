@@ -32,6 +32,21 @@ export function Navbar() {
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
 
+  const openTimer = useRef<NodeJS.Timeout | null>(null);
+  const closeTimer = useRef<NodeJS.Timeout | null>(null);
+
+  function openWithDelay(name: "posts" | "polls") {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    if (openTimer.current) clearTimeout(openTimer.current);
+    openTimer.current = setTimeout(() => setOpenMenu(name), 90);
+  }
+
+  function closeWithDelay() {
+    if (openTimer.current) clearTimeout(openTimer.current);
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpenMenu(null), 160);
+  }
+
   useEffect(() => {
     setMounted(true)
     const handleScroll = () => setIsScrolled(window.scrollY > 50)
@@ -132,7 +147,7 @@ export function Navbar() {
         <div className="w-full px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="w-32 h-32 relative">
+            <Link href="/" className="w-32 h-32 relative hover:scale-105">
               <Image
                 src="/assets/GGFM Logo_Black.png"
                 alt="DLSU Radio: Green Giant FM"
@@ -157,7 +172,7 @@ export function Navbar() {
                     key={item.path}
                     href={item.path}
                     className={cn(
-                      "relative text-2xl font-medium transition-colors hover:text-primary",
+                      "relative text-2xl font-medium transition-colors hover:scale-105 hover:text-primary",
                       pathname === item.path ? "text-primary" : "hover:text-primary dark:hover:text-primary"
                     )}
                   >
@@ -172,22 +187,27 @@ export function Navbar() {
                 ))}
 
                 {/* POSTS (dropdown) */}
-                <div className="relative" onMouseLeave={() => setOpenMenu(null)}>
+                <div
+                  className="relative group"
+                  onMouseEnter={() => openWithDelay("posts")}
+                  onMouseLeave={closeWithDelay}
+                >
                   <button
                     type="button"
                     className={cn(
-                      "inline-flex items-center gap-1 text-2xl font-medium transition-colors",
+                      "inline-flex items-center gap-1 text-2xl font-medium transition-colors group-hover:scale-105",
                       (openMenu === "posts" || groupActive(postsMenu))
                         ? "text-primary"
                         : "hover:text-primary dark:hover:text-primary"
                     )}
                     aria-haspopup="menu"
                     aria-expanded={openMenu === "posts"}
-                    onClick={() => setOpenMenu((v) => (v === "posts" ? null : "posts"))}
-                    onMouseEnter={() => setOpenMenu("posts")}
+                    onClick={() => setOpenMenu(v => (v === "posts" ? null : "posts"))}
                   >
                     POSTS <ChevronDown className="h-6 w-6" />
                   </button>
+
+                  <div className="absolute left-0 right-0 top-full h-2" aria-hidden />
 
                   <AnimatePresence>
                     {openMenu === "posts" && (
@@ -197,18 +217,19 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.12 }}
-                        className="absolute left-1/2 top-full mt-2 w-28 rounded-md border 
+                        className="absolute left-1/2 top-full mt-2 w-28 -translate-x-1/2 rounded-md border 
                                    bg-white dark:bg-[#222222] shadow-lg overflow-hidden"
-                        style={{ x: "-50%" }}
                         role="menu"
+                        onMouseEnter={() => openWithDelay("posts")}
+                        onMouseLeave={closeWithDelay}
                       >
                         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                          {postsMenu.map((it) => (
+                          {postsMenu.map(it => (
                             <li key={it.href}>
                               <Link
                                 href={it.href}
                                 className={cn(
-                                  "block px-4 py-2 text-center text-2xl transition",
+                                  "block px-4 py-2 text-center text-2xl transition hover:scale-105",
                                   "bg-white hover:bg-gray-100 text-black",
                                   "dark:bg-[#1a1a1a] dark:hover:bg-[#2a2a2a] dark:text-white",
                                   linkActive(it.href) && "text-primary"
@@ -225,22 +246,27 @@ export function Navbar() {
                 </div>
 
                 {/* POLLS (dropdown) */}
-                <div className="relative" onMouseLeave={() => setOpenMenu(null)}>
+                <div
+                  className="relative group"
+                  onMouseEnter={() => openWithDelay("polls")}
+                  onMouseLeave={closeWithDelay}
+                >
                   <button
                     type="button"
                     className={cn(
-                      "inline-flex items-center gap-1 text-2xl font-medium transition-colors",
+                      "inline-flex items-center gap-1 text-2xl font-medium transition-colors group-hover:scale-105",
                       (openMenu === "polls" || groupActive(pollsMenu))
                         ? "text-primary"
                         : "hover:text-primary dark:hover:text-primary"
                     )}
                     aria-haspopup="menu"
                     aria-expanded={openMenu === "polls"}
-                    onClick={() => setOpenMenu((v) => (v === "polls" ? null : "polls"))}
-                    onMouseEnter={() => setOpenMenu("polls")}
+                    onClick={() => setOpenMenu(v => (v === "polls" ? null : "polls"))}
                   >
                     POLLS <ChevronDown className="h-6 w-6" />
                   </button>
+
+                  <div className="absolute left-0 right-0 top-full h-2" aria-hidden />
 
                   <AnimatePresence>
                     {openMenu === "polls" && (
@@ -250,18 +276,19 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.12 }}
-                        className="absolute left-1/2 top-full mt-2 w-28 rounded-md border 
+                        className="absolute left-1/2 top-full mt-2 w-28 -translate-x-1/2 rounded-md border 
                                    bg-white dark:bg-[#222222] shadow-lg overflow-hidden"
-                        style={{ x: "-50%" }}
                         role="menu"
+                        onMouseEnter={() => openWithDelay("polls")}
+                        onMouseLeave={closeWithDelay}
                       >
                         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                          {pollsMenu.map((it) => (
+                          {pollsMenu.map(it => (
                             <li key={it.href}>
                               <Link
                                 href={it.href}
                                 className={cn(
-                                  "block px-4 py-2 text-center text-2xl transition",
+                                  "block px-4 py-2 text-center text-2xl transition hover:scale-105",
                                   "bg-white hover:bg-gray-100 text-black",
                                   "dark:bg-[#1a1a1a] dark:hover:bg-[#2a2a2a] dark:text-white",
                                   linkActive(it.href) && "text-primary"
@@ -284,9 +311,13 @@ export function Navbar() {
                 size="icon"
                 aria-label="Toggle theme"
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="hover:scale-105"
               >
-                <Sun className="h-6 w-6 hidden dark:block hover:cursor-pointer" />
-                <Moon className="h-6 w-6 block dark:hidden hover:cursor-pointer" />
+                {theme === "dark" ? (
+                  <Sun className="h-6 w-6" />
+                ) : (
+                  <Moon className="h-6 w-6" />
+                )}
               </Button>
 
               <Button
