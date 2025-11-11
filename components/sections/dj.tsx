@@ -47,14 +47,17 @@ export function DJSection() {
     fetchDJs()
   }, [])
 
-  const isFacebookVideo = (raw: string) => {
+  const isGoogleDriveVideo = (raw: string) => {
     try {
-      const u = new URL(raw)
-      const host = u.hostname.replace(/^www\./, "")
-      return host === "facebook.com" || host === "fb.watch" || host.endsWith(".facebook.com")
+      const { hostname, pathname } = new URL(raw);
+      const host = hostname.replace(/^www\./, "");
+
+      if (host !== "drive.google.com") return false;
+
+      return /\/file\/d\/[a-zA-Z0-9_-]{10,}/.test(pathname);
     } catch {
-      const s = raw.toLowerCase()
-      return s.includes("facebook.com") || s.includes("fb.watch")
+      const s = raw.toLowerCase();
+      return s.startsWith("https://drive.google.com/file/d/");
     }
   }
 
@@ -67,16 +70,11 @@ export function DJSection() {
     }
   }
 
-  const buildFacebookEmbedSrc = (videoUrl: string) => {
-    const base = "https://www.facebook.com/plugins/video.php"
-    const params = new URLSearchParams({
-      href: videoUrl,
-      show_text: "false",
-      width: "1280",
-      height: "720",
-    })
-    return `${base}?${params.toString()}`
+  const buildDriveEmbedSrc = (raw: string) => {
+    const m = raw.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/);
+    return m ? `https://drive.google.com/file/d/${m[1]}/preview` : raw;
   }
+
 
   return (
     <section id="djs" className="bg-[#569429]">
@@ -186,7 +184,7 @@ export function DJSection() {
             <DialogContent
               className="
                 sm:max-w-[1080px]
-                max-h-[90vh] overflow-y-auto
+                max-h-[90vh] overflow-y-scroll scrollbar-hide
                 bg-white text-neutral-900
                 dark:bg-[#0f0f0f] dark:text-white
                 border border-neutral-200 dark:border-neutral-800
@@ -201,74 +199,46 @@ export function DJSection() {
                 </div>
 
                 <div className="flex flex-col items-center space-y-2">
-                  <h1 className="text-xl m-0">Solo Videoshoot</h1>
-                  <div className="[&>*]:m-0 [&>p]:m-0 [&>div]:m-0 text-sm">
-                    <div className="flex justify-center mx-auto rounded-lg overflow-visible">
-                      {isFacebookVideo(selectedDJ.videoshoot) ? (
-                        <div className="w-full h-full md:w-1/3 mx-auto rounded-lg overflow-hidden">
-                          <div className="relative aspect-[16/9]">
-                            <iframe
-                              key={selectedDJ.videoshoot}
-                              src={buildFacebookEmbedSrc(selectedDJ.videoshoot)}
-                              className="absolute inset-0 w-full h-full"
-                              style={{ border: "none", overflow: "hidden" }}
-                              scrolling="no"
-                              frameBorder={0}
-                              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                              allowFullScreen
-                            />
-                          </div>
-                        </div>
-                      ) : isMp4Video(selectedDJ.videoshoot) ? (
-                        <video
-                          key={selectedDJ.videoshoot}
-                          src={selectedDJ.videoshoot}
-                          className="w-full md:w-1/3 object-cover rounded-lg"
-                          controls
-                          playsInline
-                          preload="metadata"
-                          crossOrigin="anonymous"
-                        >
-                          <source src={selectedDJ.videoshoot} type="video/mp4" />
-                        </video>
-                      ) : (
-                        <p className="text-center">Video format not supported.</p>
-                      )}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-2">
+                    {/* Solo Videoshoot */}
+                    <div className="flex flex-col items-center">
+                      <h2 className="text-lg text-center mb-2">Solo Videoshoot</h2>
+                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[3/4]">
+                        <iframe
+                          src={buildDriveEmbedSrc("https://drive.google.com/file/d/1WT41Fa6GgrnlWthX-KKr_nCgOCREIQ-L/preview")}
+                          className="absolute inset-0 w-full h-full"
+                          style={{ border: "none", backgroundColor: "#000" }}
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      </div>
                     </div>
 
-                    <div className="flex flex-col md:flex-row justify-center items-start md:items-center gap-6 md:gap-8 w-full mt-6">
-                      <div className="flex flex-col items-center md:items-start w-full md:w-1/3">
-                        <h1 className="w-full text-xl my-2 text-center">Segue</h1>
-                        <div className="w-full rounded-lg overflow-hidden">
-                          <div className="relative aspect-[16/9]">
-                            <iframe
-                              src={buildFacebookEmbedSrc("https://www.facebook.com/goinkss/videos/748888000554843")}
-                              className="absolute inset-0 w-full h-full"
-                              style={{ border: "none", overflow: "hidden" }}
-                              scrolling="no"
-                              frameBorder={0}
-                              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                              allowFullScreen
-                            />
-                          </div>
-                        </div>
+                    {/* Segue */}
+                    <div className="flex flex-col items-center">
+                      <h2 className="text-lg text-center mb-2">Segue Challenge</h2>
+                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[3/4]">
+                        <iframe
+                          src={buildDriveEmbedSrc("https://drive.google.com/file/d/1WT41Fa6GgrnlWthX-KKr_nCgOCREIQ-L/preview")}
+                          className="absolute inset-0 w-full h-full"
+                          style={{ border: "none", backgroundColor: "#000" }}
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
                       </div>
+                    </div>
 
-                      <div className="flex flex-col items-center md:items-start w-full md:w-1/3">
-                        <h1 className="w-full text-xl my-2 text-center">Voiceover Challenge</h1>
-                        <div className="w-full rounded-lg overflow-hidden">
-                          <div className="relative aspect-[16/9]">
-                            <iframe
-                              src={buildFacebookEmbedSrc("https://www.facebook.com/goinkss/videos/999999999999999")}
-                              className="absolute inset-0 w-full h-full"
-                              style={{ border: "none", overflow: "hidden" }}
-                              scrolling="no"
-                              frameBorder={0}
-                              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                              allowFullScreen
-                            />
-                          </div>
-                        </div>
+                    {/* Voiceover Challenge */}
+                    <div className="flex flex-col items-center">
+                      <h2 className="text-lg text-center mb-2">Voiceover Challenge</h2>
+                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[3/4]">
+                        <iframe
+                          src={buildDriveEmbedSrc("https://drive.google.com/file/d/1WT41Fa6GgrnlWthX-KKr_nCgOCREIQ-L/preview")}
+                          className="absolute inset-0 w-full h-full"
+                          style={{ border: "none", backgroundColor: "#000" }}
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
                       </div>
                     </div>
                   </div>
