@@ -7,11 +7,11 @@ import { SiGmail } from "react-icons/si"
 
 export function Footer() {
   const socials = [
-    { Icon: FaXTwitter, label: "X", href: "#" },
-    { Icon: FaFacebookF, label: "Facebook", href: "#" },
-    { Icon: FaSpotify, label: "Spotify", href: "#" },
-    { Icon: FaInstagram, label: "Instagram", href: "#" },
-    { Icon: FaLinkedinIn, label: "LinkedIn", href: "#" },
+    { Icon: FaXTwitter, label: "X", href: "https://x.com/GreenGiantFM" },
+    { Icon: FaFacebookF, label: "Facebook", href: "https://www.facebook.com/GreenGiantFM" },
+    { Icon: FaSpotify, label: "Spotify", href: "https://open.spotify.com/user/u3c7kostw3e3t4ijbckvs7b8c?si=e680d0001e5f4cae" },
+    { Icon: FaInstagram, label: "Instagram", href: "https://www.instagram.com/greengiant.fm/" },
+    { Icon: FaLinkedinIn, label: "LinkedIn", href: "https://www.linkedin.com/company/green-giant-fm" },
     {
       Icon: SiGmail,
       label: "Email",
