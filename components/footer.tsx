@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { FaFacebookF, FaYoutube, FaSpotify, FaInstagram, FaLinkedinIn } from "react-icons/fa"
+import { FaFacebookF, FaSpotify, FaInstagram, FaLinkedinIn } from "react-icons/fa"
 import { FaXTwitter } from "react-icons/fa6"
 import { SiGmail } from "react-icons/si"
 
@@ -9,7 +9,6 @@ export function Footer() {
   const socials = [
     { Icon: FaXTwitter, label: "X", href: "#" },
     { Icon: FaFacebookF, label: "Facebook", href: "#" },
-    { Icon: FaYoutube, label: "YouTube", href: "#" },
     { Icon: FaSpotify, label: "Spotify", href: "#" },
     { Icon: FaInstagram, label: "Instagram", href: "#" },
     { Icon: FaLinkedinIn, label: "LinkedIn", href: "#" },
