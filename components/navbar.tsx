@@ -11,15 +11,15 @@ import { useTheme } from "next-themes"
 import Image from "next/image"
 
 const navItems = [
-  { name: "ABOUT US", path: "#" },
-  { name: "RADIO TALENT", path: "#" },
+  { name: "ABOUT US", path: "/about-us" },
+  { name: "RADIO TALENT", path: "/radio-talent" },
 ]
 
-const postsMenu = [{ label: "PR", href: "/posts/pr" }]
+const postsMenu = [{ label: "PUBLIC RELATIONS", href: "/posts/public-relations" }]
 
 const pollsMenu = [
-  { label: "HITLIST", href: "#" },
-  { label: "DJ HUNT", href: "#" },
+  { label: "HITLIST", href: "/polls/hitlist" },
+  { label: "DJ HUNT", href: "/polls/dj-hunt" },
 ]
 
 export function Navbar() {
