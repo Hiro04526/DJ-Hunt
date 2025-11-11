@@ -115,7 +115,7 @@ export function DJSection() {
                 <motion.img
                   src={DJ.image}
                   alt={DJ.name}
-                  className="w-full h-100 object-cover rounded-t-lg"
+                  className="h-fit object-cover rounded-t-lg"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
@@ -203,7 +203,7 @@ export function DJSection() {
                     {/* Solo Videoshoot */}
                     <div className="flex flex-col items-center">
                       <h2 className="text-lg text-center mb-2">Solo Videoshoot</h2>
-                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[3/4]">
+                      <div className="w-full h-fit max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[9/16]">
                         <iframe
                           src={buildDriveEmbedSrc("https://drive.google.com/file/d/1WT41Fa6GgrnlWthX-KKr_nCgOCREIQ-L/preview")}
                           className="absolute inset-0 w-full h-full"
@@ -217,7 +217,7 @@ export function DJSection() {
                     {/* Segue */}
                     <div className="flex flex-col items-center">
                       <h2 className="text-lg text-center mb-2">Segue Challenge</h2>
-                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[3/4]">
+                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[9/16]">
                         <iframe
                           src={buildDriveEmbedSrc("https://drive.google.com/file/d/1WT41Fa6GgrnlWthX-KKr_nCgOCREIQ-L/preview")}
                           className="absolute inset-0 w-full h-full"
@@ -231,7 +231,7 @@ export function DJSection() {
                     {/* Voiceover Challenge */}
                     <div className="flex flex-col items-center">
                       <h2 className="text-lg text-center mb-2">Voiceover Challenge</h2>
-                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[3/4]">
+                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[9/16]">
                         <iframe
                           src={buildDriveEmbedSrc("https://drive.google.com/file/d/1WT41Fa6GgrnlWthX-KKr_nCgOCREIQ-L/preview")}
                           className="absolute inset-0 w-full h-full"
@@ -241,9 +241,6 @@ export function DJSection() {
                         />
                       </div>
                     </div>
-                  </div>
-                  <div className="flex w-full justify-start">
-                    <p>{selectedDJ.details}</p>
                   </div>
                 </div>
               </DialogHeader>
