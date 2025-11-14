@@ -115,7 +115,7 @@ export function DJSection() {
                 <motion.img
                   src={DJ.image}
                   alt={DJ.name}
-                  className="h-fit object-cover rounded-t-lg"
+                  className="h-fit object-contain rounded-t-lg"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}

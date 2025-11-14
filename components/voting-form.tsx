@@ -1,7 +1,7 @@
 "use client"
 
 import Script from "next/script"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 
 type DJ = {
   id: number
@@ -91,8 +91,8 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
       )}
 
       {email && (
-        <div className="mx-auto w-full max-w-3xl">
-          <p className="mb-4 -mt-2 w-full text-center text-sm opacity-80">Signed in as {email}</p>
+        <div className="mx-auto w-full max-w-3xl max-h-[80vh] overflow-y-scroll scrollbar-hide">
+          <p className="mb-4 w-full text-center text-sm opacity-80">Signed in as {email}</p>
 
           {/* Selectable DJ cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
