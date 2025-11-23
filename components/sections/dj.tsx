@@ -96,12 +96,13 @@ export function DJSection() {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="py-8 sm:py-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="py-8 sm:py-8 flex flex-wrap justify-center gap-8"
           >
             {DJs.map((DJ, index) => (
               <motion.div
                 key={DJ.id}
                 className="
+                  w-full sm:w-[22rem]
                   rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2
                   bg-white text-neutral-900
                   dark:bg-[#0d0d0d] dark:text-white
