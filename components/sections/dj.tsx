@@ -16,6 +16,8 @@ type DJ = {
   details: string
   videoshoot: string
   stinger: string
+  segue: string
+  voiceover: string
 }
 
 export function DJSection() {
@@ -46,29 +48,6 @@ export function DJSection() {
     }
     fetchDJs()
   }, [])
-
-  const isGoogleDriveVideo = (raw: string) => {
-    try {
-      const { hostname, pathname } = new URL(raw);
-      const host = hostname.replace(/^www\./, "");
-
-      if (host !== "drive.google.com") return false;
-
-      return /\/file\/d\/[a-zA-Z0-9_-]{10,}/.test(pathname);
-    } catch {
-      const s = raw.toLowerCase();
-      return s.startsWith("https://drive.google.com/file/d/");
-    }
-  }
-
-  const isMp4Video = (url: string) => {
-    try {
-      const clean = url.split("?")[0].toLowerCase().trim()
-      return clean.endsWith(".mp4")
-    } catch {
-      return false
-    }
-  }
 
   const buildDriveEmbedSrc = (raw: string) => {
     const m = raw.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/);
@@ -201,12 +180,12 @@ export function DJSection() {
 
                 <div className="flex flex-col items-center space-y-2">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-2">
-                    {/* Solo Videoshoot */}
+                    {/* Segue */}
                     <div className="flex flex-col items-center">
-                      <h2 className="text-lg text-center mb-2">Solo Videoshoot</h2>
-                      <div className="w-full h-fit max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[9/16]">
+                      <h2 className="text-lg text-center mb-2">Segue Challenge</h2>
+                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[9/16]">
                         <iframe
-                          src={buildDriveEmbedSrc("https://drive.google.com/file/d/1WT41Fa6GgrnlWthX-KKr_nCgOCREIQ-L/preview")}
+                          src={buildDriveEmbedSrc(selectedDJ.segue)}
                           className="absolute inset-0 w-full h-full"
                           style={{ border: "none", backgroundColor: "#000" }}
                           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
@@ -215,12 +194,12 @@ export function DJSection() {
                       </div>
                     </div>
 
-                    {/* Segue */}
+                    {/* Solo Videoshoot */}
                     <div className="flex flex-col items-center">
-                      <h2 className="text-lg text-center mb-2">Segue Challenge</h2>
+                      <h2 className="text-lg text-center mb-2">Solo Videoshoot</h2>
                       <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[9/16]">
                         <iframe
-                          src={buildDriveEmbedSrc("https://drive.google.com/file/d/1WT41Fa6GgrnlWthX-KKr_nCgOCREIQ-L/preview")}
+                          src={buildDriveEmbedSrc(selectedDJ.videoshoot)}
                           className="absolute inset-0 w-full h-full"
                           style={{ border: "none", backgroundColor: "#000" }}
                           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
@@ -234,7 +213,7 @@ export function DJSection() {
                       <h2 className="text-lg text-center mb-2">Voiceover Challenge</h2>
                       <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[9/16]">
                         <iframe
-                          src={buildDriveEmbedSrc("https://drive.google.com/file/d/1WT41Fa6GgrnlWthX-KKr_nCgOCREIQ-L/preview")}
+                          src={buildDriveEmbedSrc(selectedDJ.voiceover)}
                           className="absolute inset-0 w-full h-full"
                           style={{ border: "none", backgroundColor: "#000" }}
                           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
