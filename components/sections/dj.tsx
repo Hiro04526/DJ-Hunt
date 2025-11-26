@@ -13,7 +13,6 @@ type DJ = {
   name: string
   description: string
   image: string
-  details: string
   videoshoot: string
   stinger: string
   segue: string
