@@ -46,8 +46,21 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
 
   // ----- selection helpers -----
   const toggle = (id: number) => {
-    setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
-  }
+  setSelected((prev) => {
+    // Already selected → remove it
+    if (prev.includes(id)) return prev.filter((x) => x !== id)
+
+    // Limit reached → prevent adding more
+    if (prev.length >= 3) {
+      setMessage("You can only select up to 3 DJs.")
+      return prev
+    }
+
+    // Otherwise add it
+    return [...prev, id]
+  })
+}
+
 
   const isSelected = (id: number) => selected.includes(id)
 

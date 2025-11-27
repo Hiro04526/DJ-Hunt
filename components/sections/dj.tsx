@@ -235,7 +235,7 @@ export function DJSection() {
             className="max-w-[800px] bg-white text-neutral-900 dark:bg-[#0f0f0f] dark:text-white border border-neutral-200 dark:border-neutral-800 p-6"
           >
             <DialogHeader>
-              <DialogTitle className="text-2xl text-center">Vote for Your Favorite DJs</DialogTitle>
+              <DialogTitle className="text-2xl text-center">Vote for Your Favorite DJs (Maximum of 3)</DialogTitle>
             </DialogHeader>
             <DJVotingForm djs={DJs.map(({ id, name, image }) => ({ id, name, image }))} />
           </DialogContent>
