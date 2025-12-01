@@ -84,6 +84,7 @@ export function DJSection() {
                   rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2
                   bg-white text-neutral-900
                   dark:bg-[#0d0d0d] dark:text-white
+                  flex flex-col
                 "
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -99,7 +100,7 @@ export function DJSection() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
                 />
-                <div className="p-6">
+                <div className="p-6 flex flex-col h-full">
                   <motion.h3
                     className="text-4xl font-semibold"
                     initial={{ y: 20, opacity: 0 }}
@@ -120,7 +121,7 @@ export function DJSection() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.2 + index * 0.1, duration: 0.5 }}
-                    className="mt-4 flex justify-center"
+                    className="mt-auto flex justify-center pt-4"
                   >
                     {/* Theme-aware button */}
                     <Button
