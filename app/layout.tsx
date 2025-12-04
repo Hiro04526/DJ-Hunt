@@ -30,7 +30,6 @@ export const metadata: Metadata = {
     images: [{ url: "/assets/Raffy.png", width: 1200, height: 630, alt: "Green Giant FM" }],
     type: "website",
   },
-  themeColor: "#569429",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -40,6 +39,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
       className={`${kenyanCoffee.variable} ${raleway.variable}`}
     >
+      <head>
+        <meta name="theme-color" content="#569429" />
+      </head>
       <body className="font-primary">
         <ThemeProvider 
           attribute="class" 
