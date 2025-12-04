@@ -16,16 +16,16 @@ export default function AudioPlayer({ src }: Props) {
   const togglePlay = async () => {
     const el = audioRef.current
     if (!el) return
+    
     if (isPlaying) {
       el.pause()
       setIsPlaying(false)
     } else {
-      try {
-        await el.play()
-        setIsPlaying(true)
-      } catch {
-        console.warn("Autoplay blocked until user interaction.")
-      }
+      el.play().then(() => {
+        setIsPlaying(true);
+      }).catch((err) => {
+        console.warn("Autoplay blocked until user interaction:", err);
+      });
     }
   }
 
