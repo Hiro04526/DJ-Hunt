@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute } from "react-icons/fa"
 
 type Props = {
@@ -12,6 +12,13 @@ export default function AudioPlayer({ src }: Props) {
   const [duration, setDuration] = useState(0)
   const [volume, setVolume] = useState(1)
   const [isMuted, setIsMuted] = useState(false)
+
+  useEffect(() => {
+    const el = audioRef.current;
+    if (el && src) {
+      el.load();
+    }
+  }, [src]);
 
   const togglePlay = async () => {
     const el = audioRef.current
@@ -52,9 +59,13 @@ export default function AudioPlayer({ src }: Props) {
       <audio
         ref={audioRef}
         src={src || undefined}
-        preload="metadata"
+        preload="auto"
         onTimeUpdate={() => setCurrentTime(audioRef.current?.currentTime ?? 0)}
-        onLoadedMetadata={() => setDuration(audioRef.current?.duration ?? 0)}
+        onLoadedMetadata={() => {
+          if (audioRef.current) {
+            setDuration(audioRef.current.duration);
+          }
+        }}
         onEnded={() => setIsPlaying(false)}
       />
 
