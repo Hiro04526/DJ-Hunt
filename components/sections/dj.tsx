@@ -19,20 +19,20 @@ type DJ = {
   voiceover: string
 }
 
-export function DJSection() {
+export function DJSection({ initialDJs }: { initialDJs?: DJ[] }) {
   const [selectedDJ, setSelectedDJ] = useState<DJ | null>(null)
-  const [DJs, setDJs] = useState<DJ[]>([])
-  const [loading, setLoading] = useState(true)
+  const [DJs, setDJs] = useState<DJ[]>(initialDJs ?? [])
+  const [loading, setLoading] = useState(!initialDJs)
   const [error, setError] = useState<string | null>(null)
   const [isVotingOpen, setIsVotingOpen] = useState(false)
 
   useEffect(() => {
+    if (initialDJs) return
+
     async function fetchDJs() {
       try {
         const res = await fetch("/api/djs", { cache: "no-store" })
         const result = await res.json()
-        console.log("GET /api/djs →", result)
-
         if (res.ok && Array.isArray(result.data)) {
           setDJs(result.data as DJ[])
         } else {
@@ -46,7 +46,7 @@ export function DJSection() {
       }
     }
     fetchDJs()
-  }, [])
+  }, [initialDJs])
 
   const buildDriveEmbedSrc = (raw: string) => {
     const m = raw.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/);

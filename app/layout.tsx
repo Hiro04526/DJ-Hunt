@@ -1,21 +1,9 @@
-import localFont from "next/font/local"
-import { Raleway } from "next/font/google"
-import "./globals.css"
+import {kenyanCoffee, raleway} from "@/lib/fonts"
 import type { Metadata } from "next"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Toaster } from "@/components/ui/toaster"
-
-const kenyanCoffee = localFont({
-  src: "../public/fonts/kenyan-coffee-rg.ttf",
-  variable: "--font-primary",
-})
-
-const raleway = Raleway({
-  subsets: ["latin"],
-  variable: "--font-secondary",
-})
 
 export const metadata: Metadata = {
   title: "Green Giant FM",

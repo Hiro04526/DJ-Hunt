@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion"
 import EqualDurationTypewriter from "@/components/equal-duration-typewriter"
-import { useTheme } from "next-themes"
 import { useState, useEffect } from "react"
 
 export function TitleSection() {
