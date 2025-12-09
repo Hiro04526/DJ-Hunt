@@ -53,7 +53,6 @@ export function DJSection({ initialDJs }: { initialDJs?: DJ[] }) {
     return m ? `https://drive.google.com/file/d/${m[1]}/preview` : raw;
   }
 
-
   return (
     <section id="djs" className="bg-[#569429]">
       <motion.div
