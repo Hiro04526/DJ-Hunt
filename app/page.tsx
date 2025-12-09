@@ -1,5 +1,5 @@
-import { TitleSection } from "@/components/sections/title"
-import { DJSection } from "@/components/sections/dj"
+import { TitleSection } from "@/app/dj-hunt/sections/title"
+import { DJSection } from "@/app/dj-hunt/sections/dj"
 
 export default function Home() {
   return (

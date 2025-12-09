@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FaChevronRight } from "react-icons/fa"
-import AudioPlayer from "@/components/audio-player"
-import { DJVotingForm } from "@/components/voting-form"
+import AudioPlayer from "@/components/dj-hunt/audio-player"
+import { DJVotingForm } from "@/components/dj-hunt/voting-form"
 
 type DJ = {
   id: number
@@ -29,9 +29,9 @@ export function DJSection() {
   useEffect(() => {
     async function fetchDJs() {
       try {
-        const res = await fetch("/api/djs", { cache: "no-store" })
+        const res = await fetch("/dj-hunt/djs", { cache: "no-store" })
         const result = await res.json()
-        console.log("GET /api/djs →", result)
+        console.log("GET /dj-hunt/djs →", result)
 
         if (res.ok && Array.isArray(result.data)) {
           setDJs(result.data as DJ[])

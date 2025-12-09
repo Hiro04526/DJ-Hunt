@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import EqualDurationTypewriter from "@/components/equal-duration-typewriter"
+import EqualDurationTypewriter from "@/components/dj-hunt/equal-duration-typewriter"
 import { useState, useEffect } from "react"
 
 export function TitleSection() {
