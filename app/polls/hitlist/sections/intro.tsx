@@ -52,7 +52,7 @@ export function IntroSection() {
                   The
                 </h2>
 
-                <StatusBadge online={true} />
+                <StatusBadge />
               </div>
 
               {/* Justified letters "Hitlist" */}
