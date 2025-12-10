@@ -1,10 +1,14 @@
-import React from "react"
+"use client"
 
-type StatusBadgeProps = {
-  online: boolean;
-};
+import React, { useEffect, useState } from "react"
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({ online }) => {
+export default function StatusBadge() {
+  const [online, setOnline] = useState(false)
+
+  useEffect(() => {
+    setOnline(true)
+  }, [])
+
   return (
     <div
       className={[
@@ -13,15 +17,13 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ online }) => {
         "h-[45px] md:h-[60px]",
         "rounded-full text-xl md:text-3xl font-medium",
         "transition-all duration-300",
-        "backdrop-blur-md border bg-white dark:bg-black border-white/20",
+        "backdrop-blur-md border bg-white dark:bg-black",
         online
-            ? "text-green-600 border-green-500/60 shadow-[0_0_40px_rgba(0,200,0,0.5),_0_0_50px_rgba(0,200,0,0.35)]"
-            : "text-red-600 border-red-500/60 shadow-[0_0_40px_rgba(200,0,0,0.5),_0_0_50px_rgba(200,0,0,0.35)]"
+          ? "text-green-400 border-green-500/60 shadow-[0_0_40px_rgba(0,200,0,0.55),_0_0_60px_rgba(0,200,0,0.35)]"
+          : "text-red-500 border-red-500/60 shadow-[0_0_40px_rgba(200,0,0,0.55),_0_0_60px_rgba(200,0,0,0.35)]"
       ].join(" ")}
     >
       {online ? "Currently online" : "Currently offline"}
     </div>
-  );
-};
-
-export default StatusBadge;
+  )
+}
