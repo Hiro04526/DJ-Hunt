@@ -19,7 +19,7 @@ type DJ = {
   voiceover: string
 }
 
-const VOTING_START = new Date("2025-12-13T09:00:00+08:00").getTime()
+const VOTING_START = new Date("2025-12-13T20:00:00+08:00").getTime()
 const VOTING_END   = new Date("2025-12-16T18:00:00+08:00").getTime()
 
 export function DJSection() {
