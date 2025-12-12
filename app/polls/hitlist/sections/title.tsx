@@ -5,12 +5,11 @@ import { motion } from "framer-motion"
 import StatusBadge from "@/components/hitlist/status-badge"
 import Playlist from "@/components/hitlist/playlist"
 
-export function IntroSection() {
+export function TitleSection() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => setMounted(true), [])
 
-  // Prevent hydration issues with theme / layout
   if (!mounted) {
     return (
       <section
@@ -30,7 +29,6 @@ export function IntroSection() {
     >
       {/* Background */}
       <div className="absolute inset-0 z-0">
-        {/* Opposite-theme background like TitleSection */}
         <div className="absolute inset-0 transition-colors duration-500 bg-black dark:bg-white" />
 
         {/* Vinyl Background Elements */}
@@ -107,4 +105,4 @@ export function IntroSection() {
   )
 }
 
-export default IntroSection
+export default TitleSection
