@@ -135,16 +135,15 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
             <span className="text-sm">
               Voting as <strong>{user.email}</strong>
             </span>
-            <span className="opacity-40">•</span>
             <button
               onClick={() => {
                 setUser(null)
                 setSelected([])
                 setSavedVotes([])
               }}
-              className="text-xs underline hover:no-underline opacity-80"
+              className="text-sm underline hover:no-underline opacity-80"
             >
-              Sign out
+              [Sign out]
             </button>
           </div>
 
