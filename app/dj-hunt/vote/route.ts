@@ -3,58 +3,70 @@ import { OAuth2Client } from "google-auth-library"
 import { createClient } from "@supabase/supabase-js"
 
 const googleClient = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID)
-
 const supabaseAdmin = createClient(
   process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! 
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
+
+// Helper to verify Google Token
+async function getEmailFromToken(token: string) {
+  const ticket = await googleClient.verifyIdToken({
+    idToken: token,
+    audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+  })
+  return ticket.getPayload()?.email
+}
+
+export async function GET(request: Request) {
+  try {
+    const authHeader = request.headers.get("Authorization")
+    const token = authHeader?.split(" ")[1]
+
+    if (!token) return NextResponse.json({ error: "No token provided" }, { status: 401 })
+
+    const email = await getEmailFromToken(token)
+    if (!email) return NextResponse.json({ error: "Invalid token" }, { status: 401 })
+
+    const { data } = await supabaseAdmin
+      .from("votes")
+      .select("dj_id")
+      .eq("email", email)
+
+    const votedIds = data?.map((row) => row.dj_id) || []
+    
+    return NextResponse.json({ votedIds })
+
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to fetch votes" }, { status: 500 })
+  }
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
     const { userToken, djIds } = body
 
-    if (!userToken || !djIds || djIds.length === 0) {
+    if (!userToken || !djIds) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 })
     }
 
-    const ticket = await googleClient.verifyIdToken({
-      idToken: userToken,
-      audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-    })
-    const payload = ticket.getPayload()
-    const email = payload?.email
+    const email = await getEmailFromToken(userToken)
+    if (!email) return NextResponse.json({ error: "Invalid token" }, { status: 401 })
+    
+    await supabaseAdmin.from("votes").delete().eq("email", email)
 
-    if (!email) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 })
+    if (djIds.length > 0) {
+      const rowsToInsert = djIds.map((id: number) => ({
+        email: email,
+        dj_id: id,
+        created_at: new Date().toISOString(),
+      }))
+
+      const { error } = await supabaseAdmin.from("votes").insert(rowsToInsert)
+      if (error) throw error
     }
 
-    const { data: existingVotes } = await supabaseAdmin
-      .from("votes")
-      .select("id")
-      .eq("email", email)
-      .limit(1)
-
-    if (existingVotes && existingVotes.length > 0) {
-      return NextResponse.json({ message: "You have already voted!" }, { status: 400 })
-    }
-
-    const rowsToInsert = djIds.map((id: number) => ({
-      email: email,
-      dj_id: id,
-      created_at: new Date().toISOString(),
-    }))
-
-    const { error: insertError } = await supabaseAdmin
-      .from("votes")
-      .insert(rowsToInsert)
-
-    if (insertError) {
-      console.error("Supabase Error:", insertError)
-      return NextResponse.json({ error: "Database error" }, { status: 500 })
-    }
-
-    return NextResponse.json({ message: "Votes submitted successfully!" })
+    return NextResponse.json({ message: "Votes updated successfully!" })
 
   } catch (error: any) {
     console.error("Server Error:", error)
