@@ -72,7 +72,7 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
 
     setLoading(true)
     try {
-      const res = await fetch("/api/vote", {
+      const res = await fetch("/dj-hunt/vote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, djIds: selected }),
