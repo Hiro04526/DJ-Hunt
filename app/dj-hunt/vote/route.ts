@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js"
 const googleClient = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID)
 
 const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY! 
 )
 
