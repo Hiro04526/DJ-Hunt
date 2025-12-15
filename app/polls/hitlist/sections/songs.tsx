@@ -1,23 +1,24 @@
 "use client"
 
 import Script from "next/script"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react" // Added useRef
 import { toast } from "sonner" 
 
-// Interface matching your DB structure
 interface Song {
   id: number
   title: string
   artist: string
-  image_url?: string // Optional
+  image_url?: string
 }
 
 export default function SongsSection() {
   const [user, setUser] = useState<{ email: string; token: string } | null>(null)
   const [ready, setReady] = useState(false)
   
-  // State
-  const [songs, setSongs] = useState<Song[]>([]) // Stores fetched songs
+  // Use a Ref for the button instead of getElementById (Fixes GSI Error)
+  const googleBtnRef = useRef<HTMLDivElement>(null)
+  
+  const [songs, setSongs] = useState<Song[]>([]) 
   const [selected, setSelected] = useState<number[]>([])
   const [hasVoted, setHasVoted] = useState(false)
   const [status, setStatus] = useState({ 
@@ -39,61 +40,69 @@ export default function SongsSection() {
     }
   }
 
+  // FIXED: Safer Google Button Initialization
   useEffect(() => {
-    if (ready && !user) {
-      // @ts-ignore
-      window.google?.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-        callback: handleToken,
-      })
-      // @ts-ignore
-      window.google?.accounts.id.renderButton(document.getElementById("gbtn"), {
-        theme: "outline", size: "large", shape: "pill",
-      })
+    // Only run if script is ready, user is NOT logged in, and the div exists
+    if (ready && !user && googleBtnRef.current) {
+      try {
+        // @ts-ignore
+        window.google?.accounts.id.initialize({
+          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+          callback: handleToken,
+        })
+        // @ts-ignore
+        window.google?.accounts.id.renderButton(googleBtnRef.current, {
+          theme: "outline", size: "large", shape: "pill",
+        })
+      } catch (e) {
+        console.error("GSI Error:", e)
+      }
     }
   }, [ready, user])
 
-  // 2. Fetch Status, Songs & Votes
+  // 2. Fetch Status
   useEffect(() => {
     async function fetchStatus() {
       try {
         const headers: any = {}
         if (user?.token) headers.Authorization = `Bearer ${user.token}`
 
-        const res = await fetch("/api/hitlist", { headers })
+        const res = await fetch("/polls/hitlist/vote", { headers })
+        
+        // FIXED: Handle 404 or Non-JSON errors gracefully
+        const contentType = res.headers.get("content-type")
+        if (!contentType || !contentType.includes("application/json")) {
+           throw new Error("API not found. Check file path: app/polls/hitlist/vote/route.ts")
+        }
+
         const data = await res.json()
 
-        // Handle Closed State
         if (data.isOpen === false) {
-          setStatus({ 
-            isOpen: false, 
-            loading: false, 
-            message: data.message 
-          })
+          setStatus({ isOpen: false, loading: false, message: data.message })
           return
         }
 
-        // Handle Open State: Set Songs and Vote Status
         setStatus({ isOpen: true, loading: false, message: "" })
         
-        if (data.songs) {
-          setSongs(data.songs)
-        }
-
+        if (data.songs) setSongs(data.songs)
         if (data.votedIds && data.votedIds.length > 0) {
           setSelected(data.votedIds)
           setHasVoted(true)
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error(error)
-        setStatus(prev => ({ ...prev, loading: false }))
+        setStatus(prev => ({ 
+           ...prev, 
+           loading: false, 
+           // Show the actual error on screen so you know what's wrong
+           message: error.message || "Connection failed" 
+        }))
       }
     }
 
     fetchStatus()
   }, [user])
 
-  // 3. Toggle Selection
   const toggle = (id: number) => {
     if (hasVoted || !status.isOpen) return
     setSelected((prev) => 
@@ -101,7 +110,6 @@ export default function SongsSection() {
     )
   }
 
-  // 4. Submit Votes
   const submit = async () => {
     if (!user) return toast.error("Please sign in first")
     if (selected.length === 0) return toast.error("Select at least one song")
@@ -137,28 +145,29 @@ export default function SongsSection() {
         onReady={() => setReady(true)}
       />
 
-      {/* Header */}
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold mb-2">The Hitlist Vote</h1>
         
-        {!status.loading && !status.isOpen ? (
-           <div className="inline-block bg-red-100 text-red-700 px-4 py-2 rounded-full font-medium text-sm">
-             {status.message}
+        {!status.loading && (
+           <div className={`inline-block px-4 py-2 rounded-full font-medium text-sm ${!status.isOpen ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-700"}`}>
+             {status.message || (hasVoted ? "Voting Closed. Thanks for participating!" : "Select your favorites.")}
            </div>
-        ) : (
-           <p className="text-gray-600">
-             {hasVoted ? "Voting Closed. Thanks for participating!" : "Select your favorites for the week."}
-           </p>
         )}
       </div>
 
-      {/* Loading State */}
       {status.loading && (
         <div className="py-20 text-center text-gray-400 animate-pulse">Checking schedule...</div>
       )}
 
+      {/* ERROR State (e.g. API 404) */}
+      {!status.loading && status.message.includes("API not found") && (
+         <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-center">
+            <strong>Configuration Error:</strong> {status.message}
+         </div>
+      )}
+
       {/* CLOSED State */}
-      {!status.loading && !status.isOpen && (
+      {!status.loading && !status.isOpen && !status.message.includes("API not found") && (
         <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
            <p className="text-gray-500">Please check back during the voting window.</p>
         </div>
@@ -167,10 +176,10 @@ export default function SongsSection() {
       {/* OPEN State */}
       {!status.loading && status.isOpen && (
         <>
-          {/* Auth Section */}
           {!user ? (
             <div className="flex flex-col items-center justify-center py-8 mb-8 bg-gray-50 rounded-xl border border-gray-200">
-              <div id="gbtn" className="min-h-[40px]" />
+              {/* FIXED: Using Ref */}
+              <div ref={googleBtnRef} className="min-h-[40px]" />
               <p className="mt-4 text-sm text-gray-500">Sign in to cast your vote</p>
             </div>
           ) : (
@@ -185,12 +194,10 @@ export default function SongsSection() {
              </div>
           )}
 
-          {/* Song Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-24">
             {songs.map((song) => {
               const active = selected.includes(song.id)
               const locked = hasVoted || !user
-              
               return (
                 <button
                   key={song.id}
@@ -218,22 +225,18 @@ export default function SongsSection() {
                 </button>
               )
             })}
-            
-            {/* Fallback if no songs returned */}
-            {songs.length === 0 && (
+             {songs.length === 0 && (
                <div className="col-span-full text-center py-12 text-gray-400">
-                  No songs found in database.
+                  {status.message || "No songs found."}
                </div>
             )}
           </div>
 
-          {/* Sticky Footer */}
           <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-lg z-20">
              <div className="max-w-5xl mx-auto flex justify-between items-center">
                 <div className="text-sm font-medium text-gray-600">
                     {selected.length} Selected
                 </div>
-                
                 {!user ? (
                    <span className="text-sm text-gray-400">Sign in above to submit</span>
                 ) : (

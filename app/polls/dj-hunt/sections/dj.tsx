@@ -41,9 +41,9 @@ export function DJSection() {
   useEffect(() => {
     async function fetchDJs() {
       try {
-        const res = await fetch("/dj-hunt/djs", { cache: "no-store" })
+        const res = await fetch("/polls/dj-hunt/djs", { cache: "no-store" })
         const result = await res.json()
-        console.log("GET /dj-hunt/djs →", result)
+        console.log("GET /polls/dj-hunt/djs →", result)
 
         if (res.ok && Array.isArray(result.data)) {
           setDJs(result.data as DJ[])
