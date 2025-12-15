@@ -58,6 +58,8 @@
   .font-secondary { font-family: var(--font-secondary), ui-sans-serif, system-ui}
   .bg-background { background-color: hsl(var(--background)) }
   .text-foreground { color: hsl(var(--foreground)) }
+  .text-fluid-the { font-size: clamp(1.5rem, 6vw, 6.3rem) }
+  .text-fluid-hitlist { font-size: clamp(4.5rem, 12vw, 18rem) }
 }
 
 .animate-gradient {
@@ -89,4 +91,105 @@
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;         
+}
+
+/* ===============================
+   VINYL BACKGROUND + ANIMATION
+   =============================== */
+
+@keyframes vinyl-spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@layer utilities {
+  /* Spinning Vinyl Rings Background */
+  .vinyl-rings {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150vmax;
+    height: 150vmax;
+
+    background: repeating-radial-gradient(
+        circle,
+        #111 0px,
+        rgb(71, 71, 71) 8px,
+        #000 4px,
+        #000 10px
+      ),
+      radial-gradient(
+        circle at 30% 30%,
+        rgba(255, 255, 255, 0.08),
+        transparent 70%
+      );
+
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: vinyl-spin 60s linear infinite;
+    opacity: 0.2;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Vinyl PNG Image */
+  .vinyl-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 450px;
+    height: 450px;
+
+    background: url("/assets/Raffy.png") no-repeat center/contain;
+    border-radius: 50%;
+
+    /* IMPORTANT: No transform besides the one in animation */
+    transform: translate(-50%, -50%);
+
+    animation: vinyl-spin 60s linear infinite;
+
+    filter: drop-shadow(0 0 8px rgba(255, 0, 150, 0.8))
+      drop-shadow(0 0 13px rgba(0, 200, 255, 0.6))
+      drop-shadow(0 0 23px rgba(255, 255, 0, 0.4));
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Vinyl Center Hole */
+  .vinyl-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #000;
+    border: 2px solid #666;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    pointer-events: none;
+  }
+}
+
+.playlist-container {
+  background: transparent;
+  font-family: "Inter", sans-serif;
+}
+
+@media (max-width: 1024px) {
+  .vinyl-image {
+    width: 400px;
+    height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .vinyl-image {
+    width: 350px;
+    height: 350px;
+  }
 }
