@@ -1,7 +1,7 @@
 "use client"
 
 import Script from "next/script"
-import { useEffect, useState, useRef } from "react" // Added useRef
+import { useEffect, useState, useRef } from "react"
 import { toast } from "sonner" 
 
 interface Song {
@@ -9,13 +9,12 @@ interface Song {
   title: string
   artist: string
   image_url?: string
+  spotify_id?: string
 }
 
 export default function SongsSection() {
   const [user, setUser] = useState<{ email: string; token: string } | null>(null)
   const [ready, setReady] = useState(false)
-  
-  // Use a Ref for the button instead of getElementById (Fixes GSI Error)
   const googleBtnRef = useRef<HTMLDivElement>(null)
   
   const [songs, setSongs] = useState<Song[]>([]) 
@@ -28,7 +27,7 @@ export default function SongsSection() {
   })
   const [submitting, setSubmitting] = useState(false)
 
-  // 1. Google Auth Logic
+  // --- 1. Google Auth ---
   function handleToken({ credential }: { credential: string }) {
     try {
       const payload = JSON.parse(
@@ -40,9 +39,7 @@ export default function SongsSection() {
     }
   }
 
-  // FIXED: Safer Google Button Initialization
   useEffect(() => {
-    // Only run if script is ready, user is NOT logged in, and the div exists
     if (ready && !user && googleBtnRef.current) {
       try {
         // @ts-ignore
@@ -60,7 +57,7 @@ export default function SongsSection() {
     }
   }, [ready, user])
 
-  // 2. Fetch Status
+  // --- 2. Fetch Data ---
   useEffect(() => {
     async function fetchStatus() {
       try {
@@ -69,7 +66,6 @@ export default function SongsSection() {
 
         const res = await fetch("/polls/hitlist/vote", { headers })
         
-        // FIXED: Handle 404 or Non-JSON errors gracefully
         const contentType = res.headers.get("content-type")
         if (!contentType || !contentType.includes("application/json")) {
            throw new Error("API not found. Check file path: app/polls/hitlist/vote/route.ts")
@@ -94,7 +90,6 @@ export default function SongsSection() {
         setStatus(prev => ({ 
            ...prev, 
            loading: false, 
-           // Show the actual error on screen so you know what's wrong
            message: error.message || "Connection failed" 
         }))
       }
@@ -103,6 +98,7 @@ export default function SongsSection() {
     fetchStatus()
   }, [user])
 
+  // --- 3. Actions ---
   const toggle = (id: number) => {
     if (hasVoted || !status.isOpen) return
     setSelected((prev) => 
@@ -116,7 +112,7 @@ export default function SongsSection() {
 
     setSubmitting(true)
     try {
-      const res = await fetch("/api/hitlist", {
+      const res = await fetch("/polls/hitlist/vote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -137,128 +133,190 @@ export default function SongsSection() {
     }
   }
 
+  // --- 4. Render Helper (The Song Card) ---
+  const renderSongCard = (song: Song, index: number) => {
+    const isSelected = selected.includes(song.id)
+    const isDisabled = hasVoted || !user
+
+    return (
+      <div 
+        key={song.id} 
+        className={`
+          relative bg-[#2d3748] rounded-2xl p-6 text-center
+          shadow-[0_10px_25px_rgba(0,0,0,0.3)] transition-all duration-300 border-2 border-transparent
+          ${!isDisabled ? 'hover:-translate-y-1 hover:shadow-[0_15px_35px_rgba(0,0,0,0.4)] hover:border-[#68d391]' : ''}
+        `}
+      >
+        {/* Rank Badge */}
+        <div className="bg-[#68d391] text-[#1a202c] px-6 py-3 rounded-full font-bold text-lg inline-block mb-6">
+          #{index + 1}
+        </div>
+
+        {/* Content */}
+        {song.spotify_id ? (
+          <div className="mb-4">
+            <iframe
+              src={`https://open.spotify.com/embed/track/${song.spotify_id}?utm_source=generator&theme=0`}
+              width="100%"
+              height="152"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+              title={song.title}
+              className="rounded-lg border-0"
+            />
+          </div>
+        ) : (
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-gray-100 mb-1">{song.title}</h3>
+            <p className="text-[#68d391] font-medium">{song.artist}</p>
+          </div>
+        )}
+
+        {/* Vote Button */}
+        <div className="flex justify-center mt-2">
+          <button
+            onClick={() => user && toggle(song.id)}
+            disabled={isDisabled}
+            className={`
+              flex items-center justify-center gap-2 py-2 px-6 min-w-[120px]
+              border-2 rounded-lg text-sm font-semibold transition-all duration-300
+              ${isSelected 
+                ? 'bg-[#68d391] border-[#68d391] text-[#1a202c]' 
+                : 'bg-white border-gray-200 text-gray-800 hover:bg-[#68d391] hover:text-[#1a202c] hover:border-[#68d391] hover:-translate-y-0.5'
+              }
+              ${isDisabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
+            `}
+          >
+            {isSelected ? (
+              <>
+                <span>Selected</span>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </>
+            ) : 'Vote'}
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // --- 5. Loading / Error States ---
+  if (status.loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#1a202c] to-[#2d3748] p-8 flex flex-col items-center">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-50 mb-2 drop-shadow-md text-center">
+          Green Giant FM Hitlist
+        </h1>
+        <p className="text-xl text-[#68d391] animate-pulse">Loading songs...</p>
+      </div>
+    )
+  }
+
+  if (status.message && !status.isOpen && !hasVoted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#1a202c] to-[#2d3748] p-8 flex flex-col items-center">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-50 mb-2 drop-shadow-md text-center">
+          Green Giant FM Hitlist
+        </h1>
+        <div className="mt-8 bg-red-900/20 border border-red-500/50 text-red-200 px-6 py-4 rounded-xl">
+           {status.message}
+        </div>
+      </div>
+    )
+  }
+
+  // Split songs for 2-column Layout
+  const leftColumnSongs = songs.filter((_, index) => index % 2 === 0)
+  const rightColumnSongs = songs.filter((_, index) => index % 2 === 1)
+
+  // --- 6. Main Render ---
   return (
-    <div className="w-full max-w-5xl mx-auto p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#1a202c] to-[#2d3748] p-4 pb-20 relative z-10">
       <Script
         src="https://accounts.google.com/gsi/client"
         async defer
         onReady={() => setReady(true)}
       />
+      
+      {/* Centered Width Container */}
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-50 mb-3 drop-shadow-lg">
+            Green Giant FM Hitlist
+          </h1>
+          <p className="text-xl text-[#68d391] font-medium">
+            {hasVoted ? "Thanks for voting!" : "Vote for your favorites!"}
+          </p>
+        </div>
 
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold mb-2">The Hitlist Vote</h1>
-        
-        {!status.loading && (
-           <div className={`inline-block px-4 py-2 rounded-full font-medium text-sm ${!status.isOpen ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-700"}`}>
-             {status.message || (hasVoted ? "Voting Closed. Thanks for participating!" : "Select your favorites.")}
+        {/* Auth Section */}
+        {!user && (
+          <div className="flex flex-col items-center justify-center mb-10">
+            <div className="bg-white/10 p-8 rounded-xl border border-white/20 backdrop-blur-sm shadow-xl">
+                <div ref={googleBtnRef} className="min-h-[44px]" />
+                <p className="mt-4 text-sm text-gray-300 text-center">Sign in with DLSU Email to vote</p>
+            </div>
+          </div>
+        )}
+
+        {user && (
+          <div className="text-center mb-8">
+            <button 
+              onClick={() => { setUser(null); setSelected([]); setHasVoted(false); }}
+              className="text-sm text-gray-400 hover:text-white underline transition-colors"
+            >
+              Sign out {user.email}
+            </button>
+          </div>
+        )}
+
+        {/* Songs Grid (Masonry-style 2 Columns) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            {/* Left Column */}
+            <div className="flex flex-col gap-6">
+              {leftColumnSongs.map((song, index) => renderSongCard(song, index * 2))}
+            </div>
+            
+            {/* Right Column */}
+            <div className="flex flex-col gap-6">
+              {rightColumnSongs.map((song, index) => renderSongCard(song, (index * 2) + 1))}
+            </div>
+        </div>
+
+        {/* Inline Submit Section (Footer removed) */}
+        {user && !hasVoted && (
+          <div className="flex flex-col items-center justify-center pt-8 border-t border-gray-600/50">
+             <div className="text-lg font-medium text-gray-200 mb-4">
+                {selected.length} Song{selected.length !== 1 && 's'} Selected
+             </div>
+             
+             <button
+                onClick={submit}
+                disabled={submitting || selected.length === 0}
+                className={`
+                  px-10 py-3 rounded-full font-bold text-lg text-white shadow-xl transition-all transform hover:-translate-y-1
+                  ${selected.length === 0
+                    ? "bg-gray-600 opacity-50 cursor-not-allowed"
+                    : "bg-[#68d391] hover:bg-[#5bc184] text-[#1a202c] shadow-[0_4px_14px_0_rgba(104,211,145,0.39)]"
+                  }
+                `}
+             >
+                {submitting ? "Submitting..." : "Submit Votes"}
+             </button>
+          </div>
+        )}
+
+        {/* Success Message After Voting */}
+        {hasVoted && (
+           <div className="text-center pt-8 border-t border-gray-600/50">
+              <div className="inline-block bg-[#68d391]/20 text-[#68d391] border border-[#68d391]/50 px-8 py-4 rounded-xl text-lg font-semibold">
+                 Votes Submitted Successfully!
+              </div>
            </div>
         )}
+
       </div>
-
-      {status.loading && (
-        <div className="py-20 text-center text-gray-400 animate-pulse">Checking schedule...</div>
-      )}
-
-      {/* ERROR State (e.g. API 404) */}
-      {!status.loading && status.message.includes("API not found") && (
-         <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-center">
-            <strong>Configuration Error:</strong> {status.message}
-         </div>
-      )}
-
-      {/* CLOSED State */}
-      {!status.loading && !status.isOpen && !status.message.includes("API not found") && (
-        <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
-           <p className="text-gray-500">Please check back during the voting window.</p>
-        </div>
-      )}
-
-      {/* OPEN State */}
-      {!status.loading && status.isOpen && (
-        <>
-          {!user ? (
-            <div className="flex flex-col items-center justify-center py-8 mb-8 bg-gray-50 rounded-xl border border-gray-200">
-              {/* FIXED: Using Ref */}
-              <div ref={googleBtnRef} className="min-h-[40px]" />
-              <p className="mt-4 text-sm text-gray-500">Sign in to cast your vote</p>
-            </div>
-          ) : (
-             <div className="flex justify-between items-center mb-6 px-4 py-3 bg-green-50 text-green-800 rounded-lg">
-                <span className="text-sm">Voting as <strong>{user.email}</strong></span>
-                <button 
-                  onClick={() => { setUser(null); setSelected([]); setHasVoted(false); }}
-                  className="text-sm underline hover:no-underline opacity-80"
-                >
-                  Sign out
-                </button>
-             </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-24">
-            {songs.map((song) => {
-              const active = selected.includes(song.id)
-              const locked = hasVoted || !user
-              return (
-                <button
-                  key={song.id}
-                  onClick={() => user && toggle(song.id)}
-                  disabled={locked}
-                  className={`
-                    relative p-4 rounded-xl border text-left transition-all flex items-start gap-3
-                    ${locked ? "cursor-default opacity-80" : "hover:shadow-md cursor-pointer group"}
-                    ${active 
-                      ? "border-green-500 bg-green-50/50 ring-1 ring-green-500" 
-                      : "border-gray-200 bg-white"
-                    }
-                  `}
-                >
-                  <div className={`
-                    flex-shrink-0 w-6 h-6 mt-1 rounded border flex items-center justify-center transition-colors
-                    ${active ? "bg-green-500 border-green-500" : "border-gray-300 group-hover:border-green-400"}
-                  `}>
-                    {active && <span className="text-white text-xs">✓</span>}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 leading-tight">{song.title}</h3>
-                    <p className="text-sm text-gray-500 mt-1">{song.artist}</p>
-                  </div>
-                </button>
-              )
-            })}
-             {songs.length === 0 && (
-               <div className="col-span-full text-center py-12 text-gray-400">
-                  {status.message || "No songs found."}
-               </div>
-            )}
-          </div>
-
-          <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-lg z-20">
-             <div className="max-w-5xl mx-auto flex justify-between items-center">
-                <div className="text-sm font-medium text-gray-600">
-                    {selected.length} Selected
-                </div>
-                {!user ? (
-                   <span className="text-sm text-gray-400">Sign in above to submit</span>
-                ) : (
-                   <button
-                      onClick={submit}
-                      disabled={submitting || hasVoted || selected.length === 0}
-                      className={`
-                          px-8 py-2.5 rounded-full font-semibold text-white transition-all
-                          ${hasVoted 
-                              ? "bg-gray-400 cursor-not-allowed" 
-                              : "bg-green-600 hover:bg-green-700 shadow-lg shadow-green-900/20"
-                          }
-                          disabled:opacity-70
-                      `}
-                   >
-                      {submitting ? "Submitting..." : hasVoted ? "Votes Submitted" : "Submit Votes"}
-                   </button>
-                )}
-             </div>
-          </div>
-        </>
-      )}
     </div>
   )
 }

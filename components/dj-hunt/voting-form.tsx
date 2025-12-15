@@ -34,7 +34,7 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
   useEffect(() => {
     if (user?.token) {
       setFetching(true)
-      fetch("/dj-hunt/vote", {
+      fetch("/polls/dj-hunt/vote", {
         headers: { Authorization: `Bearer ${user.token}` },
       })
         .then((res) => res.json())
@@ -91,7 +91,7 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
 
     setLoading(true)
     try {
-      const res = await fetch("/dj-hunt/vote", {
+      const res = await fetch("/polls/dj-hunt/vote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
