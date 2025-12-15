@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     const email = await getEmailFromToken(userToken)
     if (!email) return NextResponse.json({ error: "Invalid token" }, { status: 401 })
     
-    await supabaseAdmin.from("votes").delete().eq("email", email)
+    await supabaseAdmin.from("DJ Hunt Votes").delete().eq("email", email)
 
     if (djIds.length > 0) {
       const rowsToInsert = djIds.map((id: number) => ({
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
         created_at: new Date().toISOString(),
       }))
 
-      const { error } = await supabaseAdmin.from("votes").insert(rowsToInsert)
+      const { error } = await supabaseAdmin.from("DJ Hunt Votes").insert(rowsToInsert)
       if (error) throw error
     }
 
