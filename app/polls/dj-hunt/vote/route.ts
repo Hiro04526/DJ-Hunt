@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server"
 import { OAuth2Client } from "google-auth-library"
-import { createClient } from "@supabase/supabase-js"
+import { supabaseAdmin as supabaseAdminLib } from "@/lib/server/supabaseAdmin"
 
 const googleClient = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID)
-const supabaseAdmin = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+const supabaseAdmin = supabaseAdminLib
 
 // Helper to verify Google Token
 async function getEmailFromToken(token: string) {
@@ -28,7 +25,7 @@ export async function GET(request: Request) {
     if (!email) return NextResponse.json({ error: "Invalid token" }, { status: 401 })
 
     const { data } = await supabaseAdmin
-      .from("votes")
+      .from("DJ Hunt Votes")
       .select("dj_id")
       .eq("email", email)
 
