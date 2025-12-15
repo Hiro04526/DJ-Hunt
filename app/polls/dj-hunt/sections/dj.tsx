@@ -19,19 +19,31 @@ type DJ = {
   voiceover: string
 }
 
+const VOTING_START = new Date("2025-12-13T20:00:00+08:00").getTime()
+const VOTING_END   = new Date("2025-12-16T18:30:00+08:00").getTime()
+
 export function DJSection() {
   const [selectedDJ, setSelectedDJ] = useState<DJ | null>(null)
   const [DJs, setDJs] = useState<DJ[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isVotingOpen, setIsVotingOpen] = useState(false)
+  const [now, setNow] = useState<number | null>(null)
+
+  useEffect(() => {
+    setNow(Date.now())
+    const id = setInterval(() => setNow(Date.now()), 60_000)
+    return () => clearInterval(id)
+  }, [])
+
+  const isWithinVotingWindow = now !== null && now >= VOTING_START && now <= VOTING_END
 
   useEffect(() => {
     async function fetchDJs() {
       try {
-        const res = await fetch("/polls/dj-hunt/djs", { cache: "no-store" })
+        const res = await fetch("/dj-hunt/djs", { cache: "no-store" })
         const result = await res.json()
-        console.log("GET /polls/dj-hunt/djs →", result)
+        console.log("GET /dj-hunt/djs →", result)
 
         if (res.ok && Array.isArray(result.data)) {
           setDJs(result.data as DJ[])
@@ -142,18 +154,40 @@ export function DJSection() {
           </motion.div>
         </div>
 
-        <Button
-          size="xl"
-          className="
-            px-10 py-5 text-2xl font-extrabold tracking-widest
-            rounded-md bg-[#191919] text-white
-            hover:shadow-[0_0_25px_#00FF84] hover:scale-105
-            transition-all duration-300 dark:bg-white dark:text-black
-          "
-          onClick={() => setIsVotingOpen(true)}
-        >
-          VOTE
-        </Button>
+        <div className="mt-4 mb-8 flex flex-col items-center gap-2">
+          {isWithinVotingWindow ? (
+            <Button
+              size="xl"
+              className="
+                px-10 py-5 text-2xl font-extrabold tracking-widest
+                rounded-md bg-[#191919] text-white
+                hover:shadow-[0_0_25px_#00FF84] hover:scale-105
+                transition-all duration-300 dark:bg-white dark:text-black
+              "
+              onClick={() => setIsVotingOpen(true)}
+            >
+              VOTE
+            </Button>
+          ) : (
+            <>
+              <Button
+                size="xl"
+                disabled
+                className="
+                  px-10 py-5 text-2xl font-extrabold tracking-widest
+                  rounded-md bg-neutral-700/60 text-neutral-300
+                  dark:bg-neutral-300/60 dark:text-neutral-700
+                  cursor-not-allowed
+                "
+              >
+                VOTING CLOSED
+              </Button>
+              <p className="text-sm text-white/80 dark:text-neutral-200/80 text-center">
+                Voting is open from Dec 13, 2025 – Dec 16, 2025.
+              </p>
+            </>
+          )}
+        </div>
       </motion.div>
 
       {/* Details Modal */}
