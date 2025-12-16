@@ -15,6 +15,8 @@ interface Song {
 export default function SongsSection() {
   const [user, setUser] = useState<{ email: string; token: string } | null>(null)
   const [ready, setReady] = useState(false)
+  
+  // We use this Ref to target the div inside the Modal
   const googleBtnRef = useRef<HTMLDivElement>(null)
   
   const [songs, setSongs] = useState<Song[]>([]) 
@@ -26,6 +28,9 @@ export default function SongsSection() {
     message: "" 
   })
   const [submitting, setSubmitting] = useState(false)
+  
+  // New State: Controls the visibility of the login popup
+  const [showLoginModal, setShowLoginModal] = useState(false)
 
   // --- 1. Google Auth ---
   function handleToken({ credential }: { credential: string }) {
@@ -34,14 +39,20 @@ export default function SongsSection() {
         atob(credential.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))
       )
       setUser({ email: payload.email, token: credential })
+      setShowLoginModal(false) // Close modal on success
+      toast.success(`Signed in as ${payload.email}`)
     } catch {
       toast.error("Failed to sign in")
     }
   }
 
+  // Effect: Render Google Button ONLY when the Modal is open
   useEffect(() => {
-    if (ready && !user && googleBtnRef.current) {
+    if (ready && !user && showLoginModal && googleBtnRef.current) {
       try {
+        // Clear previous buttons if any to prevent duplicates
+        googleBtnRef.current.innerHTML = ""
+        
         // @ts-ignore
         window.google?.accounts.id.initialize({
           client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
@@ -55,7 +66,7 @@ export default function SongsSection() {
         console.error("GSI Error:", e)
       }
     }
-  }, [ready, user])
+  }, [ready, user, showLoginModal]) // Re-run when modal opens
 
   // --- 2. Fetch Data ---
   useEffect(() => {
@@ -65,10 +76,9 @@ export default function SongsSection() {
         if (user?.token) headers.Authorization = `Bearer ${user.token}`
 
         const res = await fetch("/polls/hitlist/vote", { headers })
-        
         const contentType = res.headers.get("content-type")
         if (!contentType || !contentType.includes("application/json")) {
-           throw new Error("API not found. Check file path: app/polls/hitlist/vote/route.ts")
+           throw new Error("API error")
         }
 
         const data = await res.json()
@@ -79,22 +89,15 @@ export default function SongsSection() {
         }
 
         setStatus({ isOpen: true, loading: false, message: "" })
-        
         if (data.songs) setSongs(data.songs)
         if (data.votedIds && data.votedIds.length > 0) {
           setSelected(data.votedIds)
           setHasVoted(true)
         }
       } catch (error: any) {
-        console.error(error)
-        setStatus(prev => ({ 
-           ...prev, 
-           loading: false, 
-           message: error.message || "Connection failed" 
-        }))
+        setStatus(prev => ({ ...prev, loading: false, message: error.message || "Connection failed" }))
       }
     }
-
     fetchStatus()
   }, [user])
 
@@ -107,7 +110,12 @@ export default function SongsSection() {
   }
 
   const submit = async () => {
-    if (!user) return toast.error("Please sign in first")
+    // 1. If not logged in, trigger the Modal
+    if (!user) {
+        setShowLoginModal(true)
+        return
+    }
+
     if (selected.length === 0) return toast.error("Select at least one song")
 
     setSubmitting(true)
@@ -133,10 +141,10 @@ export default function SongsSection() {
     }
   }
 
-  // --- 4. Render Helper (The Song Card) ---
+  // --- 4. Render Helper ---
   const renderSongCard = (song: Song, index: number) => {
     const isSelected = selected.includes(song.id)
-    const isDisabled = hasVoted || !user
+    const isDisabled = hasVoted 
 
     return (
       <div 
@@ -147,22 +155,16 @@ export default function SongsSection() {
           ${!isDisabled ? 'hover:-translate-y-1 hover:shadow-[0_15px_35px_rgba(0,0,0,0.4)] hover:border-[#68d391]' : ''}
         `}
       >
-        {/* Rank Badge */}
         <div className="bg-[#68d391] text-[#1a202c] px-6 py-3 rounded-full font-bold text-lg inline-block mb-6">
           #{index + 1}
         </div>
 
-        {/* Content */}
         {song.spotify_id ? (
           <div className="mb-4">
             <iframe
               src={`https://open.spotify.com/embed/track/${song.spotify_id}?utm_source=generator&theme=0`}
-              width="100%"
-              height="152"
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-              title={song.title}
-              className="rounded-lg border-0"
+              width="100%" height="152" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy" title={song.title} className="rounded-lg border-0"
             />
           </div>
         ) : (
@@ -172,28 +174,19 @@ export default function SongsSection() {
           </div>
         )}
 
-        {/* Vote Button */}
         <div className="flex justify-center mt-2">
           <button
-            onClick={() => user && toggle(song.id)}
+            onClick={() => toggle(song.id)}
             disabled={isDisabled}
             className={`
               flex items-center justify-center gap-2 py-2 px-6 min-w-[120px]
               border-2 rounded-lg text-sm font-semibold transition-all duration-300
-              ${isSelected 
-                ? 'bg-[#68d391] border-[#68d391] text-[#1a202c]' 
-                : 'bg-white border-gray-200 text-gray-800 hover:bg-[#68d391] hover:text-[#1a202c] hover:border-[#68d391] hover:-translate-y-0.5'
-              }
+              ${isSelected ? 'bg-[#68d391] border-[#68d391] text-[#1a202c]' : 'bg-white border-gray-200 text-gray-800 hover:bg-[#68d391] hover:text-[#1a202c] hover:border-[#68d391] hover:-translate-y-0.5'}
               ${isDisabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}
             `}
           >
             {isSelected ? (
-              <>
-                <span>Selected</span>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              </>
+              <><span>Selected</span><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg></>
             ) : 'Vote'}
           </button>
         </div>
@@ -201,13 +194,11 @@ export default function SongsSection() {
     )
   }
 
-  // --- 5. Loading / Error States ---
+  // --- 5. Loading State ---
   if (status.loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#1a202c] to-[#2d3748] p-8 flex flex-col items-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-50 mb-2 drop-shadow-md text-center">
-          Green Giant FM Hitlist
-        </h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-50 mb-2 drop-shadow-md text-center">Green Giant FM Hitlist</h1>
         <p className="text-xl text-[#68d391] animate-pulse">Loading songs...</p>
       </div>
     )
@@ -216,49 +207,50 @@ export default function SongsSection() {
   if (status.message && !status.isOpen && !hasVoted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#1a202c] to-[#2d3748] p-8 flex flex-col items-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-50 mb-2 drop-shadow-md text-center">
-          Green Giant FM Hitlist
-        </h1>
-        <div className="mt-8 bg-red-900/20 border border-red-500/50 text-red-200 px-6 py-4 rounded-xl">
-           {status.message}
-        </div>
+         <div className="mt-8 bg-red-900/20 border border-red-500/50 text-red-200 px-6 py-4 rounded-xl">{status.message}</div>
       </div>
     )
   }
 
-  // Split songs for 2-column Layout
   const leftColumnSongs = songs.filter((_, index) => index % 2 === 0)
   const rightColumnSongs = songs.filter((_, index) => index % 2 === 1)
 
   // --- 6. Main Render ---
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1a202c] to-[#2d3748] p-4 pb-20 relative z-10">
-      <Script
-        src="https://accounts.google.com/gsi/client"
-        async defer
-        onReady={() => setReady(true)}
-      />
+      <Script src="https://accounts.google.com/gsi/client" async defer onReady={() => setReady(true)} />
       
-      {/* Centered Width Container */}
+      {/* Login Modal Overlay */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+           <div className="bg-[#2d3748] border border-gray-600 p-8 rounded-2xl shadow-2xl max-w-sm w-full relative">
+              <button 
+                onClick={() => setShowLoginModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+              
+              <div className="text-center">
+                 <h2 className="text-2xl font-bold text-white mb-2">Almost there!</h2>
+                 <p className="text-gray-300 mb-6">Sign in with your DLSU Email to submit your votes.</p>
+                 
+                 {/* Google Button Target */}
+                 <div className="flex justify-center min-h-[50px]">
+                    <div ref={googleBtnRef} />
+                 </div>
+              </div>
+           </div>
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-50 mb-3 drop-shadow-lg">
-            Green Giant FM Hitlist
-          </h1>
-          <p className="text-xl text-[#68d391] font-medium">
-            {hasVoted ? "Thanks for voting!" : "Vote for your favorites!"}
-          </p>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-50 mb-3 drop-shadow-lg">Green Giant FM Hitlist</h1>
+          <p className="text-xl text-[#68d391] font-medium">{hasVoted ? "Thanks for voting!" : "Vote for your favorites!"}</p>
         </div>
 
-        {/* Auth Section */}
-        {!user && (
-          <div className="flex flex-col items-center justify-center mb-10">
-            <div className="bg-white/10 p-8 rounded-xl border border-white/20 backdrop-blur-sm shadow-xl">
-                <div ref={googleBtnRef} className="min-h-[44px]" />
-                <p className="mt-4 text-sm text-gray-300 text-center">Sign in with DLSU Email to vote</p>
-            </div>
-          </div>
-        )}
+        {/* Note: Top Auth Section Removed per request */}
 
         {user && (
           <div className="text-center mb-8">
@@ -271,43 +263,27 @@ export default function SongsSection() {
           </div>
         )}
 
-        {/* Songs Grid (Masonry-style 2 Columns) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {/* Left Column */}
-            <div className="flex flex-col gap-6">
-              {leftColumnSongs.map((song, index) => renderSongCard(song, index * 2))}
-            </div>
-            
-            {/* Right Column */}
-            <div className="flex flex-col gap-6">
-              {rightColumnSongs.map((song, index) => renderSongCard(song, (index * 2) + 1))}
-            </div>
+            <div className="flex flex-col gap-6">{leftColumnSongs.map((song, index) => renderSongCard(song, index * 2))}</div>
+            <div className="flex flex-col gap-6">{rightColumnSongs.map((song, index) => renderSongCard(song, (index * 2) + 1))}</div>
         </div>
 
-        {/* Inline Submit Section (Footer removed) */}
-        {user && !hasVoted && (
+        {!hasVoted && selected.length > 0 && (
           <div className="flex flex-col items-center justify-center pt-8 border-t border-gray-600/50">
-             <div className="text-lg font-medium text-gray-200 mb-4">
-                {selected.length} Song{selected.length !== 1 && 's'} Selected
-             </div>
-             
+             <div className="text-lg font-medium text-gray-200 mb-4">{selected.length} Song{selected.length !== 1 && 's'} Selected</div>
              <button
                 onClick={submit}
-                disabled={submitting || selected.length === 0}
+                disabled={submitting}
                 className={`
                   px-10 py-3 rounded-full font-bold text-lg text-white shadow-xl transition-all transform hover:-translate-y-1
-                  ${selected.length === 0
-                    ? "bg-gray-600 opacity-50 cursor-not-allowed"
-                    : "bg-[#68d391] hover:bg-[#5bc184] text-[#1a202c] shadow-[0_4px_14px_0_rgba(104,211,145,0.39)]"
-                  }
+                  ${selected.length === 0 ? "bg-gray-600 opacity-50 cursor-not-allowed" : "bg-[#68d391] hover:bg-[#5bc184] text-[#1a202c] shadow-[0_4px_14px_0_rgba(104,211,145,0.39)]"}
                 `}
              >
-                {submitting ? "Submitting..." : "Submit Votes"}
+                {submitting ? "Submitting..." : (user ? "Submit Votes" : "Sign In to Submit")}
              </button>
           </div>
         )}
 
-        {/* Success Message After Voting */}
         {hasVoted && (
            <div className="text-center pt-8 border-t border-gray-600/50">
               <div className="inline-block bg-[#68d391]/20 text-[#68d391] border border-[#68d391]/50 px-8 py-4 rounded-xl text-lg font-semibold">
@@ -315,7 +291,6 @@ export default function SongsSection() {
               </div>
            </div>
         )}
-
       </div>
     </div>
   )

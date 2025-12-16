@@ -6,9 +6,9 @@ import { supabaseAdmin as supabaseAdminLib } from "@/lib/server/supabaseAdmin"
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
 // DB Table Names
-const TABLE_VOTES = "hitlist_votes"
-const TABLE_SONGS = "hitlist_songs"
-const ID_COLUMN = "target_id"            
+const TABLE_VOTES = "Hitlist Votes"
+const TABLE_SONGS = "Hitlist Songs"
+const ID_COLUMN = "target_id" 
 
 // ANCHOR: A specific Monday that starts a "Voting Week" (Week 1).
 // This date acts as the mathematical anchor for the alternating schedule.
