@@ -182,9 +182,6 @@ export function DJSection() {
               >
                 VOTING CLOSED
               </Button>
-              <p className="text-sm text-white/80 dark:text-neutral-200/80 text-center">
-                Voting is open from Dec 13, 2025 – Dec 16, 2025.
-              </p>
             </>
           )}
         </div>

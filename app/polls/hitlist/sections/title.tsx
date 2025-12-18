@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import StatusBadge from "@/components/hitlist/status-badge"
 import Playlist from "@/components/hitlist/playlist"
 
-export function TitleSection() {
+export default function TitleSection() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => setMounted(true), [])
@@ -104,5 +104,3 @@ export function TitleSection() {
     </motion.section>
   )
 }
-
-export default TitleSection

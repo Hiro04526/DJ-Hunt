@@ -7,12 +7,10 @@ const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
 // DB Table Names
 const TABLE_VOTES = "Hitlist Votes"
-const TABLE_SONGS = "Hitlist Songs"
+// const TABLE_SONGS = "Hitlist Songs" // No longer needed for GET (handled by RPC)
 const ID_COLUMN = "target_id" 
 
-// ANCHOR: A specific Monday that starts a "Voting Week" (Week 1).
-// This date acts as the mathematical anchor for the alternating schedule.
-// PH Time: Monday, Dec 15, 2025, 8:00 AM (Start of voting)
+// ANCHOR: PH Time: Monday, Dec 15, 2025, 8:00 AM
 const REFERENCE_MONDAY = new Date("2025-12-15T08:00:00+08:00") 
 
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID)
@@ -21,34 +19,25 @@ const supabaseAdmin = supabaseAdminLib
 // --- HELPER: Schedule Logic ---
 function getVotingStatus() {
   const now = new Date()
-  
   const MS_PER_HOUR = 1000 * 60 * 60
   const MS_PER_DAY = MS_PER_HOUR * 24
   const MS_PER_WEEK = MS_PER_DAY * 7
 
-  // 1. Calculate time passed since the Reference Anchor
-  // We use the timestamp of the Reference Date's midnight (00:00) for cleaner week math
   const referenceMidnight = new Date(REFERENCE_MONDAY)
-  referenceMidnight.setHours(0,0,0,0) // Normalize to midnight
+  referenceMidnight.setHours(0,0,0,0) 
   
   const diffInMs = now.getTime() - referenceMidnight.getTime()
-  
-  // 2. Identify Week Number (0 = Week 1/Voting, 1 = Week 2/Processing, etc.)
   const weeksPassed = Math.floor(diffInMs / MS_PER_WEEK)
   const isVotingWeek = weeksPassed % 2 === 0
 
-  // 3. Define the precise Voting Window (relative to Monday 00:00)
-  // Window: Monday 08:00 AM -> Saturday 09:00 PM
-  const startOffset = 8 * MS_PER_HOUR  // Mon 8:00 AM
-  const endOffset = (5 * MS_PER_DAY) + (21 * MS_PER_HOUR) // Sat 9:00 PM
+  const startOffset = 8 * MS_PER_HOUR 
+  const endOffset = (5 * MS_PER_DAY) + (21 * MS_PER_HOUR)
 
-  // 4. Check if currently inside the window
   const timeIntoCurrentWeek = diffInMs % MS_PER_WEEK
   const isWithinHours = timeIntoCurrentWeek >= startOffset && timeIntoCurrentWeek < endOffset
 
   const isOpen = isVotingWeek && isWithinHours
 
-  // 5. Generate Status Message
   let message = ""
   if (!isOpen) {
     if (!isVotingWeek) {
@@ -60,8 +49,6 @@ function getVotingStatus() {
     }
   }
 
-  // 6. Calculate Cycle Start (for clearing old votes)
-  // We want to see votes from the *Start of Week 1*.
   const cycleIndex = isVotingWeek ? weeksPassed : weeksPassed - 1
   const startOfCurrentCycle = new Date(referenceMidnight.getTime() + (cycleIndex * MS_PER_WEEK))
 
@@ -86,44 +73,50 @@ export async function GET(request: Request) {
   try {
     const { isOpen, message, startOfCurrentCycle } = getVotingStatus()
 
-    // 1. If Closed, return early (no need to fetch songs or check auth)
-    // Note: If you want users to see the song list even when closed, move this check later.
+    // 1. If Closed, return early
     if (!isOpen) {
       return NextResponse.json({ isOpen: false, message })
     }
 
-    // 2. Auth Check
-    const authHeader = request.headers.get("Authorization")
-    const token = authHeader?.split(" ")[1]
-    if (!token) return NextResponse.json({ error: "No token" }, { status: 401 })
-
-    const email = await getEmailFromToken(token)
-    if (!email) return NextResponse.json({ error: "Invalid token" }, { status: 401 })
-
-    // 3. Fetch Songs (Dynamic from DB)
+    // --- CHANGE STARTS HERE ---
+    
+    // 2. Fetch Songs AND Vote Counts via RPC
+    // This uses the SQL function we created to get the live "votes" count
     const { data: songsData, error: songsError } = await supabaseAdmin
-      .from(TABLE_SONGS)
-      .select("*")
-      .order("id", { ascending: true }) // Ensure order 1-40
+      .rpc('get_hitlist_stats')
     
     if (songsError) throw songsError
 
-    // 4. Fetch User's Votes (Scoped to Current Cycle)
-    const { data: voteData, error: voteError } = await supabaseAdmin
-      .from(TABLE_VOTES)
-      .select(ID_COLUMN)
-      .eq("email", email)
-      .gte("created_at", startOfCurrentCycle.toISOString())
-
-    if (voteError) throw voteError
-
-    const votedIds = voteData?.map((row: any) => row[ID_COLUMN]) || []
+    // 3. Auth Check (To see if user already voted)
+    let votedIds: number[] = []
     
+    const authHeader = request.headers.get("Authorization")
+    const token = authHeader?.split(" ")[1]
+
+    if (token) {
+      const email = await getEmailFromToken(token)
+      
+      if (email) {
+        const { data: voteData, error: voteError } = await supabaseAdmin
+          .from(TABLE_VOTES)
+          .select(ID_COLUMN)
+          .eq("email", email)
+          .gte("created_at", startOfCurrentCycle.toISOString())
+
+        if (!voteError && voteData) {
+          votedIds = voteData.map((row: any) => row[ID_COLUMN])
+        }
+      }
+    }
+
+    // 4. Return Data
+    // songsData now includes { ..., votes: 123 } automatically from the RPC
     return NextResponse.json({ 
       isOpen: true, 
       votedIds,
       songs: songsData 
     })
+    // --- CHANGE ENDS HERE ---
 
   } catch (error) {
     console.error("GET Error:", error)
@@ -166,7 +159,6 @@ export async function POST(request: Request) {
 
     // 3. Insert Votes
     if (targetIds.length > 0) {
-      // Basic range check
       const isValid = targetIds.every(id => Number.isInteger(id) && id >= 1 && id <= 40)
       if (!isValid) return NextResponse.json({ error: "Invalid song selection." }, { status: 400 })
 
