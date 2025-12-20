@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { FaChevronRight } from "react-icons/fa"
 import AudioPlayer from "@/components/dj-hunt/audio-player"
 import { DJVotingForm } from "@/components/dj-hunt/voting-form"
+import { getDJsAction } from "@/app/actions/dj-hunt"
 
 type DJ = {
   id: number
@@ -41,14 +42,12 @@ export function DJSection() {
   useEffect(() => {
     async function fetchDJs() {
       try {
-        const res = await fetch("/polls/dj-hunt/djs", { cache: "no-store" })
-        const result = await res.json()
-        console.log("GET /polls/dj-hunt/djs →", result)
+        const result = await getDJsAction()
 
-        if (res.ok && Array.isArray(result.data)) {
+        if (result.success && result.data) {
           setDJs(result.data as DJ[])
         } else {
-          setError(result.error || "Unexpected response shape")
+          setError(result.error || "Failed to load DJs")
         }
       } catch (err) {
         console.error(err)
@@ -91,7 +90,7 @@ export function DJSection() {
               <motion.div
                 key={DJ.id}
                 className="
-                  w-full sm:w-[22rem]
+                  w-full sm:w-88
                   rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2
                   bg-white text-neutral-900
                   dark:bg-[#0d0d0d] dark:text-white
@@ -193,7 +192,7 @@ export function DJSection() {
           <Dialog open={!!selectedDJ} onOpenChange={() => setSelectedDJ(null)}>
             <DialogContent
               className="
-                sm:max-w-[1080px]
+                sm:max-w-270
                 max-h-[90vh] overflow-y-scroll scrollbar-hide
                 bg-white text-neutral-900
                 dark:bg-[#0f0f0f] dark:text-white
@@ -213,7 +212,7 @@ export function DJSection() {
                     {/* Segue */}
                     <div className="flex flex-col items-center">
                       <h2 className="text-lg text-center mb-2">Segue Challenge</h2>
-                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[9/16]">
+                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-9/16">
                         <iframe
                           src={buildDriveEmbedSrc(selectedDJ.segue)}
                           className="absolute inset-0 w-full h-full"
@@ -227,7 +226,7 @@ export function DJSection() {
                     {/* Solo Videoshoot */}
                     <div className="flex flex-col items-center">
                       <h2 className="text-lg text-center mb-2">Solo Videoshoot</h2>
-                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[9/16]">
+                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-9/16">
                         <iframe
                           src={buildDriveEmbedSrc(selectedDJ.videoshoot)}
                           className="absolute inset-0 w-full h-full"
@@ -241,7 +240,7 @@ export function DJSection() {
                     {/* Voiceover Challenge */}
                     <div className="flex flex-col items-center">
                       <h2 className="text-lg text-center mb-2">Voiceover Challenge</h2>
-                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-[9/16]">
+                      <div className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black relative aspect-9/16">
                         <iframe
                           src={buildDriveEmbedSrc(selectedDJ.voiceover)}
                           className="absolute inset-0 w-full h-full"
@@ -263,7 +262,7 @@ export function DJSection() {
       <AnimatePresence>
         <Dialog open={isVotingOpen} onOpenChange={setIsVotingOpen}>
           <DialogContent
-            className="max-w-[800px] bg-white text-neutral-900 dark:bg-[#0f0f0f] dark:text-white border border-neutral-200 dark:border-neutral-800 p-6"
+            className="max-w-200 bg-white text-neutral-900 dark:bg-[#0f0f0f] dark:text-white border border-neutral-200 dark:border-neutral-800 p-6"
           >
             <DialogHeader>
               <DialogTitle className="text-2xl text-center">Vote for Your Favorite DJs (Maximum of 3)</DialogTitle>

@@ -1,7 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Music2, XCircle } from "lucide-react"
+// Added ExternalLink to imports in case you don't have the spotify png, 
+// but I used your img tag below as requested.
+import { Music2, XCircle, ExternalLink } from "lucide-react" 
 
 // --- TYPES ---
 interface Song {
@@ -48,7 +50,7 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
             className="shadow-lg"
           />
         ) : (
-          <div className="aspect-square w-full max-w-[300px] mx-auto bg-gray-100 dark:bg-white/5 rounded-2xl flex flex-col items-center justify-center text-gray-400 gap-4">
+          <div className="aspect-square w-full max-w-75 mx-auto bg-gray-100 dark:bg-white/5 rounded-2xl flex flex-col items-center justify-center text-gray-400 gap-4">
             <Music2 size={48} />
             <span className="font-bold">Select a song to preview</span>
           </div>
@@ -77,11 +79,9 @@ export function HitlistVoteList({
   onSubmit,
 }: VoteListProps) {
   return (
-    // CHANGE 1: Use 'absolute inset-0' to lock size to the parent container
-    // CHANGE 2: On mobile (lg:static), behave normally. On desktop (lg:absolute), lock it.
     <div className="lg:absolute lg:inset-0 flex flex-col bg-white dark:bg-[#111] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 overflow-hidden">
       
-      <div className="p-4 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5 flex-shrink-0">
+      <div className="p-4 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5 shrink-0">
         <h3 className="font-bold text-lg flex items-center justify-between">
           Your Hitlist
           <span className="bg-[#569429] text-white text-xs px-2 py-1 rounded-full">
@@ -90,7 +90,6 @@ export function HitlistVoteList({
         </h3>
       </div>
 
-      {/* Content Area - Scrolls if list is long */}
       <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
         {selectedSongs.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-gray-400 text-center opacity-60 p-4">
@@ -115,6 +114,7 @@ export function HitlistVoteList({
                 <p className="font-bold text-sm truncate text-gray-900 dark:text-gray-100">{song.title}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{song.artist}</p>
               </div>
+
               <button
                 onClick={() => onToggle(song.id)}
                 className="text-gray-300 hover:text-red-500 p-2 transition-colors"
@@ -127,8 +127,7 @@ export function HitlistVoteList({
         )}
       </div>
 
-      {/* Footer - Pinned to bottom */}
-      <div className="p-4 bg-white dark:bg-[#111] border-t border-gray-100 dark:border-white/5 flex-shrink-0">
+      <div className="p-4 bg-white dark:bg-[#111] border-t border-gray-100 dark:border-white/5 shrink-0">
         {!hasVoted ? (
           <button
             onClick={onSubmit}

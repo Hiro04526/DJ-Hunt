@@ -2,6 +2,7 @@
 
 import Script from "next/script"
 import { useEffect, useState } from "react"
+import { getVotesAction, submitVotesAction } from "@/app/actions/dj-hunt"
 
 type DJ = {
   id: number
@@ -30,23 +31,24 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
     }
   }
 
-  // ----- Fetch Existing Votes on Login -----
+  // ----- Fetch Existing Votes on Login (Updated) -----
   useEffect(() => {
-    if (user?.token) {
+    async function fetchVotes() {
+      if (!user?.token) return
+      
       setFetching(true)
-      fetch("/polls/dj-hunt/vote", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.votedIds) {
-            setSelected(data.votedIds)
-            setSavedVotes(data.votedIds) // Keep a copy to compare against
-          }
-        })
-        .catch(() => setMessage("Could not load your previous votes."))
-        .finally(() => setFetching(false))
+      const result = await getVotesAction(user.token)
+      
+      if (result.success && result.votedIds) {
+        setSelected(result.votedIds)
+        setSavedVotes(result.votedIds)
+      } else {
+        setMessage(result.error || "Could not load votes")
+      }
+      setFetching(false)
     }
+
+    fetchVotes()
   }, [user])
 
   useEffect(() => {
@@ -67,7 +69,7 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
 
   // ----- Selection Helpers -----
   const toggle = (id: number) => {
-    setMessage("") // Clear message when user interacts
+    setMessage("") 
     setSelected((prev) => {
       if (prev.includes(id)) return prev.filter((x) => x !== id)
       if (prev.length >= 3) {
@@ -91,19 +93,14 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
 
     setLoading(true)
     try {
-      const res = await fetch("/polls/dj-hunt/vote", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userToken: user.token,
-          djIds: selected,
-        }),
-      })
-      const json = await res.json()
-      if (!res.ok) throw new Error(json.error || "Something went wrong.")
+      const result = await submitVotesAction(user.token, selected)
+
+      if (!result.success) {
+        throw new Error(result.error)
+      }
       
       setSavedVotes(selected) 
-      setMessage(json.message || "Votes updated successfully!")
+      setMessage(result.message || "Votes updated successfully!")
     } catch (e: any) {
       setMessage(e.message || "Failed to submit votes.")
     } finally {
@@ -191,7 +188,7 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
                         />
                       </div>
 
-                      <div className="flex flex-col justify-center flex-grow px-4 py-3">
+                      <div className="flex flex-col justify-center grow px-4 py-3">
                         <p className="text-xl font-medium truncate">Finalist {dj.name}</p>
                       </div>
 

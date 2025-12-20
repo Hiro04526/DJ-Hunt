@@ -49,7 +49,7 @@ export function LoginModal({ isOpen, onClose, onToken, ready }: LoginModalProps)
         <p className="text-gray-500 dark:text-gray-400 mb-6 text-center text-sm">
           Use your DLSU Email to vote.
         </p>
-        <div className="flex justify-center min-h-[50px]">
+        <div className="flex justify-center min-h-12.5">
           <div ref={googleBtnRef} />
         </div>
       </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Trophy, TrendingUp, RefreshCw } from "lucide-react"
+import { Trophy, RefreshCw } from "lucide-react"
 
 interface Song {
   id: number
@@ -12,8 +12,8 @@ interface Song {
 
 interface LeaderboardProps {
   songs: Song[]
-  onRefresh: () => void     // <--- New Prop
-  isRefreshing: boolean     // <--- New Prop
+  onRefresh: () => void
+  isRefreshing: boolean
 }
 
 export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: LeaderboardProps) {
@@ -71,7 +71,7 @@ export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: Leaderboa
                 </div>
 
                 <img 
-                  src={song.image_url || '/images/default-music.png'} 
+                  src={song.image_url} 
                   alt={song.title}
                   className="w-12 h-12 rounded-lg object-cover shadow-sm"
                 />

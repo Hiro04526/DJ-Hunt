@@ -84,7 +84,7 @@ export function Footer() {
           </div>
 
           {/* Logo */}
-          <div className="mx-auto h-[72px] w-[200px] relative">
+          <div className="mx-auto h-18 w-50 relative">
             <Image
               src="/assets/GGFM Logo_Black.png"
               alt="DLSU Radio: Green Giant FM"

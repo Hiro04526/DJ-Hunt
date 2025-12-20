@@ -1,8 +1,8 @@
 "use client"
 
 interface HeaderProps {
-  user: { email: string; token: string } | null
-  onLogout: () => void
+  user: { email: string } | null; 
+  onLogout: () => void;
 }
 
 export function HitlistHeader({ user, onLogout }: HeaderProps) {
@@ -19,7 +19,7 @@ export function HitlistHeader({ user, onLogout }: HeaderProps) {
 
       {user && (
         <div className="flex items-center justify-center gap-3 bg-white dark:bg-[#111] border border-gray-200 dark:border-white/10 px-4 py-2 rounded-full shadow-sm">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0" />
           <span className="text-sm font-secondary font-bold uppercase tracking-wider opacity-70 text-center">
             Signed in as <strong>{user.email}</strong>
           </span>

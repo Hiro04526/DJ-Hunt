@@ -1,7 +1,12 @@
+import { getDJsAction } from "@/app/actions/dj-hunt"
+
 export async function getDJs() {
-  const res = await fetch(`${process.env.BASE_URL}/app/dj-hunt/djs`, {
-    cache: "no-store",
-  });
-  const { data } = await res.json();
-  return data as any[];
+  const result = await getDJsAction()
+  
+  if (!result.success || !result.data) {
+    console.error("Failed to load DJs:", result.error)
+    return []
+  }
+  
+  return result.data
 }

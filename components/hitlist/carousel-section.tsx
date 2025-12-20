@@ -68,7 +68,7 @@ export function CarouselSection({
   }, [api, updateScales, onIndexChange])
 
   return (
-    <div className="lg:col-span-2 relative flex flex-col h-[500px] lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
+    <div className="lg:col-span-2 relative flex flex-col h-125 lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
       
       {/* Counter Badge */}
       <div className="absolute top-6 left-6 z-20 bg-black/60 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-widest border border-white/10">
@@ -83,11 +83,11 @@ export function CarouselSection({
             opts={{ align: "center", loop: true, dragFree: false }}
             className="w-full max-w-full"
           >
-            <CarouselContent className="-ml-4 h-[450px] items-center">
+            <CarouselContent className="-ml-4 h-112.5 items-center">
               {songs.map((song) => {
                 const isSelected = selected.includes(song.id)
                 return (
-                  <CarouselItem key={song.id} className="pl-4 basis-[300px] md:basis-[360px]">
+                  <CarouselItem key={song.id} className="pl-4 basis-75 md:basis-90">
                     <div
                       onClick={() => onToggle(song.id)}
                       className={`card-inner relative overflow-hidden cursor-pointer rounded-2xl shadow-xl group w-full ${
@@ -104,7 +104,7 @@ export function CarouselSection({
                         alt={song.title}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent opacity-90" />
                       <div className="absolute bottom-0 left-0 w-full p-6">
                         <h2 className="text-3xl font-black text-white mb-1 leading-none drop-shadow-lg truncate">
                           {song.title}

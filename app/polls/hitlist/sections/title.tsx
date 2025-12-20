@@ -25,7 +25,7 @@ export default function TitleSection() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="relative mt-14 w-full h-[92.5vh] flex items-center justify-center overflow-hidden"
+      className="relative mt-16 w-full h-[92.5vh] flex items-center justify-center overflow-hidden"
     >
       {/* Background */}
       <div className="absolute inset-0 z-0">
@@ -42,7 +42,7 @@ export default function TitleSection() {
         <div className="w-full min-h-[70vh] grid grid-cols-[1fr_auto_1fr] items-center gap-8 lg:gap-16">
           {/* LEFT SIDE */}
           <div className="flex justify-center">
-            <div className="flex flex-col items-start text-left h-min w-[365px] gap-6">
+            <div className="flex flex-col items-start text-left h-min w-91.25 gap-6">
               
               {/* Row for "The" + StatusBadge */}
               <div className="flex items-center justify-between w-full">
@@ -72,7 +72,7 @@ export default function TitleSection() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
-                className="pl-1.5 w-[365px] text-2xl md:text-3xl leading-snug text-white dark:text-[#111111]"
+                className="pl-1.5 w-91.25 text-2xl md:text-3xl leading-snug text-white dark:text-[#111111]"
               >
                 Love music? This is your chance!
                 <br />
@@ -94,8 +94,8 @@ export default function TitleSection() {
             className="flex justify-center bg-transparent"
           >
             <div className="flex items-center justify-center 
-                            w-[90vw] max-w-[400px] 
-                            h-[350px] md:h-[400px] lg:h-[600px] rounded-xl bg-transparent">
+                            w-[90vw] max-w-100 
+                            h-87.5 md:h-100 lg:h-150 rounded-xl bg-transparent">
               <Playlist />
             </div>
           </motion.div>
