@@ -148,7 +148,6 @@ export default function SongsSection() {
      
      setSubmitting(true)
      try {
-       // ✅ Correct: Only pass IDs. Server gets user from cookie.
        const result = await submitHitlistVoteAction(selected)
 
        if (!result.success) throw new Error(result.error || "Submission failed")
@@ -200,6 +199,7 @@ export default function SongsSection() {
               selected={selected}
               onToggle={toggle}
               onIndexChange={setActiveIndex}
+              hasVoted={hasVoted}
             />
           </div>
 

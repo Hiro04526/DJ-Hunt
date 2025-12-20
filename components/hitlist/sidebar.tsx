@@ -1,9 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-// Added ExternalLink to imports in case you don't have the spotify png, 
-// but I used your img tag below as requested.
-import { Music2, XCircle, ExternalLink } from "lucide-react" 
+import { Music2, XCircle, ExternalLink, CheckCircle2 } from "lucide-react"
 
 // --- TYPES ---
 interface Song {
@@ -81,15 +79,17 @@ export function HitlistVoteList({
   return (
     <div className="lg:absolute lg:inset-0 flex flex-col bg-white dark:bg-[#111] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 overflow-hidden">
       
+      {/* HEADER */}
       <div className="p-4 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5 shrink-0">
         <h3 className="font-bold text-lg flex items-center justify-between">
           Your Hitlist
-          <span className="bg-[#569429] text-white text-xs px-2 py-1 rounded-full">
-            {selectedSongs.length} Selected
+          <span className={`text-xs px-2 py-1 rounded-full text-white ${hasVoted ? "bg-gray-500" : "bg-[#569429]"}`}>
+            {selectedSongs.length} {hasVoted ? "Locked" : "Selected"}
           </span>
         </h3>
       </div>
 
+      {/* SONG LIST */}
       <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
         {selectedSongs.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-gray-400 text-center opacity-60 p-4">
@@ -97,13 +97,13 @@ export function HitlistVoteList({
               <Music2 size={20} />
             </div>
             <p className="font-bold text-sm">No songs selected</p>
-            <p className="text-xs">Tap (+) to add songs</p>
+            {!hasVoted && <p className="text-xs">Tap (+) to add songs</p>}
           </div>
         ) : (
           selectedSongs.map((song) => (
             <div
               key={`list-${song.id}`}
-              className="flex items-center gap-3 p-2 rounded-xl bg-gray-50 dark:bg-white/5 group hover:bg-gray-100 dark:hover:bg-white/10 transition-colors border border-transparent hover:border-gray-200 dark:hover:border-white/10 shrink-0"
+              className="flex items-center gap-3 p-2 rounded-xl bg-gray-50 dark:bg-white/5 group transition-colors border border-transparent shrink-0"
             >
               <img
                 src={song.image_url}
@@ -115,18 +115,22 @@ export function HitlistVoteList({
                 <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{song.artist}</p>
               </div>
 
-              <button
-                onClick={() => onToggle(song.id)}
-                className="text-gray-300 hover:text-red-500 p-2 transition-colors"
-                title="Remove song"
-              >
-                <XCircle size={18} />
-              </button>
+              {/* HIDE REMOVE BUTTON IF VOTED */}
+              {!hasVoted && (
+                <button
+                  onClick={() => onToggle(song.id)}
+                  className="text-gray-300 hover:text-red-500 p-2 transition-colors"
+                  title="Remove song"
+                >
+                  <XCircle size={18} />
+                </button>
+              )}
             </div>
           ))
         )}
       </div>
 
+      {/* FOOTER ACTION AREA */}
       <div className="p-4 bg-white dark:bg-[#111] border-t border-gray-100 dark:border-white/5 shrink-0">
         {!hasVoted ? (
           <button
@@ -143,8 +147,9 @@ export function HitlistVoteList({
             {submitting ? "Processing..." : user ? "Submit Votes" : "Sign in to Vote"}
           </button>
         ) : (
-          <div className="w-full py-3 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl text-center font-bold text-sm border border-green-200 dark:border-green-800">
-            ✓ Votes Submitted
+          <div className="w-full py-3 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl flex items-center justify-center gap-2 font-bold text-sm border border-green-200 dark:border-green-800">
+            <CheckCircle2 size={18} />
+            Votes Submitted
           </div>
         )}
       </div>

@@ -9,7 +9,7 @@ import { cookies } from "next/headers"
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 const TABLE_SONGS = "Hitlist Songs"
 const TABLE_VOTES = "Hitlist Votes"
-const ID_COLUMN = "song_id"
+const ID_COLUMN = "target_id"
 const REFERENCE_MONDAY = new Date("2025-12-15T08:00:00+08:00")
 const COOKIE_NAME = "hitlist_session"
 

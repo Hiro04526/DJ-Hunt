@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
-import { ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, CheckCircle2, Lock } from "lucide-react"
 import {
   Carousel,
   CarouselContent,
@@ -21,18 +21,20 @@ interface CarouselSectionProps {
   selected: number[]
   onToggle: (id: number) => void
   onIndexChange: (index: number) => void
+  hasVoted: boolean
 }
 
 export function CarouselSection({ 
   songs, 
   selected, 
   onToggle, 
-  onIndexChange 
+  onIndexChange,
+  hasVoted 
 }: CarouselSectionProps) {
   const [api, setApi] = useState<CarouselApi>()
   const [activeIndex, setActiveIndex] = useState(0)
 
-  // --- SCALE LOGIC ---
+  // --- SCALE LOGIC (Unchanged) ---
   const updateScales = useCallback((emblaApi: CarouselApi) => {
     if (!emblaApi) return
     const slides = emblaApi.slideNodes()
@@ -70,14 +72,14 @@ export function CarouselSection({
   return (
     <div className="lg:col-span-2 relative flex flex-col h-125 lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
       
-      {/* Counter Badge */}
+      {/* Counter */}
       <div className="absolute top-6 left-6 z-20 bg-black/60 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-widest border border-white/10">
-        {activeIndex + 1} / {songs.length}
+        {songs.length > 0 ? activeIndex + 1 : 0} / {songs.length}
       </div>
 
       {/* Carousel */}
       <div className="flex-1 w-full flex items-center justify-center">
-        {songs.length > 0 && (
+        {songs.length > 0 ? (
           <Carousel
             setApi={setApi}
             opts={{ align: "center", loop: true, dragFree: false }}
@@ -89,12 +91,13 @@ export function CarouselSection({
                 return (
                   <CarouselItem key={song.id} className="pl-4 basis-75 md:basis-90">
                     <div
-                      onClick={() => onToggle(song.id)}
-                      className={`card-inner relative overflow-hidden cursor-pointer rounded-2xl shadow-xl group w-full ${
+                      // Only allow toggle if NOT voted
+                      onClick={() => !hasVoted && onToggle(song.id)}
+                      className={`card-inner relative overflow-hidden rounded-2xl shadow-xl group w-full ${
                         isSelected ? "ring-4 ring-[#569429]" : ""
-                      }`}
+                      } ${hasVoted ? "cursor-default" : "cursor-pointer"}`} 
                       style={{
-                        aspectRatio: "/1",
+                        aspectRatio: "1 / 1",
                         transition: "box-shadow 0.3s, border-color 0.3s",
                         transformOrigin: "center center",
                       }}
@@ -104,7 +107,9 @@ export function CarouselSection({
                         alt={song.title}
                         className="w-full h-full object-cover"
                       />
+                      
                       <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent opacity-90" />
+                      
                       <div className="absolute bottom-0 left-0 w-full p-6">
                         <h2 className="text-3xl font-black text-white mb-1 leading-none drop-shadow-lg truncate">
                           {song.title}
@@ -113,10 +118,19 @@ export function CarouselSection({
                           {song.artist}
                         </p>
                       </div>
+
+                      {/* SELECTED OVERLAY */}
                       {isSelected && (
                         <div className="absolute inset-0 bg-[#569429]/20 flex items-center justify-center backdrop-blur-[2px]">
-                          <div className="bg-[#569429] text-white px-4 py-2 rounded-full font-bold shadow-lg flex items-center gap-2">
-                            <CheckCircle2 size={16} /> SELECTED
+                          <div className={`
+                             text-white px-4 py-2 rounded-full font-bold shadow-lg flex items-center gap-2
+                             ${hasVoted ? "bg-gray-800" : "bg-[#569429]"}
+                          `}>
+                            {hasVoted ? (
+                                <> <Lock size={16} /> VOTED </>
+                            ) : (
+                                <> <CheckCircle2 size={16} /> SELECTED </>
+                            )}
                           </div>
                         </div>
                       )}
@@ -126,6 +140,8 @@ export function CarouselSection({
               })}
             </CarouselContent>
           </Carousel>
+        ) : (
+           <div className="text-gray-400">Loading songs...</div>
         )}
       </div>
 
