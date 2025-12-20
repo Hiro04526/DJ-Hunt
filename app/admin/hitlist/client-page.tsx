@@ -209,7 +209,7 @@ export default function AddSongsClientComponent() {
                       </a>
                       <button 
                         onClick={() => handleDelete(song.id)}
-                        className="p-2 text-gray-500 hover:text-red-500 transition-colors"
+                        className="p-2 text-gray-500 hover:text-red-500 transition-colors hover:cursor-pointer"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -220,7 +220,6 @@ export default function AddSongsClientComponent() {
             )}
           </div>
         </div>
-
       </div>
     </div>
   )

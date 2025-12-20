@@ -149,13 +149,13 @@ export function CarouselSection({
       <div className="absolute bottom-6 right-6 flex gap-2 z-20">
         <button
           onClick={() => api?.scrollPrev()}
-          className="p-3 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md text-white border border-white/10 transition-all hover:scale-110 active:scale-95"
+          className="p-3 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md text-white border border-white/10 transition-all hover:scale-110 active:scale-95 hover:cursor-pointer"
         >
           <ChevronLeft size={20} />
         </button>
         <button
           onClick={() => api?.scrollNext()}
-          className="p-3 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md text-white border border-white/10 transition-all hover:scale-110 active:scale-95"
+          className="p-3 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-md text-white border border-white/10 transition-all hover:scale-110 active:scale-95 hover:cursor-pointer"
         >
           <ChevronRight size={20} />
         </button>

@@ -113,7 +113,6 @@ export async function getHitlistSongsAction() {
     const { data, error } = await supabaseAdmin
       .from(TABLE_SONGS)
       .select("*")
-      .order("created_at", { ascending: false })
 
     if (error) throw error
     return { success: true, songs: data }

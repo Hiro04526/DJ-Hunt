@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Music2, XCircle, ExternalLink, CheckCircle2 } from "lucide-react"
+import { Music2, XCircle, CheckCircle2 } from "lucide-react"
 
 // --- TYPES ---
 interface Song {
@@ -119,7 +119,7 @@ export function HitlistVoteList({
               {!hasVoted && (
                 <button
                   onClick={() => onToggle(song.id)}
-                  className="text-gray-300 hover:text-red-500 p-2 transition-colors"
+                  className="text-gray-300 hover:text-red-500 p-2 transition-colors hover:cursor-pointer"
                   title="Remove song"
                 >
                   <XCircle size={18} />
