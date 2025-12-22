@@ -1,9 +1,9 @@
 "use server"
 
-import { createClient } from "@supabase/supabase-js"
 import { revalidatePath } from "next/cache"
 import { OAuth2Client } from "google-auth-library"
 import { cookies } from "next/headers"
+import { supabaseAdmin } from "@/lib/supabase/admin"
 
 // --- CONFIGURATION ---
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
@@ -12,11 +12,6 @@ const TABLE_VOTES = "Hitlist Votes"
 const ID_COLUMN = "target_id"
 const REFERENCE_MONDAY = new Date("2025-12-15T08:00:00+08:00")
 const COOKIE_NAME = "hitlist_session"
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID)
 

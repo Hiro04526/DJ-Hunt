@@ -9,7 +9,7 @@ import { LoginModal } from "@/components/hitlist/login-modal"
 import { CarouselSection } from "@/components/hitlist/carousel-section"
 import { HitlistPlayer, HitlistVoteList } from "@/components/hitlist/sidebar"
 import { HitlistLeaderboard } from "@/components/hitlist/leaderboard"
-import { googleLogout } from "@react-oauth/google" // Ensure this is installed/imported
+import { googleLogout } from "@react-oauth/google"
 import { 
   getHitlistDataAction, 
   submitHitlistVoteAction, 

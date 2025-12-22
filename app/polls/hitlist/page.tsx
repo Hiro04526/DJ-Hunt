@@ -1,5 +1,10 @@
 import TitleSection from "./sections/title"
-import SongsSection from "./sections/songs";
+import SongsSection from "./sections/songs"
+
+export const metadata = {
+	title: 'Hitlist',
+	description: "Voting polls for this week's Top 20 songs!",
+}
 
 export default function Hitlist() {
   return (
