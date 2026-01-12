@@ -81,7 +81,7 @@ export function HitlistVoteList({
     <div className="h-full bg-white dark:bg-[#111] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
       
       {/* HEADER */}
-      <div className="p-4 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5 shrink-0">
+      <div className="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5 shrink-0">
         <h3 className="font-bold text-lg flex items-center justify-between">
           Your Hitlist
           <span className={`text-xs px-2 py-1 rounded-full text-white ${hasVoted ? "bg-gray-500" : "bg-[#569429]"}`}>
