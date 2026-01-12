@@ -27,8 +27,8 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
   const spotifyTheme = isDark ? "1" : "0"
 
   return (
-    <div className="h-full px-16 bg-white dark:bg-[#111] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 flex flex-col justify-center relative overflow-hidden
-    ">
+    <div className="h-full w-full bg-white dark:bg-[#111] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
+      
       {activeSong?.image_url && (
         <div 
           className="absolute inset-0 opacity-20 blur-3xl scale-150 z-0"
@@ -36,17 +36,17 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
         />
       )}
 
-      <div className="relative z-10 w-full">
+      <div className="relative z-10 h-full w-full">
         {activeSong?.spotify_link ? (
           <iframe
             key={activeSong.spotify_link + spotifyTheme}
-            style={{ borderRadius: "12px" }}
-            src={`https://open.spotify.com/embed/track/${activeSong.spotify_link.split("/").pop()}?utm_source=generator&theme=${spotifyTheme}`}
+            style={{ border: "none" }}
+            src={`https://open.spotify.com/embed/track/$${activeSong.spotify_link.split("/").pop()}?utm_source=generator&theme=${spotifyTheme}`}
             width="100%"
-            height="352"
+            height="100%"
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
             loading="lazy"
-            className="shadow-lg"
+            className="" 
           />
         ) : (
           <div className="aspect-square w-full max-w-75 mx-auto bg-gray-100 dark:bg-white/5 rounded-2xl flex flex-col items-center justify-center text-gray-400 gap-4">
