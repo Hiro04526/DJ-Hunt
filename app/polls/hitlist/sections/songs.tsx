@@ -93,7 +93,7 @@ export default function SongsSection() {
             setUserEmail(res.email)
             setShowLoginModal(false)
             toast.success(`Signed in as ${res.email}`)
-            fetchStatus() // Refresh to check for previous votes
+            fetchStatus()
         } else {
             toast.error("Login verification failed")
         }
