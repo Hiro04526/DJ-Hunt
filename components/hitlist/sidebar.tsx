@@ -27,7 +27,7 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
   const spotifyTheme = isDark ? "1" : "0"
 
   return (
-    <div className="h-full bg-white dark:bg-[#111] rounded-3xl p-4 shadow-sm border border-gray-100 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
+    <div className="bg-white dark:bg-[#111] rounded-3xl p-4 shadow-sm border border-gray-100 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
       {activeSong?.image_url && (
         <div 
           className="absolute inset-0 opacity-20 blur-3xl scale-150 z-0"

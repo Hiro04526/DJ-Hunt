@@ -70,7 +70,7 @@ export function CarouselSection({
   }, [api, updateScales, onIndexChange])
 
   return (
-    <div className="lg:col-span-2 relative flex flex-col h-125 lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
+    <div className="relative flex flex-col h-125 lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
       
       {/* Counter */}
       <div className="absolute top-6 left-6 z-20 bg-black/60 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-widest border border-white/10">
