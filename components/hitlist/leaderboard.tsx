@@ -27,7 +27,7 @@ export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: Leaderboa
   if (sortedSongs.length === 0) return null
 
   return (
-    <div className="relative flex flex-col h-100 lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
+    <div className="relative gap-4 flex flex-col h-100 lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
       <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
         
         {/* Header Left */}
