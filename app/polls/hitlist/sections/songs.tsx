@@ -186,7 +186,7 @@ export default function SongsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 auto-rows-fr">
           
           {/* CAROUSEL & PLAYER */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 min-h-100">
             <CarouselSection 
               songs={songs}
               selected={selected}
@@ -201,7 +201,7 @@ export default function SongsSection() {
           </div>
 
           {/* LEADERBOARD & VOTE LIST */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 min-h-100">
             <HitlistLeaderboard 
               songs={songs} 
               onRefresh={() => fetchStatus(true)} 
@@ -209,7 +209,7 @@ export default function SongsSection() {
             />
           </div>
 
-          <div className="lg:col-span-1 relative min-h-100 lg:min-h-0">
+          <div className="lg:col-span-1 min-h-100">
              <HitlistVoteList 
                selectedSongs={selectedSongsList}
                onToggle={toggle}
