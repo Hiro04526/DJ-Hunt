@@ -164,7 +164,7 @@ export default function SongsSection() {
   }
 
   return (
-    <div className="w-full min-h-screen relative transition-colors duration-500 bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 selection:bg-green-500 selection:text-white pb-20">
+    <div className="w-full min-h-screen relative transition-colors duration-500 bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 selection:bg-green-500 selection:text-white">
       
       <Script src="https://accounts.google.com/gsi/client" async defer onReady={() => setReady(true)} />
 
