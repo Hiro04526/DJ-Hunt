@@ -10,12 +10,7 @@ import { CarouselSection } from "@/components/hitlist/carousel-section"
 import { HitlistPlayer, HitlistVoteList } from "@/components/hitlist/sidebar"
 import { HitlistLeaderboard } from "@/components/hitlist/leaderboard"
 import { googleLogout } from "@react-oauth/google"
-import { 
-  getHitlistDataAction, 
-  submitHitlistVoteAction, 
-  loginAction,
-  logoutAction
-} from "@/app/actions/hitlist"
+import { getHitlistDataAction, submitHitlistVoteAction, loginAction, logoutAction } from "@/app/actions/hitlist"
 
 interface Song {
   id: number
@@ -27,7 +22,7 @@ interface Song {
 }
 
 export default function SongsSection() {
-  // We only need the email now, token is HTTP-only cookie
+  // Cookie/User State
   const [userEmail, setUserEmail] = useState<string | null>(null) 
   const [ready, setReady] = useState(false)
   
@@ -48,7 +43,6 @@ export default function SongsSection() {
     if (showSpinner) setIsRefreshing(true)
 
     try {
-      // ✅ Correct: No arguments needed. Server checks cookie.
       const result = await getHitlistDataAction()
 
       if (!result.success) {
@@ -88,12 +82,11 @@ export default function SongsSection() {
     } finally {
       if (showSpinner) setIsRefreshing(false)
     }
-  }, []) // Removed dependency on 'user' since cookie handles it
+  }, [])
 
   // --- 2. GOOGLE LOGIN (Sets Cookie) ---
   async function handleToken({ credential }: { credential: string }) {
     try {
-        // ✅ Correct: Call Server Action to verify & set cookie
         const res = await loginAction(credential)
         
         if (res.success && res.email) {
@@ -226,7 +219,6 @@ export default function SongsSection() {
                onSubmit={submit}
              />
           </div>
-          
         </div>
       </div>
     </div>

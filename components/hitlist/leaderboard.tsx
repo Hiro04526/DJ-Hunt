@@ -27,7 +27,7 @@ export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: Leaderboa
   if (sortedSongs.length === 0) return null
 
   return (
-    <div className="bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
+    <div className="relative flex flex-col h-100 lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
       <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
         
         {/* Header Left */}
@@ -46,7 +46,7 @@ export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: Leaderboa
           <button 
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors hover:cursor-pointer"
+            className="rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors hover:cursor-pointer"
             title="Refresh Leaderboard"
           >
             <RefreshCw size={16} className={isRefreshing ? "animate-spin text-[#569429]" : ""} />
@@ -55,7 +55,7 @@ export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: Leaderboa
       </div>
 
       {/* List Content */}
-      <div className="p-4 flex flex-col gap-4">
+      <div className="p-6 flex flex-col gap-4">
         {sortedSongs.map((song, index) => {
           const voteCount = song.votes || 0
           const percentage = Math.round((voteCount / maxVotes) * 100)
@@ -64,7 +64,7 @@ export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: Leaderboa
             <div key={`leaderboard-${song.id}`} className="group relative">
               <div className="flex items-center gap-4 relative z-10">
                 <div className={`
-                  w-8 text-center font-black text-lg 
+                  w-8 text-left font-black text-lg 
                   ${index === 0 ? "text-[#569429] text-2xl" : "text-gray-400"}
                 `}>
                   #{index + 1}

@@ -261,9 +261,7 @@ export function DJSection() {
       {/* Voting Form Modal */}
       <AnimatePresence>
         <Dialog open={isVotingOpen} onOpenChange={setIsVotingOpen}>
-          <DialogContent
-            className="max-w-200 bg-white text-neutral-900 dark:bg-[#0f0f0f] dark:text-white border border-neutral-200 dark:border-neutral-800 p-6"
-          >
+          <DialogContent className="max-w-200 bg-white text-neutral-900 dark:bg-[#0f0f0f] dark:text-white border border-neutral-200 dark:border-neutral-800 p-6">
             <DialogHeader>
               <DialogTitle className="text-2xl text-center">Vote for Your Favorite DJs (Maximum of 3)</DialogTitle>
             </DialogHeader>
