@@ -24,22 +24,22 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
     return () => observer.disconnect()
   }, [])
 
-  const getTrackId = (link: string) => {
+  const spotifyTheme = isDark ? "1" : "0"
+
+  const getTrackId = (url: string) => {
     try {
-      const parts = link.split("/");
-      const lastPart = parts[parts.length - 1];
-      return lastPart.split("?")[0];
+      const parts = url.split("/")
+      const lastPart = parts[parts.length - 1]
+      return lastPart.split("?")[0]
     } catch (e) {
-      return "";
+      return ""
     }
   }
 
-  const spotifyTheme = isDark ? "1" : "0"
   const trackId = activeSong?.spotify_link ? getTrackId(activeSong.spotify_link) : ""
 
   return (
-    <div className="h-full w-full bg-white dark:bg-[#111] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
-      
+    <div className="h-full w-full bg-white dark:bg-[#111] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 flex flex-col relative overflow-hidden">
       {activeSong?.image_url && (
         <div 
           className="absolute inset-0 opacity-20 blur-3xl scale-150 z-0"
@@ -50,7 +50,7 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
       <div className="relative z-10 h-full w-full">
         {activeSong?.spotify_link && trackId ? (
           <iframe
-            key={trackId + isDark}
+            key={trackId + spotifyTheme}
             style={{ border: "none" }}
             src={`https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=${spotifyTheme}`}
             width="100%"
@@ -60,7 +60,7 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
             className="" 
           />
         ) : (
-          <div className="aspect-square w-full max-w-75 mx-auto bg-gray-100 dark:bg-white/5 rounded-2xl flex flex-col items-center justify-center text-gray-400 gap-4">
+          <div className="h-full w-full flex flex-col items-center justify-center text-gray-400 gap-4 bg-gray-50 dark:bg-white/5">
             <Music2 size={48} />
             <span className="font-bold">Select a song to preview</span>
           </div>
@@ -70,7 +70,7 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
   )
 }
 
-// --- COMPONENT 2: VOTE LIST (Updated) ---
+// --- COMPONENT 2: VOTE LIST ---
 interface VoteListProps {
   selectedSongs: Song[]
   onToggle: (id: number) => void
