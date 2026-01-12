@@ -12,7 +12,7 @@ interface Song {
   spotify_link?: string
 }
 
-// --- COMPONENT 1: SPOTIFY PLAYER (Unchanged) ---
+// --- COMPONENT 1: SPOTIFY PLAYER ---
 export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
   const [isDark, setIsDark] = useState(false)
 
@@ -24,7 +24,18 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
     return () => observer.disconnect()
   }, [])
 
+  const getTrackId = (link: string) => {
+    try {
+      const parts = link.split("/");
+      const lastPart = parts[parts.length - 1];
+      return lastPart.split("?")[0];
+    } catch (e) {
+      return "";
+    }
+  }
+
   const spotifyTheme = isDark ? "1" : "0"
+  const trackId = activeSong?.spotify_link ? getTrackId(activeSong.spotify_link) : ""
 
   return (
     <div className="h-full w-full bg-white dark:bg-[#111] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 flex flex-col justify-center relative overflow-hidden">
@@ -37,11 +48,11 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
       )}
 
       <div className="relative z-10 h-full w-full">
-        {activeSong?.spotify_link ? (
+        {activeSong?.spotify_link && trackId ? (
           <iframe
-            key={activeSong.spotify_link + spotifyTheme}
+            key={trackId + isDark}
             style={{ border: "none" }}
-            src={`https://open.spotify.com/embed/track/$${activeSong.spotify_link.split("/").pop()}?utm_source=generator&theme=${spotifyTheme}`}
+            src={`https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=${spotifyTheme}`}
             width="100%"
             height="100%"
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
