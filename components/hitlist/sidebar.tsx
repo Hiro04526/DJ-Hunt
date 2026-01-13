@@ -39,28 +39,35 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
   const trackId = activeSong?.spotify_link ? getTrackId(activeSong.spotify_link) : ""
 
   return (
-    <div className="h-full w-full bg-white dark:bg-[#111] rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 flex flex-col relative overflow-hidden">
+    <div className="h-full w-full relative overflow-hidden rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 flex flex-col items-center justify-center bg-black">
       {activeSong?.image_url && (
-        <div 
-          className="absolute inset-0 opacity-20 blur-3xl scale-150 z-0"
-          style={{ backgroundImage: `url(${activeSong.image_url})`, backgroundSize: 'cover' }}
-        />
+        <div className="absolute inset-0 z-0">
+           <div className="absolute inset-0 bg-black/40 z-10" />
+           <div 
+             className="absolute inset-0 blur-3xl scale-125 opacity-80"
+             style={{ 
+               backgroundImage: `url(${activeSong.image_url})`, 
+               backgroundSize: 'cover',
+               backgroundPosition: 'center',
+             }} 
+           />
+        </div>
       )}
 
-      <div className="relative z-10 h-full w-full">
+      <div className="relative z-20 w-full max-w-md px-4"> 
         {activeSong?.spotify_link && trackId ? (
           <iframe
             key={trackId + spotifyTheme}
             style={{ border: "none" }}
             src={`https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=${spotifyTheme}`}
-            width="100%"
-            height="100%"
+            width="352"
+            height="352"
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
             loading="lazy"
-            className="" 
+            className="shadow-2xl rounded-xl mx-auto" 
           />
         ) : (
-          <div className="h-full w-full flex flex-col items-center justify-center text-gray-400 gap-4 bg-gray-50 dark:bg-white/5">
+          <div className="aspect-square w-full max-w-75 mx-auto bg-white/10 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center text-white/50 gap-4 border border-white/5">
             <Music2 size={48} />
             <span className="font-bold">Select a song to preview</span>
           </div>
