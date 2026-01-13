@@ -45,7 +45,7 @@ export default function TitleSection() {
             {/* --- 1. TEXT SECTION --- */}
             <div className="flex flex-col items-center lg:items-start justify-start w-full order-1">
               
-              <div className="flex flex-col items-center lg:items-start text-center lg:text-left w-88 lg:max-w-xl gap-6">
+              <div className="px-2 flex flex-col items-center lg:items-start text-center lg:text-left w-88 lg:max-w-xl gap-6">
                 
                 {/* Header & Status */}
                 <div className="flex items-center justify-between w-88 lg:w-full">
@@ -62,7 +62,7 @@ export default function TitleSection() {
                   transition={{ duration: 0.5 }}
                   className="w-88 lg:w-full"
                 >
-                  <div className="flex justify-between text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-medium leading-[0.8] text-[#111111]">
+                  <div className="px-2 flex justify-between text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-medium leading-[0.8] text-[#111111]">
                     {"HITLIST".split("").map((char, index) => (
                       <span key={index}>{char}</span>
                     ))}
