@@ -45,10 +45,10 @@ export default function TitleSection() {
             {/* --- 1. TEXT SECTION --- */}
             <div className="flex flex-col items-center lg:items-start justify-start w-full order-1">
               
-              <div className="px-2 flex flex-col items-center lg:items-start text-center lg:text-left w-88 lg:max-w-xl gap-6">
+              <div className="flex flex-col items-center lg:items-start text-center lg:text-left w-88 lg:max-w-xl gap-6">
                 
                 {/* Header & Status */}
-                <div className="flex items-center justify-between w-88 lg:w-full">
+                <div className="px-2 flex items-center justify-between w-88 lg:w-full">
                   <h2 className="pl-0 lg:pl-1 text-4xl sm:text-5xl lg:text-6xl font-medium leading-none text-[#111111]">
                     THE
                   </h2>
