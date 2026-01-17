@@ -10,7 +10,7 @@ const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 const TABLE_SONGS = "Hitlist Songs"
 const TABLE_VOTES = "Hitlist Votes"
 const ID_COLUMN = "target_id"
-const REFERENCE_MONDAY = new Date("2025-12-15T08:00:00+08:00")
+const REFERENCE_MONDAY = new Date("2026-01-10T08:00:00+08:00")
 const COOKIE_NAME = "hitlist_session"
 
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID)
@@ -60,7 +60,7 @@ async function getEmailFromSession() {
 // --- HELPER: Schedule Logic ---
 export async function getVotingStatus() {
   // For testing, force TRUE. Revert to your date logic when live.
-  return { isOpen: true, message: "Voting Open", startOfCurrentCycle: new Date(REFERENCE_MONDAY) }
+  return { isOpen: false, message: "Voting Open", startOfCurrentCycle: new Date(REFERENCE_MONDAY) }
 }
 
 // ==========================================
