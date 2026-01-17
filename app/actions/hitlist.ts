@@ -7,43 +7,79 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 
 // --- CONFIGURATION ---
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID
+const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET
+
 const TABLE_SONGS = "Hitlist Songs"
 const TABLE_VOTES = "Hitlist Votes"
 const ID_COLUMN = "target_id"
+// Anchor: Jan 10, 2026, 8:00 AM
 const REFERENCE_MONDAY = new Date("2026-01-10T08:00:00+08:00")
 const COOKIE_NAME = "hitlist_session"
 
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID)
 
-// --- HELPER: Spotify Token ---
+// ==========================================
+//              HELPER: SPOTIFY
+// ==========================================
+
 async function getSpotifyToken() {
-  try {
-    const res = await fetch("https://accounts.spotify.com/api/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization:
-          "Basic " +
-          Buffer.from(
-            process.env.SPOTIFY_CLIENT_ID + ":" + process.env.SPOTIFY_CLIENT_SECRET
-          ).toString("base64"),
-      },
-      body: "grant_type=client_credentials",
-      cache: "no-store",
-    })
-    const data = await res.json()
-    return data.access_token
-  } catch (e) {
-    console.error("Spotify Token Error", e)
-    return null
-  }
+  const auth = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString("base64")
+  
+  const response = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${auth}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: "grant_type=client_credentials",
+  })
+
+  const data = await response.json()
+  return data.access_token
 }
 
-// --- HELPER: Google Auth & Session ---
-async function getEmailFromSession() {
-  const cookieStore = await cookies() // <--- ADD await
-  const token = cookieStore.get(COOKIE_NAME)?.value
+// ==========================================
+//              HELPER: VOTING SCHEDULE
+// ==========================================
 
+export async function getVotingStatus() {
+  const now = new Date()
+  const diff = now.getTime() - REFERENCE_MONDAY.getTime()
+
+  // Time Constants
+  const ONE_DAY_MS = 24 * 60 * 60 * 1000
+  const TWO_WEEK_CYCLE_MS = 14 * ONE_DAY_MS 
+  
+  // Voting Window: Monday 8:00 AM -> Saturday 8:00 PM (5.5 Days)
+  const VOTING_OPEN_DURATION = 5.5 * ONE_DAY_MS
+
+  const timeIntoCycle = diff % TWO_WEEK_CYCLE_MS
+  
+  // Calculate Current Cycle Start
+  const currentCycleIndex = Math.floor(diff / TWO_WEEK_CYCLE_MS)
+  const startOfCurrentCycle = new Date(
+    REFERENCE_MONDAY.getTime() + (currentCycleIndex * TWO_WEEK_CYCLE_MS)
+  )
+
+  const isOpen = diff >= 0 && timeIntoCycle < VOTING_OPEN_DURATION
+
+  const nextOpeningTime = new Date(
+    startOfCurrentCycle.getTime() + TWO_WEEK_CYCLE_MS
+  )
+
+  let message = "Voting Open"
+  if (!isOpen) {
+    if (diff < 0) message = "Season starts soon"
+    else message = "Voting Closed (Results Tallying)"
+  }
+
+  return { isOpen, message, startOfCurrentCycle, nextOpeningTime }
+}
+
+async function getEmailFromSession() {
+  const cookieStore = await cookies()
+  const token = cookieStore.get(COOKIE_NAME)?.value
   if (!token) return null
 
   try {
@@ -57,70 +93,93 @@ async function getEmailFromSession() {
   }
 }
 
-// --- HELPER: Schedule Logic ---
-export async function getVotingStatus() {
-  const now = new Date()
-  
-  // 1. Calculate time passed since the anchor date
-  const diff = now.getTime() - REFERENCE_MONDAY.getTime()
+// ==========================================
+//              PUBLIC VOTING ACTIONS
+// ==========================================
 
-  // 2. Define Time Constants
-  const ONE_DAY_MS = 24 * 60 * 60 * 1000
-  const ONE_WEEK_MS = 7 * ONE_DAY_MS
-  const TWO_WEEK_CYCLE_MS = 14 * ONE_DAY_MS // The full 14-day loop
+export async function getHitlistDataAction() {
+  try {
+    const { isOpen, message, startOfCurrentCycle, nextOpeningTime } = await getVotingStatus()
+    
+    // 1. Fetch Songs
+    const { data: songs, error: songsError } = await supabaseAdmin
+        .from(TABLE_SONGS)
+        .select("*")
+        .order("votes", { ascending: false }) 
 
-  // 3. Define the "Voting Window" (Monday 8AM to Saturday 8PM)
-  // Mon 8am -> Sat 8am = 5.0 days
-  // Sat 8am -> Sat 8pm = 0.5 days (12 hours)
-  // Total Open Time = 5.5 days
-  const VOTING_OPEN_DURATION = 5.5 * ONE_DAY_MS
+    if (songsError) throw songsError
 
-  // 4. Determine position in the 14-day cycle
-  const timeIntoCycle = diff % TWO_WEEK_CYCLE_MS
+    // 2. Check Session
+    const email = await getEmailFromSession()
+    let votedIds: number[] = []
 
-  // Safety check for dates before the reference
-  if (diff < 0) {
-      return { 
-        isOpen: false, 
-        message: "Season has not started", 
-        startOfCurrentCycle: REFERENCE_MONDAY 
-      }
-  }
+    // 3. Fetch User's Past Votes
+    if (email) {
+        const { data: voteData } = await supabaseAdmin
+          .from(TABLE_VOTES)
+          .select(ID_COLUMN)
+          .eq("email", email)
+          .gte("created_at", startOfCurrentCycle.toISOString())
 
-  // 5. Check Status
-  // If we are within the first 5.5 days (Mon -> Sat 8pm), it's OPEN.
-  // Any time after that (Sat night -> Next Monday week), it's CLOSED.
-  const isOpen = timeIntoCycle < VOTING_OPEN_DURATION
+        if (voteData) {
+          votedIds = voteData.map((row: any) => row[ID_COLUMN])
+        }
+    }
 
-  // 6. Calculate Cycle Start Date (Used for filtering DB votes)
-  const currentCycleIndex = Math.floor(diff / TWO_WEEK_CYCLE_MS)
-  const startOfCurrentCycle = new Date(
-    REFERENCE_MONDAY.getTime() + (currentCycleIndex * TWO_WEEK_CYCLE_MS)
-  )
-
-  let message = ""
-  if (isOpen) {
-      message = "Voting Open"
-  } else {
-      // Logic to distinguish between the immediate weekend buffer and the Week 2 break
-      // This is purely for UI messaging; functionally both are "Closed"
-      if (timeIntoCycle < ONE_WEEK_MS) {
-          message = "Voting Closed (Weekend Buffer)"
-      } else {
-          message = "Voting Closed (Week 2 Break)"
-      }
-  }
-
-  return { 
-    isOpen, 
-    message, 
-    startOfCurrentCycle 
+    return { 
+      success: true, 
+      isOpen, 
+      message, 
+      nextOpeningTime: nextOpeningTime.toISOString(),
+      songs, 
+      votedIds, 
+      userEmail: email 
+    }
+  } catch (error: any) {
+    console.error("Data Error:", error)
+    return { success: false, error: "Failed to load Hitlist data" }
   }
 }
 
-// ==========================================
-//              SESSION ACTIONS
-// ==========================================
+export async function submitHitlistVoteAction(targetIds: number[]) {
+  try {
+    const { isOpen, startOfCurrentCycle } = await getVotingStatus()
+    
+    if (!isOpen) {
+      return { success: false, error: "Voting is currently closed." }
+    }
+
+    const email = await getEmailFromSession()
+    if (!email) return { success: false, error: "Please log in to vote" }
+
+    const { count } = await supabaseAdmin
+      .from(TABLE_VOTES)
+      .select("*", { count: 'exact', head: true })
+      .eq("email", email)
+      .gte("created_at", startOfCurrentCycle.toISOString())
+
+    if (count !== null && count > 0) {
+      return { success: false, error: "You have already voted this cycle." }
+    }
+
+    if (targetIds.length > 0) {
+      const rowsToInsert = targetIds.map((id) => ({
+        email: email,
+        [ID_COLUMN]: id, 
+        created_at: new Date().toISOString(),
+      }))
+
+      const { error } = await supabaseAdmin.from(TABLE_VOTES).insert(rowsToInsert)
+      if (error) throw error
+    }
+
+    revalidatePath("/polls/hitlist")
+    return { success: true, message: "Votes cast successfully!" }
+
+  } catch (error: any) {
+    return { success: false, error: error.message || "Server Error" }
+  }
+}
 
 export async function loginAction(token: string) {
   try {
@@ -129,11 +188,9 @@ export async function loginAction(token: string) {
       audience: GOOGLE_CLIENT_ID,
     })
     const email = ticket.getPayload()?.email
-
     if (!email) throw new Error("Invalid Token")
 
     const cookieStore = await cookies()
-    
     cookieStore.set(COOKIE_NAME, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -153,165 +210,92 @@ export async function logoutAction() {
   return { success: true }
 }
 
-
 // ==========================================
-//              ADMIN ACTIONS
+//              ADMIN ACTIONS (NEW)
 // ==========================================
 
-export async function getHitlistSongsAction() {
-  try {
-    const { data, error } = await supabaseAdmin
-      .from(TABLE_SONGS)
-      .select("*")
-
-    if (error) throw error
-    return { success: true, songs: data }
-  } catch (error: any) {
-    return { success: false, error: error.message }
-  }
-}
-
-export async function addSongServerAction(songData: any) {
-  try {
-    const { data: existing } = await supabaseAdmin
-      .from(TABLE_SONGS)
-      .select("id")
-      .eq("spotify_link", songData.spotify_link)
-      .single()
-
-    if (existing) return { success: false, error: "Song already exists" }
-
-    const { error } = await supabaseAdmin.from(TABLE_SONGS).insert([{
-        title: songData.title,
-        artist: songData.artist,
-        image_url: songData.image_url, 
-        spotify_link: songData.spotify_link,
-        votes: 0 
-      }])
-
-    if (error) throw error
-    revalidatePath("/admin/hitlist")
-    return { success: true, message: "Song added!" }
-  } catch (error: any) {
-    return { success: false, error: error.message }
-  }
-}
-
-export async function deleteSongAction(id: number) {
-  try {
-    const { error } = await supabaseAdmin.from(TABLE_SONGS).delete().eq("id", id)
-    if (error) throw error
-    revalidatePath("/admin/hitlist")
-    return { success: true, message: "Song deleted" }
-  } catch (error: any) {
-    return { success: false, error: error.message }
-  }
-}
-
+// 1. Search Spotify
 export async function searchSongsAction(query: string) {
-  if (!query) return { success: false, error: "Missing query" }
   try {
     const token = await getSpotifyToken()
-    if (!token) throw new Error("Could not get Spotify token")
+    if (!token) throw new Error("Failed to get Spotify token")
 
     const res = await fetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=10`,
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
-    const data = await res.json()
-    if (!data.tracks) return { success: false, error: "No tracks found" }
 
-    const tracks = data.tracks.items.map((t: any) => ({
+    const data = await res.json()
+    const tracks = data.tracks?.items.map((t: any) => ({
       title: t.name,
       artist: t.artists.map((a: any) => a.name).join(", "),
       image_url: t.album.images[0]?.url,
       spotify_link: t.external_urls.spotify,
-      spotify_id: t.id
+      votes: 0 // Default for new songs
     }))
 
     return { success: true, tracks }
   } catch (error: any) {
+    console.error("Search Error:", error)
     return { success: false, error: "Failed to search Spotify" }
   }
 }
 
-
-// ==========================================
-//              PUBLIC/VOTING ACTIONS
-// ==========================================
-
-export async function getHitlistDataAction() {
+// 2. Add Song to DB
+export async function addSongServerAction(song: any) {
   try {
-    const { isOpen, message, startOfCurrentCycle } = await getVotingStatus()
-    
-    // 1. Fetch Songs
-    const { data: songs, error: songsError } = await supabaseAdmin
-        .from(TABLE_SONGS)
-        .select("*")
-        .order("votes", { ascending: false }) // ensure column name matches DB
-
-    if (songsError) throw songsError
-
-    // 2. Check User Session via Cookie
-    const email = await getEmailFromSession()
-    let votedIds: number[] = []
-
-    if (email) {
-        const { data: voteData } = await supabaseAdmin
-          .from(TABLE_VOTES)
-          .select(ID_COLUMN)
-          .eq("email", email)
-          .gte("created_at", startOfCurrentCycle.toISOString())
-
-        if (voteData) {
-          votedIds = voteData.map((row: any) => row[ID_COLUMN])
-        }
+    // Basic validation to prevent empty inserts
+    if (!song.title || !song.artist) {
+        return { success: false, error: "Invalid song data" }
     }
 
-    return { success: true, isOpen, message, songs, votedIds, userEmail: email }
+    // Remove temporary ID if passed from optimistic UI
+    const { id, ...songData } = song 
+
+    const { error } = await supabaseAdmin
+      .from(TABLE_SONGS)
+      .insert([songData])
+    
+    if (error) throw error
+
+    revalidatePath("/admin/hitlist")
+    revalidatePath("/polls/hitlist") // Update public page too
+    return { success: true }
   } catch (error: any) {
-    console.error("Data Error:", error)
-    return { success: false, error: "Failed to load Hitlist data" }
+    console.error("Add Song Error:", error)
+    return { success: false, error: error.message }
   }
 }
 
-export async function submitHitlistVoteAction(targetIds: number[]) {
-  try {
-    const { isOpen, startOfCurrentCycle } = await getVotingStatus()
-    if (!isOpen) return { success: false, error: "Voting is closed." }
-
-    // 1. Get User from Cookie
-    const email = await getEmailFromSession()
-    if (!email) return { success: false, error: "Please log in to vote" }
-
-    // 2. Check Duplicates
-    const { count } = await supabaseAdmin
-      .from(TABLE_VOTES)
-      .select("*", { count: 'exact', head: true })
-      .eq("email", email)
-      .gte("created_at", startOfCurrentCycle.toISOString())
-
-    if (count !== null && count > 0) {
-      return { success: false, error: "You have already voted this cycle." }
+// 3. Get All Songs (Admin View)
+export async function getHitlistSongsAction() {
+    try {
+        const { data: songs, error } = await supabaseAdmin
+            .from(TABLE_SONGS)
+            .select("*")
+            .order("created_at", { ascending: false }) // Admin usually likes newest first
+        
+        if (error) throw error
+        return { success: true, songs }
+    } catch (error: any) {
+        return { success: false, error: error.message }
     }
+}
 
-    // 3. Insert Votes
-    if (targetIds.length > 0) {
-      const rowsToInsert = targetIds.map((id) => ({
-        email: email,
-        [ID_COLUMN]: id, 
-        created_at: new Date().toISOString(),
-      }))
+// 4. Delete Song
+export async function deleteSongAction(id: number) {
+    try {
+        const { error } = await supabaseAdmin
+            .from(TABLE_SONGS)
+            .delete()
+            .eq("id", id)
 
-      const { error } = await supabaseAdmin.from(TABLE_VOTES).insert(rowsToInsert)
-      if (error) throw error
+        if (error) throw error
+
+        revalidatePath("/admin/hitlist")
+        revalidatePath("/polls/hitlist")
+        return { success: true }
+    } catch (error: any) {
+        return { success: false, error: error.message }
     }
-
-    revalidatePath("/polls/hitlist")
-    return { success: true, message: "Votes cast successfully!" }
-
-  } catch (error: any) {
-    console.error("Submit Vote Error:", error)
-    return { success: false, error: error.message || "Server Error" }
-  }
 }
