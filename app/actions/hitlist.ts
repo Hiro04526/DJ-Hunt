@@ -59,8 +59,63 @@ async function getEmailFromSession() {
 
 // --- HELPER: Schedule Logic ---
 export async function getVotingStatus() {
-  // For testing, force TRUE. Revert to your date logic when live.
-  return { isOpen: false, message: "Voting Open", startOfCurrentCycle: new Date(REFERENCE_MONDAY) }
+  const now = new Date()
+  
+  // 1. Calculate time passed since the anchor date
+  const diff = now.getTime() - REFERENCE_MONDAY.getTime()
+
+  // 2. Define Time Constants
+  const ONE_DAY_MS = 24 * 60 * 60 * 1000
+  const ONE_WEEK_MS = 7 * ONE_DAY_MS
+  const TWO_WEEK_CYCLE_MS = 14 * ONE_DAY_MS // The full 14-day loop
+
+  // 3. Define the "Voting Window" (Monday 8AM to Saturday 8PM)
+  // Mon 8am -> Sat 8am = 5.0 days
+  // Sat 8am -> Sat 8pm = 0.5 days (12 hours)
+  // Total Open Time = 5.5 days
+  const VOTING_OPEN_DURATION = 5.5 * ONE_DAY_MS
+
+  // 4. Determine position in the 14-day cycle
+  const timeIntoCycle = diff % TWO_WEEK_CYCLE_MS
+
+  // Safety check for dates before the reference
+  if (diff < 0) {
+      return { 
+        isOpen: false, 
+        message: "Season has not started", 
+        startOfCurrentCycle: REFERENCE_MONDAY 
+      }
+  }
+
+  // 5. Check Status
+  // If we are within the first 5.5 days (Mon -> Sat 8pm), it's OPEN.
+  // Any time after that (Sat night -> Next Monday week), it's CLOSED.
+  const isOpen = timeIntoCycle < VOTING_OPEN_DURATION
+
+  // 6. Calculate Cycle Start Date (Used for filtering DB votes)
+  const currentCycleIndex = Math.floor(diff / TWO_WEEK_CYCLE_MS)
+  const startOfCurrentCycle = new Date(
+    REFERENCE_MONDAY.getTime() + (currentCycleIndex * TWO_WEEK_CYCLE_MS)
+  )
+
+  let message = ""
+  if (isOpen) {
+      message = "Voting Open"
+  } else {
+      // Logic to distinguish between the immediate weekend buffer and the Week 2 break
+      // This is purely for UI messaging; functionally both are "Closed"
+      if (timeIntoCycle < ONE_WEEK_MS) {
+          message = "Voting Closed (Weekend Buffer)"
+      } else {
+          message = "Voting Closed (Week 2 Break)"
+      }
+  }
+
+  return { 
+    isOpen, 
+    message, 
+    startOfCurrentCycle 
+  }
 }
 
 // ==========================================
