@@ -60,11 +60,11 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
             key={trackId + spotifyTheme}
             style={{ border: "none" }}
             src={`https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=${spotifyTheme}`}
-            width="352"
+            width="100%" 
             height="352"
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
             loading="lazy"
-            className="shadow-2xl rounded-xl mx-auto" 
+            className="shadow-2xl rounded-xl mx-auto w-70.5 lg:w-88" 
           />
         ) : (
           <div className="aspect-square w-full max-w-75 mx-auto bg-white/10 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center text-white/50 gap-4 border border-white/5">

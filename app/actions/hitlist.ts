@@ -273,7 +273,7 @@ export async function getHitlistSongsAction() {
         const { data: songs, error } = await supabaseAdmin
             .from(TABLE_SONGS)
             .select("*")
-            .order("created_at", { ascending: false }) // Admin usually likes newest first
+            .order("id", { ascending: false }) // Admin usually likes newest first
         
         if (error) throw error
         return { success: true, songs }

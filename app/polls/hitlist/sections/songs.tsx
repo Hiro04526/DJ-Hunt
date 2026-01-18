@@ -219,7 +219,6 @@ export default function SongsSection() {
               selected={selected}
               onToggle={toggle}
               onIndexChange={setActiveIndex}
-              // We pass 'true' to hasVoted if voting is closed to visually disable the checkboxes/buttons
               hasVoted={hasVoted || !status.isOpen} 
             />
           </div>
