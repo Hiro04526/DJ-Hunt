@@ -14,7 +14,7 @@ const TABLE_SONGS = "Hitlist Songs"
 const TABLE_VOTES = "Hitlist Votes"
 const ID_COLUMN = "target_id"
 // Anchor: Jan 10, 2026, 8:00 AM
-const REFERENCE_MONDAY = new Date("2026-01-10T08:00:00+08:00")
+const REFERENCE_MONDAY = new Date("2026-02-02T08:00:00+08:00")
 const COOKIE_NAME = "hitlist_session"
 
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID)
@@ -273,7 +273,7 @@ export async function getHitlistSongsAction() {
         const { data: songs, error } = await supabaseAdmin
             .from(TABLE_SONGS)
             .select("*")
-            .order("id", { ascending: false }) // Admin usually likes newest first
+            .order("id", { ascending: true })
         
         if (error) throw error
         return { success: true, songs }
