@@ -63,7 +63,7 @@ export function RosterSection() {
   return (
     <>
       {/* Dropdown Selector */}
-      <div className="container mx-auto px-4 mb-16 relative z-50">
+      <div className="container mx-auto px-4 mb-16 relative">
         <div className="w-full md:w-80 mx-auto relative" ref={dropdownRef}>
           <label className="block text-center text-gray-500 text-xs uppercase font-bold tracking-widest mb-3">
             View Roster For
@@ -78,7 +78,7 @@ export function RosterSection() {
             <ChevronDown className={`text-[#569429] transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`} />
           </button>
 
-          <div className={`absolute top-full left-0 right-0 mt-2 bg-[#1a1a1a] border border-white/10 rounded-2xl shadow-2xl overflow-hidden overflow-y-auto custom-scrollbar origin-top transition-all duration-200 ease-out z-50 ${
+          <div className={`absolute top-full left-0 right-0 mt-2 bg-[#1a1a1a] border border-white/10 rounded-2xl shadow-2xl overflow-hidden overflow-y-auto custom-scrollbar origin-top transition-all duration-200 ease-out z-10 ${
               isDropdownOpen ? "opacity-100 scale-100 max-h-80 visible" : "opacity-0 scale-95 max-h-0 invisible"
             }`}
           >
