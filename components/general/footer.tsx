@@ -22,7 +22,7 @@ export function Footer() {
 
   return (
     <footer className="w-full">
-      <div className="bg-white text-black dark:bg-[#191919] dark:text-white">
+      <div className="bg-[#F5F2E9] text-black dark:bg-[#191919] dark:text-white">
         {/* Container */}
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-8 sm:py-10 space-y-4">
 

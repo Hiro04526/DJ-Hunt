@@ -28,7 +28,7 @@ export default function TitleSection() {
       className="relative w-full bg-black pt-16"
     >
       {/* CARD CONTAINER */}
-      <div className="relative w-full bg-neutral-100 dark:bg-white overflow-hidden">
+      <div className="relative w-full bg-black dark:bg-white overflow-hidden">
         
         {/* Background Patterns */}
         <div className="absolute inset-0 z-0 pointer-events-none">
@@ -49,7 +49,7 @@ export default function TitleSection() {
                 
                 {/* Header & Status */}
                 <div className="px-2 flex items-center justify-between w-88 lg:w-full">
-                  <h2 className="pl-0 lg:pl-1 text-4xl sm:text-5xl lg:text-6xl font-medium leading-none text-[#111111]">
+                  <h2 className="pl-0 lg:pl-1 text-4xl sm:text-5xl lg:text-6xl font-medium leading-none text-white dark:text-black">
                     THE
                   </h2>
                   <StatusBadge />
@@ -62,7 +62,7 @@ export default function TitleSection() {
                   transition={{ duration: 0.5 }}
                   className="w-88 lg:w-full"
                 >
-                  <div className="px-2 flex justify-between text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-medium leading-[0.8] text-[#111111]">
+                  <div className="px-2 flex justify-between text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-medium leading-[0.8] text-white dark:text-black">
                     {"HITLIST".split("").map((char, index) => (
                       <span key={index}>{char}</span>
                     ))}
@@ -74,7 +74,7 @@ export default function TitleSection() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
-                  className="pl-0 lg:pl-1 w-88 lg:w-full text-xl sm:text-2xl lg:text-3xl leading-snug text-[#111111]"
+                  className="pl-0 lg:pl-3.25 w-88 lg:w-full text-xl sm:text-2xl lg:text-3xl leading-snug text-white dark:text-black"
                 >
                   Love music? This is your chance!
                   <br />
