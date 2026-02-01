@@ -5,10 +5,25 @@ import {
   addSongServerAction, 
   searchSongsAction, 
   getHitlistSongsAction, 
-  deleteSongAction
+  deleteSongAction,
+  deleteAllSongsAction,
+  updateSongOrderAction
 } from "@/app/actions/hitlist"
+import { 
+  DndContext, 
+  closestCenter, 
+  PointerSensor, 
+  useSensor, 
+  useSensors 
+} from "@dnd-kit/core"
+import { 
+  arrayMove, 
+  SortableContext, 
+  verticalListSortingStrategy 
+} from "@dnd-kit/sortable"
+import { SortableSongRow } from "@/components/hitlist/sortable-song-row"
 import { toast } from "sonner"
-import { Search, Plus, ExternalLink, Trash2, Check, Music, RefreshCw } from "lucide-react"
+import { Search, Plus, Check, Music, RefreshCw } from "lucide-react"
 
 export default function AddSongsClientComponent() {
   const [query, setQuery] = useState("")
@@ -24,15 +39,12 @@ export default function AddSongsClientComponent() {
 
   const fetchDbSongs = async () => {
     setIsRefreshing(true)
-    console.log("🔄 Fetching songs for Admin UI...")
     const res = await getHitlistSongsAction()
     
     if (res.success && res.songs) {
-      console.log("✅ Songs loaded:", res.songs)
       setDbSongs(res.songs)
     } else {
-      console.error("❌ Failed to load songs:", res.error)
-      toast.error("Failed to load songs. Check console.")
+      toast.error("Failed to load songs.")
     }
 
     setIsRefreshing(false)
@@ -49,26 +61,38 @@ export default function AddSongsClientComponent() {
     })
   }
 
-  // 2. Search
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!query) return
-    setLoadingSearch(true)
-    
-    const result = await searchSongsAction(query)
-    if (result.success && result.tracks) {
-      setSearchResults(result.tracks)
-    } else {
-      toast.error("No tracks found")
+  // 2. Search Debounce
+  useEffect(() => {
+    if (!query.trim()) {
+      setSearchResults([])
+      setLoadingSearch(false)
+      return
     }
-    setLoadingSearch(false)
-  }
+
+    const delayDebounceFn = setTimeout(async () => {
+      setLoadingSearch(true)
+      try {
+        const result = await searchSongsAction(query)
+        if (result.success && result.tracks) {
+          setSearchResults(result.tracks)
+        } else {
+          setSearchResults([])
+        }
+      } catch (err) {
+        console.error("Search error:", err)
+        toast.error("Search failed")
+      } finally {
+        setLoadingSearch(false)
+      }
+    }, 500)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [query])
 
   // 3. Add
   const addSongToDB = async (track: any) => {
     if (isSongInDB(track)) return
 
-    // Optimistic Update
     const tempId = Date.now()
     const newSong = { ...track, id: tempId }
     setDbSongs([newSong, ...dbSongs]) 
@@ -78,7 +102,7 @@ export default function AddSongsClientComponent() {
 
     if (result.success) {
       toast.success("Added to database!", { id: "add-action" })
-      fetchDbSongs() // Refresh specifically to get the real ID
+      fetchDbSongs() 
     } else {
       setDbSongs(current => current.filter(s => s.id !== tempId))
       toast.error(result.error, { id: "add-action" })
@@ -102,6 +126,52 @@ export default function AddSongsClientComponent() {
     }
   }
 
+  // 5. Delete All
+  const handleDeleteAll = async () => {
+    if (!confirm("⚠️ WARNING: This will permanently delete EVERY song. Are you sure?")) return;
+    
+    const previousSongs = [...dbSongs];
+    setDbSongs([]); 
+    
+    const result = await deleteAllSongsAction();
+    
+    if (result.success) {
+      toast.success("Database cleared");
+    } else {
+      setDbSongs(previousSongs);
+      toast.error(result.error);
+    }
+  };
+
+  // 6. DRAG AND DROP REORDERING FOR SONGS
+  // Helper: Configure Sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // Drag only starts after moving 8 pixels
+      },
+    })
+  )
+
+  // Helper: Handle Reordering
+  const handleDragEnd = async (event: any) => {
+    const { active, over } = event
+    
+    if (active.id !== over.id) {
+      const oldIndex = dbSongs.findIndex((i) => i.id === active.id)
+      const newIndex = dbSongs.findIndex((i) => i.id === over.id)
+      const newOrder = arrayMove(dbSongs, oldIndex, newIndex)
+      
+      setDbSongs(newOrder) 
+
+      const result = await updateSongOrderAction(newOrder)
+      
+      if (!result.success) {
+        toast.error("Failed to save new order")
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen bg-black text-white p-6 md:p-12 mt-14">
       <div className="flex items-center justify-between mb-8">
@@ -116,18 +186,22 @@ export default function AddSongsClientComponent() {
             <Search className="w-5 h-5" /> Search Spotify
           </h2>
           
-          <form onSubmit={handleSearch} className="flex gap-2 mb-6">
+          <div className="relative mb-6">
             <input 
               type="text" 
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Enter song name..."
-              className="flex-1 p-3 rounded bg-[#222] border border-[#333] text-white focus:outline-none focus:border-[#1DB954]"
+              placeholder="Start typing song name..."
+              className="w-full p-3 pl-10 rounded bg-[#222] border border-[#333] text-white focus:outline-none focus:border-[#1DB954] transition-colors"
             />
-            <button type="submit" disabled={loadingSearch} className="bg-[#1DB954] text-black font-bold p-3 rounded hover:bg-[#1ed760] disabled:opacity-50 hover:cursor-pointer">
-              {loadingSearch ? "..." : "Search"}
-            </button>
-          </form>
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+              {loadingSearch ? (
+                <RefreshCw size={18} className="animate-spin text-[#1DB954]" />
+              ) : (
+                <Search size={18} />
+              )}
+            </div>
+          </div>
 
           <div className="space-y-3">
             {searchResults.map((track, i) => {
@@ -163,20 +237,29 @@ export default function AddSongsClientComponent() {
 
         {/* RIGHT COLUMN: Active Database */}
         <div>
-          {/* HEADER WITH REFRESH BUTTON */}
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-xl font-bold flex items-center gap-2 text-white">
               <Music className="w-5 h-5" /> Active Database ({dbSongs.length})
             </h2>
             
-            <button 
-              onClick={fetchDbSongs}
-              disabled={isRefreshing}
-              className="p-2 rounded-full hover:bg-[#222] text-gray-400 transition-colors hover:cursor-pointer hover:text-white"
-              title="Refresh Database"
-            >
-              <RefreshCw size={18} className={isRefreshing ? "animate-spin text-[#569429]" : ""} />
-            </button>
+            <div className="flex items-center gap-2">
+              {dbSongs.length > 0 && (
+                <button 
+                  onClick={handleDeleteAll}
+                  className="text-xs font-bold text-red-500 hover:bg-red-500/10 px-3 py-1 rounded transition-colors cursor-pointer"
+                >
+                  Clear All
+                </button>
+              )}
+              
+              <button 
+                onClick={fetchDbSongs}
+                disabled={isRefreshing}
+                className="p-2 rounded-full hover:bg-[#222] text-gray-400 transition-colors cursor-pointer"
+              >
+                <RefreshCw size={18} className={isRefreshing ? "animate-spin text-[#1DB954]" : ""} />
+              </button>
+            </div>
           </div>
 
           <div className="bg-[#111] rounded-xl border border-[#222] overflow-hidden max-h-150 overflow-y-auto">
@@ -186,37 +269,26 @@ export default function AddSongsClientComponent() {
                 <p>Database is empty. Add some songs!</p>
               </div>
             ) : (
-              <div className="divide-y divide-[#222]">
-                {dbSongs.map((song) => (
-                  <div key={song.id} className="p-3 flex items-center gap-3 hover:bg-[#1a1a1a] group transition-colors">
-                    <div className="w-10 h-10 relative shrink-0">
-                      <img src={song.image_url || "/placeholder.png"} alt="" className="w-full h-full rounded object-cover" />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate text-white">{song.title}</p>
-                      <p className="text-xs text-gray-400 truncate">{song.artist}</p>
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                      <a 
-                        href={song.spotify_link} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="p-2 text-gray-500 hover:text-[#1DB954] transition-colors"
-                      >
-                        <ExternalLink size={14} />
-                      </a>
-                      <button 
-                        onClick={() => handleDelete(song.id)}
-                        className="p-2 text-gray-500 hover:text-red-500 transition-colors hover:cursor-pointer"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+              <DndContext 
+                sensors={sensors} 
+                collisionDetection={closestCenter} 
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext 
+                  items={dbSongs} 
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="divide-y divide-[#222]">
+                    {dbSongs.map((song) => (
+                      <SortableSongRow 
+                        key={song.id} 
+                        song={song} 
+                        handleDelete={handleDelete} 
+                      />
+                    ))}
                   </div>
-                ))}
-              </div>
+                </SortableContext>
+              </DndContext>
             )}
           </div>
         </div>

@@ -7,7 +7,7 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 
 // --- CONFIGURATION ---
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
-const SPOTIFY_CLIENT_ID = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID
+const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET
 
 const TABLE_SONGS = "Hitlist Songs"
@@ -24,19 +24,30 @@ const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID)
 // ==========================================
 
 async function getSpotifyToken() {
-  const auth = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString("base64")
-  
-  const response = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${auth}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: "grant_type=client_credentials",
-  })
+  try {
+    const auth = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString("base64");
 
-  const data = await response.json()
-  return data.access_token
+    const response = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${auth}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "grant_type=client_credentials",
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error("Spotify Auth Error Details:", errorBody);
+      return null;
+    }
+
+    const data = await response.json();
+    return data.access_token;
+  } catch (err) {
+    console.error("Spotify Fetch Network Error:", err);
+    return null;
+  }
 }
 
 // ==========================================
@@ -221,7 +232,7 @@ export async function searchSongsAction(query: string) {
     if (!token) throw new Error("Failed to get Spotify token")
 
     const res = await fetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`,
+      `https://api.spotify.com/v1/search?q=$${encodeURIComponent(query)}&type=track&limit=5`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
 
@@ -273,7 +284,7 @@ export async function getHitlistSongsAction() {
         const { data: songs, error } = await supabaseAdmin
             .from(TABLE_SONGS)
             .select("*")
-            .order("id", { ascending: true })
+            .order("sort_order", { ascending: true }) 
         
         if (error) throw error
         return { success: true, songs }
@@ -296,6 +307,44 @@ export async function deleteSongAction(id: number) {
         revalidatePath("/polls/hitlist")
         return { success: true }
     } catch (error: any) {
+        return { success: false, error: error.message }
+    }
+}
+
+// 5. Delete All Songs
+export async function deleteAllSongsAction() {
+  try {
+    const { error } = await supabaseAdmin
+      .from(TABLE_SONGS)
+      .delete()
+      .gt("id", 0);
+
+    if (error) throw error;
+
+    revalidatePath("/admin/hitlist");
+    revalidatePath("/polls/hitlist");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Delete All Error:", error);
+    return { success: false, error: error.message };
+  }
+}
+
+// 6. Song Reordering
+export async function updateSongOrderAction(items: { id: number }[]) {
+    try {
+        const updates = items.map((item, index) => {
+            return supabaseAdmin
+                .from(TABLE_SONGS)
+                .update({ sort_order: index })
+                .eq('id', item.id)
+        })
+
+        await Promise.all(updates)
+
+        return { success: true }
+    } catch (error: any) {
+        console.error("Reorder failed:", error)
         return { success: false, error: error.message }
     }
 }
