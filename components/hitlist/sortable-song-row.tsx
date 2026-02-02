@@ -2,15 +2,24 @@
 
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { GripVertical, Trash2, ExternalLink } from "lucide-react"
+import { GripVertical, Trash2, Trophy } from "lucide-react"
 
-interface SortableSongRowProps {
-  song: any
-  handleDelete: (id: number) => void
+interface Song {
+  id: number
+  title: string
+  artist: string
+  image_url: string
+  votes: number
 }
 
-export function SortableSongRow({ song, handleDelete }: SortableSongRowProps) {
-  // 1. Setup the sortable hooks
+interface SortableSongRowProps {
+  song: Song
+  handleDelete: (id: number) => void
+  index?: number // Optional: Only for Active list if needed
+  showVotes?: boolean // Optional: To hide votes on Future list
+}
+
+export function SortableSongRow({ song, handleDelete, index, showVotes = false }: SortableSongRowProps) {
   const {
     attributes,
     listeners,
@@ -20,70 +29,68 @@ export function SortableSongRow({ song, handleDelete }: SortableSongRowProps) {
     isDragging,
   } = useSortable({ id: song.id })
 
-  // 2. Define the styles for the moving item
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: isDragging ? 50 : "auto", // Keeps dragged item on top
-    opacity: isDragging ? 0.8 : 1,
-    position: "relative" as "relative",
+    zIndex: isDragging ? 10 : 1,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  // Calculate Rank Color (Gold/Silver/Bronze for top 3)
+  const getRankColor = (i: number) => {
+    if (i === 0) return "text-yellow-400" // Gold
+    if (i === 1) return "text-gray-300"   // Silver
+    if (i === 2) return "text-amber-600"  // Bronze
+    return "text-gray-500"
   }
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`
-        group flex items-center gap-3 p-3 border-b border-[#222] bg-[#111] transition-colors
-        ${isDragging ? "bg-[#1a1a1a] border-[#1DB954]" : "hover:bg-[#1a1a1a]"}
-      `}
+      className="flex items-center gap-3 bg-[#181818] p-3 hover:bg-[#222] group relative"
     >
-      {/* DRAG HANDLE: The user grabs this icon to move the row */}
-      <div 
-        {...attributes} 
-        {...listeners}
-        className="cursor-grab active:cursor-grabbing text-gray-600 hover:text-white p-1 rounded transition-colors touch-none"
-      >
+      {/* Drag Handle */}
+      <div {...attributes} {...listeners} className="cursor-grab touch-none text-gray-600 hover:text-white">
         <GripVertical size={20} />
       </div>
 
+      {/* RANKING BADGE (Only shows if index is provided) */}
+      {index !== undefined && (
+        <div className={`font-bold w-8 text-center text-lg ${getRankColor(index)}`}>
+          #{index + 1}
+        </div>
+      )}
+
       {/* Song Image */}
-      <div className="w-10 h-10 relative shrink-0">
-        <img 
-          src={song.image_url || "/placeholder.png"} 
-          alt={song.title} 
-          className="w-full h-full rounded object-cover select-none pointer-events-none" 
-        />
+      <img 
+        src={song.image_url} 
+        alt={song.title} 
+        className="w-10 h-10 rounded bg-[#333] object-cover" 
+      />
+
+      {/* Title & Artist */}
+      <div className="flex-1 min-w-0">
+        <p className="font-bold text-sm text-white truncate">{song.title}</p>
+        <p className="text-xs text-gray-400 truncate">{song.artist}</p>
       </div>
 
-      {/* Song Info */}
-      <div className="flex-1 min-w-0 select-none">
-        <p className="font-medium text-sm truncate text-white">
-          {song.title}
-        </p>
-        <p className="text-xs text-gray-400 truncate">
-          {song.artist}
-        </p>
-      </div>
+      {/* VOTE COUNT (Only shows if showVotes is true) */}
+      {showVotes && (
+        <div className="flex flex-col items-end mr-4 min-w-15">
+           <span className="text-[10px] uppercase text-gray-500 font-bold tracking-wider">Votes</span>
+           <span className="text-sm font-mono text-[#1DB954] font-bold">{song.votes || 0}</span>
+        </div>
+      )}
 
-      {/* Action Buttons (Visible on Hover) */}
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <a 
-          href={song.spotify_link} 
-          target="_blank" 
-          rel="noreferrer"
-          className="p-2 text-gray-500 hover:text-[#1DB954] transition-colors"
-        >
-          <ExternalLink size={14} />
-        </a>
-        <button 
-          onPointerDown={(e) => e.stopPropagation()} // Prevents drag from starting when clicking delete
-          onClick={() => handleDelete(song.id)}
-          className="p-2 text-gray-500 hover:text-red-500 transition-colors hover:cursor-pointer"
-        >
-          <Trash2 size={14} />
-        </button>
-      </div>
+      {/* Delete Button */}
+      <button
+        onClick={() => handleDelete(song.id)}
+        className="text-gray-600 hover:text-red-500 transition-colors p-2 cursor-pointer"
+        title="Delete song"
+      >
+        <Trash2 size={18} />
+      </button>
     </div>
   )
 }

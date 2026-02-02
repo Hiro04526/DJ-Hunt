@@ -10,14 +10,24 @@ const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET
 
-const TABLE_SONGS = "Hitlist Songs"
+const TABLE_SONGS = "Hitlist Songs"         // Active DB Table
+const FUTURE_SONGS = "Future Hitlist Songs" // Future DB Table
 const TABLE_VOTES = "Hitlist Votes"
 const ID_COLUMN = "target_id"
-// Anchor: Jan 10, 2026, 8:00 AM
+
+// Anchor: Feb 2, 2026, 8:00 AM
 const REFERENCE_MONDAY = new Date("2026-02-02T08:00:00+08:00")
 const COOKIE_NAME = "hitlist_session"
 
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID)
+
+// Type definition for cleaner switching
+type ListType = 'active' | 'future'
+
+// Helper: Selects the correct table based on the type
+const resolveTable = (type: ListType) => {
+  return type === 'future' ? FUTURE_SONGS : TABLE_SONGS
+}
 
 // ==========================================
 //              HELPER: SPOTIFY
@@ -112,7 +122,8 @@ export async function getHitlistDataAction() {
   try {
     const { isOpen, message, startOfCurrentCycle, nextOpeningTime } = await getVotingStatus()
     
-    // 1. Fetch Songs
+    // 1. Fetch Songs (ALWAYS from Active Table for public view)
+    // We sort by 'votes' descending for the public leaderboard
     const { data: songs, error: songsError } = await supabaseAdmin
         .from(TABLE_SONGS)
         .select("*")
@@ -222,27 +233,30 @@ export async function logoutAction() {
 }
 
 // ==========================================
-//              ADMIN ACTIONS (NEW)
+//              ADMIN ACTIONS
 // ==========================================
 
-// 1. Search Spotify
+// 1. Search Spotify (Shared)
 export async function searchSongsAction(query: string) {
   try {
     const token = await getSpotifyToken()
     if (!token) throw new Error("Failed to get Spotify token")
 
     const res = await fetch(
-      `https://api.spotify.com/v1/search?q=$${encodeURIComponent(query)}&type=track&limit=5`,
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
 
     const data = await res.json()
-    const tracks = data.tracks?.items.map((t: any) => ({
+    
+    if (!data.tracks) return { success: true, tracks: [] }
+
+    const tracks = data.tracks.items.map((t: any) => ({
       title: t.name,
       artist: t.artists.map((a: any) => a.name).join(", "),
       image_url: t.album.images[0]?.url,
       spotify_link: t.external_urls.spotify,
-      votes: 0 // Default for new songs
+      votes: 0 // Default
     }))
 
     return { success: true, tracks }
@@ -252,25 +266,57 @@ export async function searchSongsAction(query: string) {
   }
 }
 
-// 2. Add Song to DB
-export async function addSongServerAction(song: any) {
+// 2. Add Song (Supports 'active' or 'future')
+// app/actions/hitlist.ts
+
+export async function addSongServerAction(song: any, type: ListType = 'active') {
   try {
-    // Basic validation to prevent empty inserts
+    const tableName = resolveTable(type)
+
     if (!song.title || !song.artist) {
         return { success: false, error: "Invalid song data" }
     }
 
-    // Remove temporary ID if passed from optimistic UI
-    const { id, ...songData } = song 
+    // 1. Clean the input
+    // Remove ID (let DB generate it) and any existing sort_order from the client
+    const { id, sort_order, ...songData } = song 
+    
+    // 2. Fix Defaults
+    if (songData.votes === undefined) songData.votes = 0
+
+    // 3. CALCULATE NEXT SORT ORDER
+    // We strictly filter OUT nulls to find the actual highest number
+    const { data: maxItems } = await supabaseAdmin
+        .from(tableName)
+        .select("sort_order")
+        .not("sort_order", "is", null) // <--- CRITICAL FIX: Ignore existing NULL rows
+        .order("sort_order", { ascending: false })
+        .limit(1)
+
+    // If no numbered rows exist (or all are null), start at 0
+    const currentMax = maxItems?.[0]?.sort_order ?? 0
+    const nextOrder = Number(currentMax) + 1
+
+    console.log(`[Adding to ${type}] Calculated sort_order:`, nextOrder)
+
+    // 4. Insert with calculated order
+    const finalPayload = {
+        ...songData,
+        sort_order: nextOrder
+    }
 
     const { error } = await supabaseAdmin
-      .from(TABLE_SONGS)
-      .insert([songData])
+      .from(tableName)
+      .insert([finalPayload])
     
-    if (error) throw error
+    if (error) {
+        console.error("Insert Error:", error)
+        throw error
+    }
 
     revalidatePath("/admin/hitlist")
-    revalidatePath("/polls/hitlist") // Update public page too
+    if (type === 'active') revalidatePath("/polls/hitlist")
+      
     return { success: true }
   } catch (error: any) {
     console.error("Add Song Error:", error)
@@ -278,11 +324,14 @@ export async function addSongServerAction(song: any) {
   }
 }
 
-// 3. Get All Songs (Admin View)
-export async function getHitlistSongsAction() {
+// 3. Get Songs (Supports 'active' or 'future')
+export async function getHitlistSongsAction(type: ListType = 'active') {
     try {
+        const tableName = resolveTable(type)
+
+        // For Admin view, we sort by 'sort_order' to maintain custom ordering
         const { data: songs, error } = await supabaseAdmin
-            .from(TABLE_SONGS)
+            .from(tableName)
             .select("*")
             .order("sort_order", { ascending: true }) 
         
@@ -293,36 +342,40 @@ export async function getHitlistSongsAction() {
     }
 }
 
-// 4. Delete Song
-export async function deleteSongAction(id: number) {
+// 4. Delete Song (Supports 'active' or 'future')
+export async function deleteSongAction(id: number, type: ListType = 'active') {
     try {
+        const tableName = resolveTable(type)
+
         const { error } = await supabaseAdmin
-            .from(TABLE_SONGS)
+            .from(tableName)
             .delete()
             .eq("id", id)
 
         if (error) throw error
 
         revalidatePath("/admin/hitlist")
-        revalidatePath("/polls/hitlist")
+        if (type === 'active') revalidatePath("/polls/hitlist")
         return { success: true }
     } catch (error: any) {
         return { success: false, error: error.message }
     }
 }
 
-// 5. Delete All Songs
-export async function deleteAllSongsAction() {
+// 5. Delete All (Supports 'active' or 'future')
+export async function deleteAllSongsAction(type: ListType = 'active') {
   try {
+    const tableName = resolveTable(type)
+
     const { error } = await supabaseAdmin
-      .from(TABLE_SONGS)
+      .from(tableName)
       .delete()
       .gt("id", 0);
 
     if (error) throw error;
 
     revalidatePath("/admin/hitlist");
-    revalidatePath("/polls/hitlist");
+    if (type === 'active') revalidatePath("/polls/hitlist");
     return { success: true };
   } catch (error: any) {
     console.error("Delete All Error:", error);
@@ -330,12 +383,15 @@ export async function deleteAllSongsAction() {
   }
 }
 
-// 6. Song Reordering
-export async function updateSongOrderAction(items: { id: number }[]) {
+// 6. Reorder (Supports 'active' or 'future')
+export async function updateSongOrderAction(items: { id: number }[], type: ListType = 'active') {
     try {
+        const tableName = resolveTable(type)
+
+        // Parallel updates for speed
         const updates = items.map((item, index) => {
             return supabaseAdmin
-                .from(TABLE_SONGS)
+                .from(tableName)
                 .update({ sort_order: index })
                 .eq('id', item.id)
         })
