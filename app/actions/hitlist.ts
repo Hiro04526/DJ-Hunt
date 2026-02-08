@@ -565,6 +565,7 @@ export async function exportHitlistToCSV() {
       .from(TABLE_SONGS)
       .select("title, artist, votes")
       .order("votes", { ascending: false })
+      .order("sort_order", { ascending: true })
       .limit(20)
 
     if (error) throw error
