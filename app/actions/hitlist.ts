@@ -13,9 +13,10 @@ const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET
 const TABLE_SONGS = "Hitlist Songs"         // Active DB Table
 const FUTURE_SONGS = "Future Hitlist Songs" // Future DB Table
 const TABLE_VOTES = "Hitlist Votes"
+const TABLE_METADATA = "system_metadata"    // Metadata Table for Lazy Trigger
 const ID_COLUMN = "target_id"
 
-// Anchor: Feb 2, 2026, 8:00 AM
+// Anchor: Feb 2, 2026, 8:00 AM (Used for Voting Window Calculation)
 const REFERENCE_MONDAY = new Date("2026-02-02T08:00:00+08:00")
 const COOKIE_NAME = "hitlist_session"
 
@@ -27,6 +28,68 @@ type ListType = 'active' | 'future'
 // Helper: Selects the correct table based on the type
 const resolveTable = (type: ListType) => {
   return type === 'future' ? FUTURE_SONGS : TABLE_SONGS
+}
+
+// ==========================================
+//              HELPER: LAZY TRIGGER
+// ==========================================
+
+async function checkAndTriggerLazyReset() {
+  const KEY_NAME = "last_hitlist_reset"
+
+  // 1. Calculate when the MOST RECENT Monday 8:00 AM (GMT+8) was
+  const now = new Date()
+  
+  // Create a date object for "This Week's Monday"
+  const targetReset = new Date(now)
+  
+  // Adjust to Monday (1)
+  const day = targetReset.getDay()
+  const diff = targetReset.getDate() - day + (day === 0 ? -6 : 1) 
+  targetReset.setDate(diff)
+  
+  // Set to 8:00 AM
+  targetReset.setHours(8, 0, 0, 0)
+
+  // If "now" is currently Sunday or early Monday before 8AM, 
+  // the target reset point was actually LAST week's Monday.
+  if (now < targetReset) {
+    targetReset.setDate(targetReset.getDate() - 7)
+  }
+
+  // 2. Fetch the "Last Run" date from DB
+  const { data: metaRow, error } = await supabaseAdmin
+    .from(TABLE_METADATA)
+    .select("value")
+    .eq("key", KEY_NAME)
+    .single()
+
+  if (error || !metaRow) {
+    console.error("⚠️ Lazy Trigger: Metadata check failed. Is the 'system_metadata' table created?", error)
+    return 
+  }
+
+  const lastRunDate = new Date(metaRow.value)
+
+  // 3. COMPARE: If the DB date is OLDER than the Target Date, we need to reset!
+  if (lastRunDate < targetReset) {
+    console.log("⚡ Lazy Trigger: Hitlist is outdated. Running update cycle...")
+    
+    // RUN THE RESET
+    const result = await startNewHitlistCycle()
+
+    if (result.success) {
+      // 4. Update the DB so we don't run it again this week
+      await supabaseAdmin
+        .from(TABLE_METADATA)
+        .update({ value: new Date().toISOString() })
+        .eq("key", KEY_NAME)
+        
+      console.log("⚡ Lazy Trigger: Update Complete.")
+    } else {
+      console.error("⚡ Lazy Trigger Failed:", result.error)
+    }
+  }
 }
 
 // ==========================================
@@ -120,9 +183,14 @@ async function getEmailFromSession() {
 
 export async function getHitlistDataAction() {
   try {
+    // 1. --- LAZY RESET CHECK START ---
+    // This makes the first visitor of the week trigger the update automatically
+    await checkAndTriggerLazyReset()
+    // ---------------------------------
+
     const { isOpen, message, startOfCurrentCycle, nextOpeningTime } = await getVotingStatus()
     
-    // 1. Fetch Songs (ALWAYS from Active Table for public view)
+    // 2. Fetch Songs (ALWAYS from Active Table for public view)
     // We sort by 'votes' descending for the public leaderboard
     const { data: songs, error: songsError } = await supabaseAdmin
         .from(TABLE_SONGS)
@@ -131,11 +199,11 @@ export async function getHitlistDataAction() {
 
     if (songsError) throw songsError
 
-    // 2. Check Session
+    // 3. Check Session
     const email = await getEmailFromSession()
     let votedIds: number[] = []
 
-    // 3. Fetch User's Past Votes
+    // 4. Fetch User's Past Votes
     if (email) {
         const { data: voteData } = await supabaseAdmin
           .from(TABLE_VOTES)
@@ -267,8 +335,6 @@ export async function searchSongsAction(query: string) {
 }
 
 // 2. Add Song (Supports 'active' or 'future')
-// app/actions/hitlist.ts
-
 export async function addSongServerAction(song: any, type: ListType = 'active') {
   try {
     const tableName = resolveTable(type)
@@ -289,15 +355,13 @@ export async function addSongServerAction(song: any, type: ListType = 'active') 
     const { data: maxItems } = await supabaseAdmin
         .from(tableName)
         .select("sort_order")
-        .not("sort_order", "is", null) // <--- CRITICAL FIX: Ignore existing NULL rows
+        .not("sort_order", "is", null) 
         .order("sort_order", { ascending: false })
         .limit(1)
 
     // If no numbered rows exist (or all are null), start at 0
     const currentMax = maxItems?.[0]?.sort_order ?? 0
     const nextOrder = Number(currentMax) + 1
-
-    console.log(`[Adding to ${type}] Calculated sort_order:`, nextOrder)
 
     // 4. Insert with calculated order
     const finalPayload = {
@@ -403,4 +467,117 @@ export async function updateSongOrderAction(items: { id: number }[], type: ListT
         console.error("Reorder failed:", error)
         return { success: false, error: error.message }
     }
+}
+
+// ==========================================
+//              CYCLE MANAGEMENT
+// ==========================================
+
+export async function startNewHitlistCycle() {
+  try {
+    console.log("🔄 STARTING NEW HITLIST CYCLE...")
+
+    // --- STEP 1: RESET VOTES ---
+    // We clear the votes table entirely for the new cycle
+    const { error: voteError } = await supabaseAdmin
+      .from(TABLE_VOTES) 
+      .delete()
+      .neq('id', 0)
+
+    if (voteError) throw new Error(`Failed to clear votes: ${voteError.message}`)
+    console.log("✅ Votes Cleared")
+
+    // --- STEP 2: CLEAR CURRENT ACTIVE HITLIST ---
+    const { error: clearActiveError } = await supabaseAdmin
+      .from(TABLE_SONGS) 
+      .delete()
+      .neq('id', 0)
+
+    if (clearActiveError) throw new Error(`Failed to clear active hitlist: ${clearActiveError.message}`)
+    console.log("✅ Active Hitlist Cleared")
+
+    // --- STEP 3: FETCH SONGS FROM FUTURE TABLE ---
+    const { data: futureSongs, error: fetchFutureError } = await supabaseAdmin
+      .from(FUTURE_SONGS) 
+      .select('title, artist, image_url, spotify_link, sort_order') 
+
+    if (fetchFutureError) throw new Error(`Failed to fetch future songs: ${fetchFutureError.message}`)
+    
+    // --- STEP 4: MOVE TO ACTIVE HITLIST ---
+    if (futureSongs && futureSongs.length > 0) {
+      // We explicitly reset votes to 0 when moving to active
+      const songsToInsert = futureSongs.map(s => ({
+        ...s,
+        votes: 0 
+      }))
+
+      const { error: insertError } = await supabaseAdmin
+        .from(TABLE_SONGS)
+        .insert(songsToInsert) 
+
+      if (insertError) throw new Error(`Failed to move songs to active: ${insertError.message}`)
+      console.log(`✅ Moved ${futureSongs.length} songs from Future to Active`)
+    } else {
+      console.warn("⚠️ No future songs found! The Active Hitlist is now empty.")
+    }
+
+    // --- STEP 5: CLEAR FUTURE TABLE ---
+    const { error: clearFutureError } = await supabaseAdmin
+      .from(FUTURE_SONGS)
+      .delete()
+      .neq('id', 0)
+
+    if (clearFutureError) throw new Error(`Failed to clear future table: ${clearFutureError.message}`)
+    console.log("✅ Future Table Cleared")
+
+    // --- STEP 6: REFRESH SITE ---
+    revalidatePath('/')
+    revalidatePath('/polls/hitlist')
+    revalidatePath('/admin/hitlist')
+    
+    return { success: true, message: "Cycle reset successfully! Future songs are now Active." }
+
+  } catch (error: any) {
+    console.error("❌ Cycle Reset Error:", error)
+    return { success: false, error: error.message }
+  }
+}
+
+// ==========================================
+//              EXPORT ACTIONS
+// ==========================================
+
+export async function exportHitlistToCSV() {
+  try {
+    // Run the exact SQL query you requested
+    const { data, error } = await supabaseAdmin
+      .from(TABLE_SONGS)
+      .select("title, artist, votes")
+      .order("votes", { ascending: false })
+      .limit(20)
+
+    if (error) throw error
+
+    // Convert JSON to CSV format manually
+    // Header row
+    const headers = ["Title", "Artist", "Votes"]
+    const csvRows = [headers.join(",")]
+
+    // Data rows
+    for (const row of data) {
+      // Escape quotes in titles/artists to prevent CSV errors
+      const title = `"${row.title?.replace(/"/g, '""') || ''}"`
+      const artist = `"${row.artist?.replace(/"/g, '""') || ''}"`
+      const votes = row.votes
+
+      csvRows.push(`${title},${artist},${votes}`)
+    }
+
+    const csvString = csvRows.join("\n")
+
+    return { success: true, csv: csvString }
+  } catch (error: any) {
+    console.error("Export Error:", error)
+    return { success: false, error: error.message }
+  }
 }

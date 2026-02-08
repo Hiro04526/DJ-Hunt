@@ -7,7 +7,8 @@ import {
   getHitlistSongsAction, 
   deleteSongAction,
   deleteAllSongsAction,
-  updateSongOrderAction
+  updateSongOrderAction,
+  exportHitlistToCSV 
 } from "@/app/actions/hitlist"
 import { 
   DndContext, 
@@ -23,21 +24,18 @@ import {
 } from "@dnd-kit/sortable"
 import { SortableSongRow } from "@/components/hitlist/sortable-song-row"
 import { toast } from "sonner"
-import { Search, Music, RefreshCw, Layers, Trash2, Eye, EyeOff } from "lucide-react"
+import { Search, Music, RefreshCw, Layers, Trash2, Eye, EyeOff, Download } from "lucide-react"
 import { FaSpotify } from "react-icons/fa"
 
 export default function AddSongsClientComponent() {
   const [query, setQuery] = useState("")
   const [searchResults, setSearchResults] = useState<any[]>([])
-  
   const [activeSongs, setActiveSongs] = useState<any[]>([]) 
   const [futureSongs, setFutureSongs] = useState<any[]>([])
-  
-  // State for toggling the Ranking View
   const [showRankings, setShowRankings] = useState(false)
-  
   const [loadingSearch, setLoadingSearch] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [isExporting, setIsExporting] = useState(false) 
 
   // 1. Fetch BOTH lists on load
   useEffect(() => {
@@ -53,10 +51,8 @@ export default function AddSongsClientComponent() {
       // Respect the current toggle state when refreshing
       const songs = resActive.songs
       if (showRankings) {
-        // If we are currently viewing ranks, ensure we keep sorting by votes
         songs.sort((a: any, b: any) => (b.votes || 0) - (a.votes || 0))
       } else {
-        // Otherwise sort by the saved manual order
         songs.sort((a: any, b: any) => a.sort_order - b.sort_order)
       }
       setActiveSongs(songs)
@@ -80,18 +76,13 @@ export default function AddSongsClientComponent() {
     const nextState = !showRankings
     setShowRankings(nextState)
 
-    // Create a copy to sort
     const sorted = [...activeSongs]
-
     if (nextState === true) {
-      // User turned ON rankings -> Sort by VOTES
       sorted.sort((a, b) => (b.votes || 0) - (a.votes || 0))
       toast.success("Sorted by Votes")
     } else {
-      // User turned OFF rankings -> Restore MANUAL sort_order
       sorted.sort((a, b) => a.sort_order - b.sort_order)
     }
-
     setActiveSongs(sorted)
   }
 
@@ -123,9 +114,7 @@ export default function AddSongsClientComponent() {
     const tempId = Date.now()
     const newSong = { ...track, id: tempId, votes: track.votes || 0 }
     
-    // Optimistic Update
     const updatedList = [...activeSongs, newSong]
-    // If we are in Rank mode, re-sort immediately so the new song (0 votes) goes to bottom
     if (showRankings) updatedList.sort((a, b) => (b.votes || 0) - (a.votes || 0))
     
     setActiveSongs(updatedList)
@@ -133,14 +122,14 @@ export default function AddSongsClientComponent() {
     const result = await addSongServerAction(track, 'active')
     if (result.success) {
       toast.success("Added to Active DB!", { id: "add-active" })
-      fetchAllSongs() // Re-fetch to get real ID and correct sort_order
+      fetchAllSongs() 
     } else {
       setActiveSongs(current => current.filter(s => s.id !== tempId))
       toast.error(result.error, { id: "add-active" })
     }
   }
 
-  // 5. Add to FUTURE (Standard)
+  // 5. Add to FUTURE
   const addSongToFuture = async (track: any) => {
     if (futureSongs.some(s => s.spotify_link === track.spotify_link)) return
     const tempId = Date.now()
@@ -158,7 +147,7 @@ export default function AddSongsClientComponent() {
     }
   }
 
-  // 6. Delete Handler
+  // 6. Single Delete
   const handleDelete = async (id: number, type: 'active' | 'future') => {
     if (!confirm(`Remove this song from ${type === 'active' ? 'Active' : 'Future'} list?`)) return
     if (type === 'active') {
@@ -202,16 +191,12 @@ export default function AddSongsClientComponent() {
     }
   }
 
-  // 8. DRAG AND DROP SETUP
+  // 8. Drag and Drop Setup
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   )
 
   const handleDragEndActive = async (event: any) => {
-    // If we are in "Rank Mode", we generally shouldn't allow reordering 
-    // because the order is strictly defined by votes.
-    // However, if you DO drag, we assume you want to overwrite the manual sort_order.
-    
     const { active, over } = event
     if (!over || active.id === over.id) return
 
@@ -221,9 +206,6 @@ export default function AddSongsClientComponent() {
     
     setActiveSongs(newOrder) 
 
-    // Only save to DB if we are NOT in Rank Mode
-    // OR: If you want dragging in Rank Mode to act as a "permanent override", remove this check.
-    // Usually, you only want to save Drag order when in Manual mode.
     if (!showRankings) {
       const result = await updateSongOrderAction(newOrder, 'active')
       if (!result.success) toast.error("Failed to save Active order")
@@ -245,18 +227,65 @@ export default function AddSongsClientComponent() {
     if (!result.success) toast.error("Failed to save Future order")
   }
 
+  // 9. Handle Export
+  const handleExport = async () => {
+    setIsExporting(true)
+    try {
+      const result = await exportHitlistToCSV()
+
+      if (result.success && result.csv) {
+        const blob = new Blob([result.csv], { type: "text/csv" })
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        
+        const date = new Date().toISOString().split('T')[0]
+        a.href = url
+        a.download = `hitlist-top20-${date}.csv`
+        
+        document.body.appendChild(a)
+        a.click()
+        
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+        toast.success("Export successful")
+      } else {
+        toast.error("Export failed: " + result.error)
+      }
+    } catch (e) {
+      toast.error("Export encountered an error")
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-black text-white p-6 md:p-8 mt-14">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
         <h1 className="text-3xl font-bold text-[#1DB954]">Hitlist Manager</h1>
-        <button 
-          onClick={fetchAllSongs}
-          disabled={isRefreshing}
-          className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#222] hover:bg-[#333] transition-colors text-m font-bold cursor-pointer"
-        >
-          <RefreshCw size={16} className={isRefreshing ? "animate-spin text-[#1DB954]" : ""} />
-          Refresh All
-        </button>
+        
+        <div className="flex items-center gap-3">
+            <button
+                onClick={handleExport}
+                disabled={isExporting}
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-600 hover:bg-green-700 transition-colors text-m font-bold cursor-pointer disabled:opacity-50"
+            >
+                {isExporting ? (
+                    <RefreshCw size={16} className="animate-spin" />
+                ) : (
+                    <Download size={16} />
+                )}
+                Export CSV
+            </button>
+            
+            <button 
+            onClick={fetchAllSongs}
+            disabled={isRefreshing}
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#222] hover:bg-[#333] transition-colors text-m font-bold cursor-pointer disabled:opacity-50"
+            >
+            <RefreshCw size={16} className={isRefreshing ? "animate-spin text-[#1DB954]" : ""} />
+            Refresh All
+            </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -420,7 +449,6 @@ export default function AddSongsClientComponent() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   )

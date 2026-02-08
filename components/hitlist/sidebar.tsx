@@ -39,12 +39,12 @@ export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {
   const trackId = activeSong?.spotify_link ? getTrackId(activeSong.spotify_link) : ""
 
   return (
-    <div className="h-full w-full relative overflow-hidden rounded-2xl shadow-sm border border-gray-100 dark:border-white/10 flex flex-col items-center justify-center bg-black">
+    <div className="h-full w-full relative overflow-hidden rounded-3xl shadow-sm border border-gray-100 dark:border-white/10 flex flex-col items-center justify-center bg-black">
       {activeSong?.image_url && (
         <div className="absolute inset-0 z-0">
            <div className="absolute inset-0 bg-black/40 z-10" />
            <div 
-             className="absolute inset-0 blur-3xl scale-125 opacity-80"
+             className="absolute inset-0 blur-xs scale-125 opacity-80"
              style={{ 
                backgroundImage: `url(${activeSong.image_url})`, 
                backgroundSize: 'cover',

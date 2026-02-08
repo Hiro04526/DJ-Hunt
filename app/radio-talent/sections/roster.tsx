@@ -1,47 +1,49 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { ChevronDown, Check, Loader2, Mic2 } from "lucide-react"
-import { getRadioTalentByYear, type RadioTalentMember } from "@/app/actions/radio-talent"
+import { ChevronDown, Check, Loader2, Mic2, X } from "lucide-react"
+import { getRadioTalentByYear, getAvailableYears, type RadioTalentMember } from "@/app/actions/radio-talent"
 import { TalentCategory } from "@/components/radio-talent/talent-category"
-
-const ACADEMIC_YEARS = [
-    "A.Y. 2025-2026",
-    "A.Y. 2024-2025",
-    "A.Y. 2023-2024",
-    "A.Y. 2022-2023",
-    "A.Y. 2021-2022",
-    "A.Y. 2020-2021",
-    "A.Y. 2019-2020",
-    "A.Y. 2018-2019",
-    "A.Y. 2017-2018",
-    "A.Y. 2016-2017",
-    "A.Y. 2015-2016",
-    "A.Y. 2014-2015",
-    "A.Y. 2013-2014",
-    "A.Y. 2012-2013",
-    "A.Y. 2011-2012",
-    "A.Y. 2010-2011",
-]
+import { TalentModal } from "@/components/radio-talent/talent-modal"
 
 export function RosterSection() {
-  const [activeYear, setActiveYear] = useState(ACADEMIC_YEARS[0])
+  const [years, setYears] = useState<string[]>([])
+  const [activeYear, setActiveYear] = useState("")
   const [talents, setTalents] = useState<RadioTalentMember[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedTalent, setSelectedTalent] = useState<RadioTalentMember | null>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
+  // 1. Init: Fetch Available Years
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false)
+    async function init() {
+      try {
+        const fetchedYears = await getAvailableYears()
+        if (fetchedYears && fetchedYears.length > 0) {
+          setYears(fetchedYears)
+          setActiveYear(fetchedYears[0]) // Default to latest
+        } else {
+          // Fallback if DB is empty to prevent UI from breaking
+          console.warn("No years found, using default.")
+          const defaultYear = "A.Y. 2025-2026"
+          setYears([defaultYear])
+          setActiveYear(defaultYear)
+        }
+      } catch (error) {
+        console.error("Failed to init roster:", error)
+        const defaultYear = "A.Y. 2025-2026"
+        setYears([defaultYear])
+        setActiveYear(defaultYear)
       }
     }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
+    init()
   }, [])
 
+  // 2. Fetch Data when Year changes
   useEffect(() => {
+    if (!activeYear) return
+    
     async function fetchData() {
       setLoading(true)
       const res = await getRadioTalentByYear(activeYear)
@@ -55,14 +57,24 @@ export function RosterSection() {
     fetchData()
   }, [activeYear])
 
+  // 3. Click Outside Handler for Dropdown
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
   const getByRank = (rank: RadioTalentMember['rank']) => talents.filter((t) => t.rank === rank)
-  const directors = getByRank('Radio Talent Director')
   const seniors = getByRank('Senior DJ')
   const trainees = getByRank('DJ Trainee')
 
   return (
     <>
-      {/* Dropdown Selector */}
+      {/* --- DROPDOWN SELECTOR --- */}
       <div className="container mx-auto px-4 mb-16 relative">
         <div className="w-full md:w-80 mx-auto relative" ref={dropdownRef}>
           <label className="block text-center text-gray-500 text-xs uppercase font-bold tracking-widest mb-3">
@@ -74,7 +86,7 @@ export function RosterSection() {
               isDropdownOpen ? "border-[#569429] ring-2 ring-[#569429]/20" : ""
             }`}
           >
-            <span>{activeYear}</span>
+            <span>{activeYear || "Select Year"}</span>
             <ChevronDown className={`text-[#569429] transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`} />
           </button>
 
@@ -82,7 +94,7 @@ export function RosterSection() {
               isDropdownOpen ? "opacity-100 scale-100 max-h-80 visible" : "opacity-0 scale-95 max-h-0 invisible"
             }`}
           >
-            {ACADEMIC_YEARS.map((year) => (
+            {years.map((year) => (
               <button
                 key={year}
                 onClick={() => {
@@ -101,7 +113,7 @@ export function RosterSection() {
         </div>
       </div>
 
-      {/* Roster Grid */}
+      {/* --- ROSTER GRID --- */}
       <div className="container mx-auto px-4 min-h-100">
         {loading ? (
           <div className="flex h-64 items-center justify-center text-[#569429]">
@@ -115,12 +127,42 @@ export function RosterSection() {
           </div>
         ) : (
           <div className="space-y-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {directors.length > 0 && <TalentCategory title="Radio Talent Director" members={directors} />}
-            {seniors.length > 0 && <TalentCategory title="Senior DJs" members={seniors} />}
-            {trainees.length > 0 && <TalentCategory title="DJTrainees" members={trainees} />}
+            {seniors.length > 0 && (
+              <TalentCategory 
+                title="Senior DJs" 
+                members={seniors} 
+                onSelect={setSelectedTalent} 
+              />
+            )}
+            
+            {trainees.length > 0 && (
+              <TalentCategory 
+                title="DJ Trainees" 
+                members={trainees} 
+                onSelect={setSelectedTalent}
+              />
+            )}
           </div>
         )}
       </div>
+
+      {/* --- MODAL --- */}
+      {selectedTalent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+           <div className="bg-[#1a1a1a] border border-white/10 w-full max-w-4xl rounded-2xl overflow-hidden relative max-h-[90vh] overflow-y-auto shadow-2xl shadow-black">
+              
+              <button 
+                onClick={() => setSelectedTalent(null)}
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-white/20 text-white transition backdrop-blur-md"
+              >
+                <X size={24} />
+              </button>
+
+              {/* Modal Content passing the specific talent data */}
+              <TalentModal talent={selectedTalent} />
+           </div>
+        </div>
+      )}
     </>
   )
 }
