@@ -183,7 +183,7 @@ export async function getHitlistDataAction() {
     const { data: songs, error: songsError } = await supabaseAdmin
         .from(TABLE_SONGS)
         .select("*")
-        .order("votes", { ascending: false }) 
+        .order("sort_order", { ascending: true }) 
 
     if (songsError) throw songsError
 
