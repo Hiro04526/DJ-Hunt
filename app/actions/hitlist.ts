@@ -35,56 +35,44 @@ const resolveTable = (type: ListType) => {
 // ==========================================
 
 async function checkAndTriggerLazyReset() {
-  const KEY_NAME = "last_hitlist_reset"
+  const KEY_NAME = "next_reset_date"
 
-  // 1. Calculate when the MOST RECENT Monday 8:00 AM (GMT+8) was
-  const now = new Date()
-  
-  // Create a date object for "This Week's Monday"
-  const targetReset = new Date(now)
-  
-  // Adjust to Monday (1)
-  const day = targetReset.getDay()
-  const diff = targetReset.getDate() - day + (day === 0 ? -6 : 1) 
-  targetReset.setDate(diff)
-  
-  // Set to 8:00 AM
-  targetReset.setHours(8, 0, 0, 0)
-
-  // If "now" is currently Sunday or early Monday before 8AM, 
-  // the target reset point was actually LAST week's Monday.
-  if (now < targetReset) {
-    targetReset.setDate(targetReset.getDate() - 7)
-  }
-
-  // 2. Fetch the "Last Run" date from DB
+  // 1. Fetch the Scheduled Reset Date from DB
   const { data: metaRow, error } = await supabaseAdmin
     .from(TABLE_METADATA)
     .select("value")
     .eq("key", KEY_NAME)
     .single()
 
-  if (error || !metaRow) {
-    console.error("⚠️ Lazy Trigger: Metadata check failed. Is the 'system_metadata' table created?", error)
-    return 
+  // If DB is missing the key, we calculate the schedule dynamically based on Reference Monday
+  let targetResetDate: Date
+
+  if (error || !metaRow || !metaRow.value) {
+    // Fallback: Calculate the next Monday 8:00 AM in the 14-day cycle
+    const now = new Date()
+    const TWO_WEEK_CYCLE_MS = 14 * 24 * 60 * 60 * 1000
+    const diff = now.getTime() - REFERENCE_MONDAY.getTime()
+    const currentCycleIndex = Math.floor(diff / TWO_WEEK_CYCLE_MS)
+    
+    // The target is the START of the NEXT cycle
+    targetResetDate = new Date(
+      REFERENCE_MONDAY.getTime() + ((currentCycleIndex + 1) * TWO_WEEK_CYCLE_MS)
+    )
+    console.log("⚠️ Metadata missing. Calculated fallback target:", targetResetDate.toISOString())
+  } else {
+    targetResetDate = new Date(metaRow.value)
   }
 
-  const lastRunDate = new Date(metaRow.value)
+  // 2. COMPARE: Is Current Time >= Target Reset Time?
+  const now = new Date()
 
-  // 3. COMPARE: If the DB date is OLDER than the Target Date, we need to reset!
-  if (lastRunDate < targetReset) {
-    console.log("⚡ Lazy Trigger: Hitlist is outdated. Running update cycle...")
+  if (now >= targetResetDate) {
+    console.log(`⚡ Lazy Trigger: Current time (${now.toISOString()}) passed target (${targetResetDate.toISOString()}). Running update...`)
     
     // RUN THE RESET
     const result = await startNewHitlistCycle()
 
     if (result.success) {
-      // 4. Update the DB so we don't run it again this week
-      await supabaseAdmin
-        .from(TABLE_METADATA)
-        .update({ value: new Date().toISOString() })
-        .eq("key", KEY_NAME)
-        
       console.log("⚡ Lazy Trigger: Update Complete.")
     } else {
       console.error("⚡ Lazy Trigger Failed:", result.error)
@@ -530,7 +518,30 @@ export async function startNewHitlistCycle() {
     if (clearFutureError) throw new Error(`Failed to clear future table: ${clearFutureError.message}`)
     console.log("✅ Future Table Cleared")
 
-    // --- STEP 6: REFRESH SITE ---
+    // --- STEP 6: SCHEDULE NEXT CYCLE ---
+    // This logic ensures the next reset is locked to the 14-day grid
+    const now = new Date();
+    const TWO_WEEK_CYCLE_MS = 14 * 24 * 60 * 60 * 1000;
+    
+    // Calculate how many cycles have passed since Reference Monday
+    const diff = now.getTime() - REFERENCE_MONDAY.getTime();
+    const currentCycleIndex = Math.floor(diff / TWO_WEEK_CYCLE_MS);
+
+    // The NEXT reset should be at the start of the following cycle
+    const nextResetDate = new Date(
+      REFERENCE_MONDAY.getTime() + ((currentCycleIndex + 1) * TWO_WEEK_CYCLE_MS)
+    );
+
+    await supabaseAdmin
+      .from(TABLE_METADATA)
+      .upsert({ 
+        key: "next_reset_date", 
+        value: nextResetDate.toISOString() 
+      });
+      
+    console.log(`✅ Next Cycle Scheduled for: ${nextResetDate.toISOString()}`)
+
+    // --- STEP 7: REFRESH SITE ---
     revalidatePath('/')
     revalidatePath('/polls/hitlist')
     revalidatePath('/admin/hitlist')
