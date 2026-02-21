@@ -8,21 +8,7 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/components/ui/carousel"
-
-interface Song {
-  id: number
-  title: string
-  artist: string
-  image_url?: string
-}
-
-interface CarouselSectionProps {
-  songs: Song[]
-  selected: number[]
-  onToggle: (id: number) => void
-  onIndexChange: (index: number) => void
-  hasVoted: boolean
-}
+import { CarouselSectionProps } from "@/types/hitlist"
 
 export function CarouselSection({ 
   songs, 

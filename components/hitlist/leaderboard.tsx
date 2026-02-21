@@ -1,20 +1,7 @@
 "use client"
 
 import { Trophy, RefreshCw } from "lucide-react"
-
-interface Song {
-  id: number
-  title: string
-  artist: string
-  image_url?: string
-  votes?: number
-}
-
-interface LeaderboardProps {
-  songs: Song[]
-  onRefresh: () => void
-  isRefreshing: boolean
-}
+import { LeaderboardProps } from "@/types/hitlist"
 
 export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: LeaderboardProps) {
   // 1. Sort by votes (highest first) and take Top 5

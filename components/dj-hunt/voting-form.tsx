@@ -3,12 +3,7 @@
 import Script from "next/script"
 import { useEffect, useState } from "react"
 import { getVotesAction, submitVotesAction } from "@/app/actions/dj-hunt"
-
-type DJ = {
-  id: number
-  name: string
-  image: string
-}
+import { DJ } from "@/types/dj-hunt"
 
 export function DJVotingForm({ djs }: { djs: DJ[] }) {
   const [user, setUser] = useState<{ email: string; token: string } | null>(null)

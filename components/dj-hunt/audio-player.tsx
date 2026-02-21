@@ -1,11 +1,8 @@
 import { useRef, useState } from "react"
 import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute } from "react-icons/fa"
+import { AudioPlayerProps } from "@/types/dj-hunt"
 
-type Props = {
-  src: string | null | undefined
-}
-
-export default function AudioPlayer({ src }: Props) {
+export default function AudioPlayer({ src }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)

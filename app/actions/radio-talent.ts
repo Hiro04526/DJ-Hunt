@@ -1,17 +1,7 @@
 "use server"
 
 import { supabaseAdmin } from "@/lib/supabase/admin"
-
-export interface RadioTalentMember {
-  id: number;
-  name: string;
-  image_url: string; 
-  academic_year: string;
-  rank: 'Senior DJ' | 'DJ Trainee';
-  bio?: string;
-  event_hosting_images?: string[]; 
-  stingers?: string[]; 
-}
+import { RadioTalentMember } from "@/types/radio-talent"
 
 // 1. Get Available Years (Robust Error Handling)
 export async function getAvailableYears() {

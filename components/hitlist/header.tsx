@@ -1,9 +1,6 @@
 "use client"
 
-interface HeaderProps {
-  user: { email: string } | null; 
-  onLogout: () => void;
-}
+import { HeaderProps } from "@/types/hitlist"
 
 export function HitlistHeader({ user, onLogout }: HeaderProps) {
   return (

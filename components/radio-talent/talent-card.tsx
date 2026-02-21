@@ -1,5 +1,5 @@
 import Image from "next/image"
-import type { RadioTalentMember } from "@/app/actions/radio-talent"
+import { RadioTalentMember } from "@/types/radio-talent"
 
 export function TalentCard({ member }: { member: RadioTalentMember }) {
   return (

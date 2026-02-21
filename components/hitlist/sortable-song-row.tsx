@@ -2,22 +2,8 @@
 
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { GripVertical, Trash2, Trophy } from "lucide-react"
-
-interface Song {
-  id: number
-  title: string
-  artist: string
-  image_url: string
-  votes: number
-}
-
-interface SortableSongRowProps {
-  song: Song
-  handleDelete: (id: number) => void
-  index?: number // Optional: Only for Active list if needed
-  showVotes?: boolean // Optional: To hide votes on Future list
-}
+import { GripVertical, Trash2 } from "lucide-react"
+import { SortableSongRowProps } from "@/types/hitlist"
 
 export function SortableSongRow({ song, handleDelete, index, showVotes = false }: SortableSongRowProps) {
   const {

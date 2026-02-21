@@ -1,15 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-
-type Props = {
-  lines: string[];
-  typeMs?: number;      // total time to fully type a line
-  holdMs?: number;      // time to keep full line on screen
-  backspaceMs?: number; // total time to fully delete a line
-  className?: string;
-  showCursor?: boolean;
-};
+import { TypeWriterProps } from "@/types/dj-hunt";
 
 export default function EqualDurationTypewriter({
   lines,
@@ -18,7 +10,7 @@ export default function EqualDurationTypewriter({
   backspaceMs = 1000,
   className,
   showCursor = true,
-}: Props) {
+}: TypeWriterProps) {
   const [i, setI] = useState(0);
   const [phase, setPhase] = useState<"typing" | "holding" | "deleting">("typing");
   const [chars, setChars] = useState(0);

@@ -2,13 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import { XCircle } from "lucide-react"
-
-interface LoginModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onToken: (token: any) => void
-  ready: boolean // Google script ready status
-}
+import { LoginModalProps } from "@/types/hitlist"
 
 export function LoginModal({ isOpen, onClose, onToken, ready }: LoginModalProps) {
   const googleBtnRef = useRef<HTMLDivElement>(null)

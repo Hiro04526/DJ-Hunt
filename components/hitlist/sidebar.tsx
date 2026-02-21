@@ -2,15 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Music2, XCircle, CheckCircle2 } from "lucide-react"
-
-// --- TYPES ---
-interface Song {
-  id: number
-  title: string
-  artist: string
-  image_url?: string
-  spotify_link?: string
-}
+import { Song } from "@/types/hitlist"
 
 // --- COMPONENT 1: SPOTIFY PLAYER ---
 export function HitlistPlayer({ activeSong }: { activeSong?: Song }) {

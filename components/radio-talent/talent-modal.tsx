@@ -1,6 +1,6 @@
 "use client"
 
-import { RadioTalentMember } from "@/app/actions/radio-talent"
+import { RadioTalentMember } from "@/types/radio-talent"
 import { PlayCircle } from "lucide-react"
 
 export function TalentModal({ talent }: { talent: RadioTalentMember }) {

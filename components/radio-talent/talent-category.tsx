@@ -1,13 +1,7 @@
 "use client"
 
-import { RadioTalentMember } from "@/app/actions/radio-talent"
 import { ArrowRight } from "lucide-react"
-
-interface TalentCategoryProps {
-  title: string
-  members: RadioTalentMember[]
-  onSelect: (member: RadioTalentMember) => void
-}
+import { TalentCategoryProps } from "@/types/radio-talent"
 
 export function TalentCategory({ title, members, onSelect }: TalentCategoryProps) {
   return (
