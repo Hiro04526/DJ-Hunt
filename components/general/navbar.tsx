@@ -13,9 +13,8 @@ import Image from "next/image"
 const navItems = [
   { name: "ABOUT US", path: "/about-us" },
   { name: "RADIO TALENT", path: "/radio-talent" },
+  { name: "SERVICES", path: "/services"}
 ]
-
-const postsMenu = [{ label: "PUBLIC RELATIONS", href: "/posts/public-relations" }]
 
 const pollsMenu = [
   { label: "HITLIST", href: "/polls/hitlist" },
@@ -26,7 +25,7 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const [openMenu, setOpenMenu] = useState<null | "posts" | "polls">(null)
+  const [openMenu, setOpenMenu] = useState<null | "polls">(null)
   const dropdownRef = useRef<HTMLDivElement | null>(null)
 
   const pathname = usePathname()
@@ -35,7 +34,7 @@ export function Navbar() {
   const openTimer = useRef<NodeJS.Timeout | null>(null);
   const closeTimer = useRef<NodeJS.Timeout | null>(null);
 
-  function openWithDelay(name: "posts" | "polls") {
+  function openWithDelay(name: "polls") {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     if (openTimer.current) clearTimeout(openTimer.current);
     openTimer.current = setTimeout(() => setOpenMenu(name), 90);
@@ -113,7 +112,6 @@ export function Navbar() {
                 </Link>
               ))}
 
-              <span className="text-2xl font-medium opacity-80 select-none">POSTS</span>
               <span className="text-2xl font-medium opacity-80 select-none">POLLS</span>
             </div>
 
@@ -185,65 +183,6 @@ export function Navbar() {
                     )}
                   </Link>
                 ))}
-
-                {/* POSTS (dropdown) */}
-                <div
-                  className="relative group"
-                  onMouseEnter={() => openWithDelay("posts")}
-                  onMouseLeave={closeWithDelay}
-                >
-                  <button
-                    type="button"
-                    className={cn(
-                      "inline-flex items-center gap-1 text-2xl font-medium transition-colors group-hover:scale-105",
-                      (openMenu === "posts" || groupActive(postsMenu))
-                        ? "text-primary"
-                        : "hover:text-primary dark:hover:text-primary"
-                    )}
-                    aria-haspopup="menu"
-                    aria-expanded={openMenu === "posts"}
-                    onClick={() => setOpenMenu(v => (v === "posts" ? null : "posts"))}
-                  >
-                    POSTS <ChevronDown className="h-6 w-6" />
-                  </button>
-
-                  <div className="absolute left-0 right-0 top-full h-2" aria-hidden />
-
-                  <AnimatePresence>
-                    {openMenu === "posts" && (
-                      <motion.div
-                        key="posts-menu"
-                        initial={{ opacity: 0, y: -6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -6 }}
-                        transition={{ duration: 0.12 }}
-                        className="absolute left-1/2 top-full mt-2 w-28 -translate-x-1/2 rounded-md border 
-                                   bg-white dark:bg-[#222222] shadow-lg overflow-hidden"
-                        role="menu"
-                        onMouseEnter={() => openWithDelay("posts")}
-                        onMouseLeave={closeWithDelay}
-                      >
-                        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                          {postsMenu.map(it => (
-                            <li key={it.href}>
-                              <Link
-                                href={it.href}
-                                className={cn(
-                                  "block px-4 py-2 text-center text-2xl transition hover:scale-105",
-                                  "bg-white hover:bg-gray-100 text-black",
-                                  "dark:bg-[#1a1a1a] dark:hover:bg-[#2a2a2a] dark:text-white",
-                                  linkActive(it.href) && "text-primary"
-                                )}
-                              >
-                                {it.label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
 
                 {/* POLLS (dropdown) */}
                 <div
@@ -356,21 +295,6 @@ export function Navbar() {
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {item.name}
-                  </Link>
-                ))}
-
-                {postsMenu.map((it) => (
-                  <Link
-                    key={it.href}
-                    href={it.href}
-                    className={cn(
-                      "block rounded-md px-3 py-2 text-sm transition",
-                      "hover:bg-gray-200 dark:hover:bg-[#222222]",
-                      linkActive(it.href) ? "text-primary" : "text-black dark:text-white"
-                    )}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {it.label}
                   </Link>
                 ))}
 

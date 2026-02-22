@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function RadioTalentPage() {
   return (
-    <main className="min-h-screen bg-[#111] text-white mt-12 pb-20 font-sans">
+    <main className="min-h-screen bg-[#111] text-white mt-12 pb-16 font-sans">
       <TitleSection />
       <RosterSection />
     </main>
