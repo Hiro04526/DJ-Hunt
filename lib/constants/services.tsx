@@ -7,7 +7,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     title: "Advertising & Onboarding",
     icon: <Megaphone className="w-8 h-8" />,
     description: "Amplify your brand's reach with our targeted advertising and seamless onboarding campaigns.",
-    subServices: ["Ad Placements", "Brand Integration", "Onboarding Campaigns"],
+    subServices: ["Ad Placements", "On-Air Mentions"],
     color: "from-green-500 to-green-700",
     primerUrl: "/primers/advertising-primer.pdf", // Ensure you put a dummy PDF in public/primers/
     sampleTabs: [
@@ -31,7 +31,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     title: "Social Media Services",
     icon: <Share2 className="w-8 h-8" />,
     description: "Engage your target demographic through our established digital presence and creative content.",
-    subServices: ["Social Media Marketing", "Content Creation", "Digital Campaigns"],
+    subServices: ["Content Creation", "Digital Campaigns"],
     color: "from-blue-500 to-blue-700",
     primerUrl: "/primers/social-media-primer.pdf",
     sampleTabs: [
@@ -55,7 +55,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     title: "Show Guesting",
     icon: <Mic2 className="w-8 h-8" />,
     description: "Feature on our premium radio shows and podcasts to share your story with our listeners.",
-    subServices: ["Radio Interviews", "Podcast Features", "Live Q&A Sessions"],
+    subServices: ["Radio Interviews", "Podcast Features"],
     color: "from-purple-500 to-purple-700",
     primerUrl: "/primers/guesting-primer.pdf",
     sampleTabs: [
@@ -79,12 +79,12 @@ export const SERVICES_DATA: ServiceItem[] = [
     title: "Talent Provision",
     icon: <Users className="w-8 h-8" />,
     description: "Professional voices and dynamic hosts for your events and digital content.",
-    subServices: ["Hosting", "Voiceovers", "Event Emceeing"],
+    subServices: ["Hosting", "Voiceovers"],
     color: "from-orange-500 to-orange-700",
     primerUrl: "/primers/talent-primer.pdf",
     sampleTabs: [
       {
-        name: "Hosting & Emceeing",
+        name: "Hosting",
         media: [
           { type: "image", url: "https://images.unsplash.com/photo-1478147424036-cb1c4962cc53?q=80&w=1000&auto=format&fit=crop", orientation: "horizontal" },
           { type: "image", url: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1000&auto=format&fit=crop", orientation: "vertical" }
@@ -103,7 +103,7 @@ export const SERVICES_DATA: ServiceItem[] = [
     title: "Media Coverage",
     icon: <Camera className="w-8 h-8" />,
     description: "Comprehensive documentation of your events through high-quality visual and written media.",
-    subServices: ["Live Instagram Coverage", "Photo Coverage", "Writeups"],
+    subServices: ["Live Instagram Coverage", "Photo Coverage"],
     color: "from-pink-500 to-pink-700",
     primerUrl: "/primers/media-primer.pdf",
     sampleTabs: [
@@ -116,7 +116,7 @@ export const SERVICES_DATA: ServiceItem[] = [
         ]
       },
       {
-        name: "Live IG Coverage",
+        name: "Live Instagram Coverage",
         media: [
           { type: "video", url: "https://www.w3schools.com/html/mov_bbb.mp4", orientation: "vertical" }
         ]

@@ -8,17 +8,7 @@ import { FaChevronRight } from "react-icons/fa"
 import AudioPlayer from "@/components/dj-hunt/audio-player"
 import { DJVotingForm } from "@/components/dj-hunt/voting-form"
 import { getDJsAction } from "@/app/actions/dj-hunt"
-
-type DJ = {
-  id: number
-  name: string
-  description: string
-  image: string
-  videoshoot: string
-  stinger: string
-  segue: string
-  voiceover: string
-}
+import { DJ } from "@/types/dj-hunt"
 
 const VOTING_START = new Date("2025-12-13T20:00:00+08:00").getTime()
 const VOTING_END   = new Date("2025-12-16T18:30:00+08:00").getTime()
@@ -265,7 +255,7 @@ export function DJSection() {
             <DialogHeader>
               <DialogTitle className="text-2xl text-center">Vote for Your Favorite DJs (Maximum of 3)</DialogTitle>
             </DialogHeader>
-            <DJVotingForm djs={DJs.map(({ id, name, image }) => ({ id, name, image }))} />
+            <DJVotingForm djs={DJs.map(({ id, name, image, description, videoshoot, stinger, segue, voiceover  }) => ({ id, name, image, description, videoshoot, stinger, segue, voiceover }))} />
           </DialogContent>
         </Dialog>
       </AnimatePresence>

@@ -57,7 +57,7 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
             <h3 className="text-sm font-bold text-gray-500 tracking-wider uppercase mb-4 mt-4 md:mt-0">
               Included Sub-Services
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {service.subServices.map((sub, idx) => (
                 <div key={idx} className="flex items-center gap-3 bg-[#1a1a1a] p-4 rounded-lg border border-[#333]">
                   <CheckCircle2 className="w-5 h-5 text-[#569429]" />
@@ -80,7 +80,7 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
                 Inquire via Email
               </button>
               
-              {/* REPLACED BUTTON */}
+              {/* EXIT BUTTON */}
               <button 
                 onClick={(e) => {
                   e.stopPropagation();

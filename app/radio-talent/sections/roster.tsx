@@ -154,7 +154,7 @@ export function RosterSection() {
               
               <button 
                 onClick={() => setSelectedTalent(null)}
-                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-white/20 text-white transition backdrop-blur-md"
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-white/20 text-white transition backdrop-blur-md cursor-pointer"
               >
                 <X size={24} />
               </button>
