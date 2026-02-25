@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useRef } from "react"
 import { ChevronDown, Check, Loader2, Mic2, X } from "lucide-react"
-import { getRadioTalentByYear, getAvailableYears, type RadioTalentMember } from "@/app/actions/radio-talent"
+import { getRadioTalentByYear, getAvailableYears } from "@/app/actions/radio-talent"
+import { RadioTalentMember } from "@/types/radio-talent"
 import { TalentCategory } from "@/components/radio-talent/talent-category"
 import { TalentModal } from "@/components/radio-talent/talent-modal"
 
