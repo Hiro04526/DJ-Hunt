@@ -32,7 +32,7 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
               {service.icon}
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white group-hover:text-[#1DB954] transition-colors">
+              <h2 className="text-2xl font-bold text-white group-hover:text-[#569429] transition-colors">
                 {service.title}
               </h2>
               <p className="text-gray-400 mt-1 line-clamp-1 md:line-clamp-none font-secondary">
@@ -42,7 +42,7 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
           </div>
           <ChevronDown 
             className={`w-6 h-6 text-gray-500 transition-transform duration-300 shrink-0 ${
-              isExpanded ? "rotate-180 text-[#1DB954]" : ""
+              isExpanded ? "rotate-180 text-[#569429]" : ""
             }`} 
           />
         </button>
@@ -60,7 +60,7 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
               {service.subServices.map((sub, idx) => (
                 <div key={idx} className="flex items-center gap-3 bg-[#1a1a1a] p-4 rounded-lg border border-[#333]">
-                  <CheckCircle2 className="w-5 h-5 text-[#1DB954]" />
+                  <CheckCircle2 className="w-5 h-5 text-[#569429]" />
                   <span className="font-medium text-white">{sub}</span>
                 </div>
               ))}
@@ -74,7 +74,7 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
                     onInquireClick(`Inquiry: ${service.title}`);
                   }
                 }}
-                className="flex-1 flex items-center justify-center gap-2 bg-[#1DB954] hover:bg-[#1ed760] text-black font-bold py-3 px-6 rounded-full transition-colors cursor-pointer"
+                className="flex-1 flex items-center justify-center gap-2 bg-[#569429] hover:bg-[#55B233] text-black font-bold py-3 px-6 rounded-full transition-colors cursor-pointer"
               >
                 <Mail className="w-5 h-5" />
                 Inquire via Email
@@ -107,7 +107,7 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
               <h2 className="text-2xl font-bold text-white">{service.title} - Primer & Samples</h2>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 text-gray-400 hover:text-white hover:bg-[#222] rounded-full transition-colors"
+                className="p-2 text-gray-400 hover:text-white hover:bg-[#222] rounded-full transition-colors cursor-pointer"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -146,8 +146,8 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
                       onClick={() => setActiveTab(index)}
                       className={`whitespace-nowrap px-6 py-2.5 rounded-full font-medium transition-all ${
                         activeTab === index 
-                          ? "bg-[#1DB954] text-black" 
-                          : "bg-[#111] text-gray-400 hover:text-white hover:bg-[#222] border border-[#333]"
+                          ? "bg-[#569429] text-black" 
+                          : "bg-[#111] text-gray-400 hover:text-white hover:bg-[#222] border border-[#333] cursor-pointer"
                       }`}
                     >
                       {tab.name}

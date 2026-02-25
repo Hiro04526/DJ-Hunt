@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import { XCircle } from "lucide-react"
-import { LoginModalProps } from "@/types/hitlist"
+import { LoginModalProps } from "@/types/login"
 
 export function LoginModal({ isOpen, onClose, onToken, ready }: LoginModalProps) {
   const googleBtnRef = useRef<HTMLDivElement>(null)

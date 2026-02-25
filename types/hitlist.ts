@@ -29,19 +29,3 @@ export interface LeaderboardProps {
   onRefresh: () => void
   isRefreshing: boolean
 }
-
-// --- LOGIN MODAL ---
-export interface LoginModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onToken: (token: any) => void
-  ready: boolean // Google script ready status
-}
-
-// --- SORTABLE SONG ROW ---
-export interface SortableSongRowProps {
-  song: Song
-  handleDelete: (id: number) => void
-  index?: number // Optional: Only for Active list if needed
-  showVotes?: boolean // Optional: To hide votes on Future list
-}

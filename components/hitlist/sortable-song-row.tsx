@@ -3,7 +3,7 @@
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { GripVertical, Trash2 } from "lucide-react"
-import { SortableSongRowProps } from "@/types/hitlist"
+import { SortableSongRowProps } from "@/types/hitlist-admin"
 
 export function SortableSongRow({ song, handleDelete, index, showVotes = false }: SortableSongRowProps) {
   const {
