@@ -1,32 +1,11 @@
 "use client"
 
-import { useEffect, useRef } from "react"
 import { XCircle } from "lucide-react"
 import { LoginModalProps } from "@/types/login"
+import { useLoginModal } from "@/hooks/admin/login/use-login-modal"
 
 export function LoginModal({ isOpen, onClose, onToken, ready }: LoginModalProps) {
-  const googleBtnRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (ready && isOpen && googleBtnRef.current) {
-      try {
-        googleBtnRef.current.innerHTML = ""
-        // @ts-ignore
-        window.google?.accounts.id.initialize({
-          client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-          callback: onToken,
-        })
-        // @ts-ignore
-        window.google?.accounts.id.renderButton(googleBtnRef.current, {
-          theme: "outline",
-          size: "large",
-          shape: "pill",
-        })
-      } catch (e) {
-        console.error(e)
-      }
-    }
-  }, [ready, isOpen, onToken])
+  const { googleBtnRef } = useLoginModal(ready, isOpen, onToken)
 
   if (!isOpen) return null
 

@@ -1,19 +1,42 @@
 "use client"
 
-import { useState } from "react"
-import { ChevronDown, CheckCircle2, Mail, FileText, X, Play } from "lucide-react"
+import { useState, useEffect } from "react"
+import { 
+  ChevronDown, CheckCircle2, Mail, FileText, X, Play, 
+  Megaphone, Share2, Mic2, Users, Camera 
+} from "lucide-react"
 import { ServiceCardProps } from "@/types/services"
+
+// --- 1. ICON MAP ---
+const ICON_MAP: Record<string, React.ElementType> = {
+  megaphone: Megaphone,
+  share: Share2,
+  mic: Mic2,
+  users: Users,
+  camera: Camera,
+}
 
 export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: ServiceCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  
-  // Default to the first sub-service for the tabs, if available
   const [activeTab, setActiveTab] = useState(0)
 
-  // Prevent scroll on body when modal is open
-  if (typeof window !== "undefined") {
-    document.body.style.overflow = isModalOpen ? "hidden" : "unset"
-  }
+  // --- 2. FIX: SIDE EFFECTS IN USE-EFFECT ---
+  // Safely handle body scroll locking without interrupting the render cycle
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+    
+    // Cleanup function ensures we don't accidentally leave the body locked
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [isModalOpen])
+
+  // Get the dynamically mapped icon, fallback to Megaphone if not found
+  const IconComponent = ICON_MAP[service.icon] || Megaphone
 
   return (
     <>
@@ -29,7 +52,8 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
         >
           <div className="flex items-center gap-6">
             <div className={`p-4 rounded-xl bg-linear-to-br ${service.color} text-white shadow-lg group-hover:scale-110 transition-transform`}>
-              {service.icon}
+              {/* Render the dynamically mapped icon here */}
+              <IconComponent className="w-8 h-8" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white group-hover:text-[#569429] transition-colors">
@@ -121,7 +145,6 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
                 <div className="p-4 border-b border-[#222] bg-[#1a1a1a]">
                   <h3 className="font-bold text-white">Service Primer</h3>
                 </div>
-                {/* Fallback to a message if no PDF is provided in data yet */}
                 {service.primerUrl ? (
                   <iframe 
                     src={`${service.primerUrl}#view=FitH`} 
@@ -140,7 +163,8 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
                 
                 {/* Tab System */}
                 <div className="flex overflow-x-auto gap-2 pb-4 mb-4 border-b border-[#222] scrollbar-hide">
-                  {service.sampleTabs?.map((tab: any, index: number) => (
+                  {/* FIX: Removed inline 'any' by relying on inferred types from your strictly typed ServiceItem */}
+                  {service.sampleTabs?.map((tab, index) => (
                     <button
                       key={index}
                       onClick={() => setActiveTab(index)}
@@ -153,7 +177,6 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
                       {tab.name}
                     </button>
                   ))}
-                  {/* Fallback if no tabs exist yet */}
                   {!service.sampleTabs && (
                     <span className="text-gray-500 italic px-2">Media tabs not configured yet.</span>
                   )}
@@ -163,11 +186,11 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
                 <div className="flex-1 overflow-y-auto pr-2">
                   {service.sampleTabs && service.sampleTabs[activeTab]?.media ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-max">
-                      {service.sampleTabs[activeTab].media.map((mediaItem: any, i: number) => (
+                      {/* FIX: Removed inline 'any' */}
+                      {service.sampleTabs[activeTab].media.map((mediaItem, i) => (
                         <div 
                           key={i} 
                           className={`bg-[#111] border border-[#222] rounded-xl overflow-hidden group relative flex items-center justify-center ${
-                            // If horizontal, span 2 columns on larger screens
                             mediaItem.orientation === 'horizontal' ? "sm:col-span-2 aspect-video" : "aspect-3/4"
                           }`}
                         >

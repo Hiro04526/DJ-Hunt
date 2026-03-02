@@ -1,6 +1,6 @@
 "use client"
 
-import { useHitlistAdmin } from "@/hooks/use-hitlist-admin"
+import { useHitlistAdmin } from "@/hooks/admin/hitlist/use-hitlist-admin"
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { SortableSongRow } from "@/components/hitlist/sortable-song-row"

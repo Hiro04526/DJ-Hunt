@@ -1,64 +1,20 @@
+// components/radio-talent/roster-section.tsx
 "use client"
 
 import { useEffect, useState, useRef } from "react"
 import { ChevronDown, Check, Loader2, Mic2, X } from "lucide-react"
-import { getRadioTalentByYear, getAvailableYears } from "@/app/actions/radio-talent"
 import { RadioTalentMember } from "@/types/radio-talent"
 import { TalentCategory } from "@/components/radio-talent/talent-category"
 import { TalentModal } from "@/components/radio-talent/talent-modal"
+import { useRoster } from "@/hooks/radio-talent/use-roster"
 
 export function RosterSection() {
-  const [years, setYears] = useState<string[]>([])
-  const [activeYear, setActiveYear] = useState("")
-  const [talents, setTalents] = useState<RadioTalentMember[]>([])
-  const [loading, setLoading] = useState(true)
+  const { years, activeYear, setActiveYear, seniors, trainees, loading, isEmpty } = useRoster()
   const [selectedTalent, setSelectedTalent] = useState<RadioTalentMember | null>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  // 1. Init: Fetch Available Years
-  useEffect(() => {
-    async function init() {
-      try {
-        const fetchedYears = await getAvailableYears()
-        if (fetchedYears && fetchedYears.length > 0) {
-          setYears(fetchedYears)
-          setActiveYear(fetchedYears[0]) // Default to latest
-        } else {
-          // Fallback if DB is empty to prevent UI from breaking
-          console.warn("No years found, using default.")
-          const defaultYear = "A.Y. 2025-2026"
-          setYears([defaultYear])
-          setActiveYear(defaultYear)
-        }
-      } catch (error) {
-        console.error("Failed to init roster:", error)
-        const defaultYear = "A.Y. 2025-2026"
-        setYears([defaultYear])
-        setActiveYear(defaultYear)
-      }
-    }
-    init()
-  }, [])
-
-  // 2. Fetch Data when Year changes
-  useEffect(() => {
-    if (!activeYear) return
-    
-    async function fetchData() {
-      setLoading(true)
-      const res = await getRadioTalentByYear(activeYear)
-      if (res.success && res.data) {
-        setTalents(res.data)
-      } else {
-        setTalents([])
-      }
-      setLoading(false)
-    }
-    fetchData()
-  }, [activeYear])
-
-  // 3. Click Outside Handler for Dropdown
+  // Click Outside Handler for Dropdown
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -69,9 +25,15 @@ export function RosterSection() {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  const getByRank = (rank: RadioTalentMember['rank']) => talents.filter((t) => t.rank === rank)
-  const seniors = getByRank('Senior DJ')
-  const trainees = getByRank('DJ Trainee')
+  // Background Scroll Lock
+  useEffect(() => {
+    if (selectedTalent) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+    return () => { document.body.style.overflow = "unset" }
+  }, [selectedTalent])
 
   return (
     <>
@@ -120,7 +82,7 @@ export function RosterSection() {
           <div className="flex h-64 items-center justify-center text-[#569429]">
             <Loader2 className="animate-spin" size={48} />
           </div>
-        ) : talents.length === 0 ? (
+        ) : isEmpty ? (
           <div className="text-center py-20 opacity-50">
             <Mic2 className="mx-auto mb-4 w-12 h-12 text-gray-600" />
             <h3 className="text-xl font-bold">No Records Found</h3>
@@ -159,7 +121,6 @@ export function RosterSection() {
                 <X size={24} />
               </button>
 
-              {/* Modal Content passing the specific talent data */}
               <TalentModal talent={selectedTalent} />
            </div>
         </div>

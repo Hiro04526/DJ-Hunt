@@ -1,48 +1,29 @@
-import { useRef, useState } from "react"
+"use client"
+
 import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute } from "react-icons/fa"
-import { AudioPlayerProps } from "@/types/dj-hunt"
+import { useAudioPlayer } from "@/hooks/polls/dj-hunt/use-audio-player"
+
+export interface AudioPlayerProps {
+  src: string | null | undefined
+}
 
 export default function AudioPlayer({ src }: AudioPlayerProps) {
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(0)
-  const [volume, setVolume] = useState(1)
-  const [isMuted, setIsMuted] = useState(false)
-
-  const togglePlay = async () => {
-    const el = audioRef.current
-    if (!el) return
-    
-    if (isPlaying) {
-      el.pause()
-      setIsPlaying(false)
-    } else {
-      el.play().then(() => {
-        setIsPlaying(true);
-      }).catch((err) => {
-        console.warn("Autoplay blocked until user interaction:", err);
-      });
-    }
-  }
-
-  const toggleMute = () => {
-    const el = audioRef.current
-    if (!el) return
-    setIsMuted(!isMuted)
-    if (isMuted) {
-      el.volume = volume
-    } else {
-      el.volume = 0
-    }
-  }
-
-  const format = (t: number) => {
-    if (!isFinite(t)) return "0:00"
-    const m = Math.floor(t / 60)
-    const s = Math.floor(t % 60)
-    return `${m}:${s.toString().padStart(2, "0")}`
-  }
+  const {
+    audioRef,
+    isPlaying,
+    currentTime,
+    duration,
+    volume,
+    isMuted,
+    togglePlay,
+    toggleMute,
+    handleSeek,
+    handleVolumeChange,
+    handleTimeUpdate,
+    handleLoadedMetadata,
+    handleEnded,
+    formatTime,
+  } = useAudioPlayer()
 
   return (
     <div className="w-full max-w-2xl rounded-xl flex items-center gap-4 bg-white text-[#111111] dark:bg-[#111111] dark:text-white transition-colors">
@@ -50,9 +31,9 @@ export default function AudioPlayer({ src }: AudioPlayerProps) {
         ref={audioRef}
         src={src || undefined}
         preload="metadata"
-        onTimeUpdate={() => setCurrentTime(audioRef.current?.currentTime ?? 0)}
-        onLoadedMetadata={() => setDuration(audioRef.current?.duration ?? 0)}
-        onEnded={() => setIsPlaying(false)}
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
+        onEnded={handleEnded}
       />
 
       {/* Play / Pause Button */}
@@ -68,35 +49,27 @@ export default function AudioPlayer({ src }: AudioPlayerProps) {
       {/* Progress and Time */}
       <div className="flex flex-1 flex-col gap-1">
         <div className="flex items-center justify-center text-sm">
-          <p>{format(currentTime)}</p>
+          <p>{formatTime(currentTime)}</p>
 
           <input
             type="range"
             min={0}
             max={duration || 0}
             value={currentTime}
-            onChange={(e) => {
-              const t = Number(e.target.value)
-              if (audioRef.current) audioRef.current.currentTime = t
-              setCurrentTime(t)
-            }}
+            onChange={handleSeek}
             className="mx-1.5 w-full accent-[#569429]"
             aria-label="Seek"
             disabled={!src}
           />
 
-          <p>{format(duration)}</p>
+          <p>{formatTime(duration)}</p>
         </div>
       </div>
 
       {/* Volume */}
       <div className="flex items-center gap-2 w-32 relative group">
         <div onClick={toggleMute} className="cursor-pointer">
-          {isMuted || volume === 0 ? (
-            <FaVolumeMute />
-          ) : (
-            <FaVolumeUp />
-          )}
+          {isMuted || volume === 0 ? <FaVolumeMute /> : <FaVolumeUp />}
         </div>
 
         {/* Volume Slider */}
@@ -106,13 +79,7 @@ export default function AudioPlayer({ src }: AudioPlayerProps) {
           max={1}
           step={0.01}
           value={isMuted ? 0 : volume}
-          onChange={(e) => {
-            const v = Number(e.target.value)
-            setVolume(v)
-            if (audioRef.current) audioRef.current.volume = v
-            if (v === 0) setIsMuted(true)
-            else setIsMuted(false)
-          }}
+          onChange={handleVolumeChange}
           className="w-full accent-[#569429]"
           aria-label="Volume"
           disabled={!src}

@@ -20,7 +20,7 @@ export function CarouselSection({
   const [api, setApi] = useState<CarouselApi>()
   const [activeIndex, setActiveIndex] = useState(0)
 
-  // --- SCALE LOGIC (Unchanged) ---
+  // --- SCALE LOGIC ---
   const updateScales = useCallback((emblaApi: CarouselApi) => {
     if (!emblaApi) return
     const slides = emblaApi.slideNodes()

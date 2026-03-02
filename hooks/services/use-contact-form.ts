@@ -1,17 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { ContactFormData } from "@/types/services"
+import { ContactFormData, ContactFormProps } from "@/types/services"
 import { DEFAULT_CONTACT_SUBJECT } from "@/lib/constants/services"
 import { getEmailSuggestion } from "@/lib/email-validator"
+import { submitContactFormAction } from "@/app/actions/services"
 
-interface UseContactFormProps {
-  onSuccess: () => void
-  prefilledSubject?: string
-}
-
-export function useContactForm({ onSuccess, prefilledSubject }: UseContactFormProps) {
-  // Form State
+export function useContactForm({ onSuccess, prefilledSubject }: ContactFormProps) {
+  // --- Form State ---
   const [formState, setFormState] = useState<ContactFormData>({ 
     title: "", 
     name: "", 
@@ -20,20 +16,20 @@ export function useContactForm({ onSuccess, prefilledSubject }: UseContactFormPr
     message: "" 
   })
   
-  // UI States
+  // --- UI States ---
   const [errors, setErrors] = useState<Partial<ContactFormData>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [globalError, setGlobalError] = useState("")
   const [suggestion, setSuggestion] = useState<string | null>(null)
 
-  // Effect: Handle prefilled subject
+  // --- Effect: Handle prefilled subject ---
   useEffect(() => {
     if (prefilledSubject && formState.subject !== prefilledSubject) {
       setFormState((prev) => ({ ...prev, subject: prefilledSubject }))
     }
   }, [prefilledSubject, formState.subject])
 
-  // Handlers
+  // --- Input Handlers ---
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormState(prev => ({ ...prev, [name]: value }))
@@ -49,6 +45,7 @@ export function useContactForm({ onSuccess, prefilledSubject }: UseContactFormPr
     }
   }
 
+  // --- Email Suggestion Handlers ---
   const handleEmailBlur = (e: React.FocusEvent<HTMLInputElement>) => {
     const suggestedEmail = getEmailSuggestion(e.target.value)
     setSuggestion(suggestedEmail)
@@ -64,6 +61,7 @@ export function useContactForm({ onSuccess, prefilledSubject }: UseContactFormPr
     }
   }
 
+  // --- Submission Logic ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setGlobalError("")
@@ -86,31 +84,15 @@ export function useContactForm({ onSuccess, prefilledSubject }: UseContactFormPr
     setIsSubmitting(true)
     
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY,
-          subject: `New GGFM Inquiry: ${formState.subject}`,
-          from_name: `${formState.title} ${formState.name}`,
-          email: formState.email, 
-          message: formState.message,
-        }),
-      });
-
-      const result = await response.json();
+      const result = await submitContactFormAction(formState)
 
       if (result.success) {
         onSuccess()
       } else {
-        setGlobalError(result.message || "An error occurred.")
+        setGlobalError(result.error || "An error occurred.")
       }
     } catch (error) {
-      console.error("Submission error:", error)
-      setGlobalError("Failed to connect to the email server. Please try again.")
+      setGlobalError("Something went wrong. Please try again.")
     } finally {
       setIsSubmitting(false)
     }

@@ -14,8 +14,6 @@ export function ServicesContainer() {
     if (formElement) {
       const elementPosition = formElement.getBoundingClientRect().top + window.scrollY
       
-      // CHANGE THIS NUMBER: Increase it to stop the scroll higher up the page
-      // Try 150, 200, or even 250 until it frames the "Not sure what you need?" perfectly below your header.
       const offsetPosition = elementPosition - 20
 
       window.scrollTo({

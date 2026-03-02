@@ -1,76 +1,17 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import Image from "next/image"
 import { motion, LayoutGroup, AnimatePresence } from "framer-motion"
+import { ChevronDown, Menu, Moon, Sun } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { ChevronDown, Menu, Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-import Image from "next/image"
+import { useNavbar } from "@/hooks/general/use-navbar"
+import { NAV_ITEMS, POLLS_MENU } from "@/lib/constants/navbar"
 
-const navItems = [
-  { name: "ABOUT US", path: "/about-us" },
-  { name: "RADIO TALENT", path: "/radio-talent" },
-  { name: "SERVICES", path: "/services"}
-]
-
-const pollsMenu = [
-  { label: "HITLIST", href: "/polls/hitlist" },
-  { label: "DJ HUNT", href: "/polls/dj-hunt" },
-]
-
-export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
-  const [openMenu, setOpenMenu] = useState<null | "polls">(null)
-  const dropdownRef = useRef<HTMLDivElement | null>(null)
-
-  const pathname = usePathname()
-  const { theme, setTheme } = useTheme()
-
-  const openTimer = useRef<NodeJS.Timeout | null>(null);
-  const closeTimer = useRef<NodeJS.Timeout | null>(null);
-
-  function openWithDelay(name: "polls") {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    if (openTimer.current) clearTimeout(openTimer.current);
-    openTimer.current = setTimeout(() => setOpenMenu(name), 90);
-  }
-
-  function closeWithDelay() {
-    if (openTimer.current) clearTimeout(openTimer.current);
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    closeTimer.current = setTimeout(() => setOpenMenu(null), 160);
-  }
-
-  useEffect(() => {
-    setMounted(true)
-    const handleScroll = () => setIsScrolled(window.scrollY > 50)
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
-  useEffect(() => {
-    setOpenMenu(null)
-    setIsMobileMenuOpen(false)
-  }, [pathname])
-
-  useEffect(() => {
-    function onDocClick(e: MouseEvent) {
-      if (!dropdownRef.current) return
-      if (!dropdownRef.current.contains(e.target as Node)) setOpenMenu(null)
-    }
-    if (openMenu) document.addEventListener("mousedown", onDocClick)
-    return () => document.removeEventListener("mousedown", onDocClick)
-  }, [openMenu])
-
-  const linkActive = (p: string) => pathname === p || pathname.startsWith(p + "/")
-  const groupActive = (menu: { href: string }[]) => menu.some((i) => linkActive(i.href))
-
-  const StaticNavbar = () => (
+// --- 1. EXTRACTED STATIC NAVBAR ---
+function StaticNavbar({ linkActive }: { linkActive: (path: string) => boolean }) {
+  return (
     <nav
       className={cn(
         "fixed top-0 z-50 w-full transition-all duration-300",
@@ -99,7 +40,7 @@ export function Navbar() {
 
           <div className="flex items-center space-x-4">
             <div className="hidden md:flex items-center space-x-8">
-              {navItems.map((item) => (
+              {NAV_ITEMS.map((item) => (
                 <Link
                   key={item.path}
                   href={item.path}
@@ -128,8 +69,23 @@ export function Navbar() {
       </div>
     </nav>
   )
+}
 
-  if (!mounted) return <StaticNavbar />
+// --- 2. MAIN NAVBAR COMPONENT ---
+export function Navbar() {
+  const {
+    isMobileMenuOpen, setIsMobileMenuOpen,
+    mounted,
+    openMenu, setOpenMenu,
+    dropdownRef,
+    pathname,
+    theme, setTheme,
+    openWithDelay, closeWithDelay,
+    linkActive, groupActive
+  } = useNavbar()
+
+  // Return the static version during server-side rendering/hydration
+  if (!mounted) return <StaticNavbar linkActive={linkActive} />
 
   return (
     <LayoutGroup>
@@ -165,7 +121,7 @@ export function Navbar() {
             {/* Desktop nav */}
             <div className="flex items-center space-x-4">
               <div className="hidden md:flex items-center space-x-8" ref={dropdownRef}>
-                {navItems.map((item) => (
+                {NAV_ITEMS.map((item) => (
                   <Link
                     key={item.path}
                     href={item.path}
@@ -194,7 +150,7 @@ export function Navbar() {
                     type="button"
                     className={cn(
                       "inline-flex items-center gap-1 text-2xl font-medium transition-colors group-hover:scale-105",
-                      (openMenu === "polls" || groupActive(pollsMenu))
+                      (openMenu === "polls" || groupActive(POLLS_MENU))
                         ? "text-primary"
                         : "hover:text-primary dark:hover:text-primary"
                     )}
@@ -215,14 +171,13 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.12 }}
-                        className="absolute left-1/2 top-full mt-2 w-28 -translate-x-1/2 rounded-md border 
-                                   bg-white dark:bg-[#222222] shadow-lg overflow-hidden"
+                        className="absolute left-1/2 top-full mt-2 w-28 -translate-x-1/2 rounded-md border bg-white dark:bg-[#222222] shadow-lg overflow-hidden"
                         role="menu"
                         onMouseEnter={() => openWithDelay("polls")}
                         onMouseLeave={closeWithDelay}
                       >
                         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                          {pollsMenu.map(it => (
+                          {POLLS_MENU.map(it => (
                             <li key={it.href}>
                               <Link
                                 href={it.href}
@@ -279,11 +234,10 @@ export function Navbar() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="md:hidden border-t backdrop-blur-md shadow-lg 
-                         bg-white dark:bg-[#111111]"
+              className="md:hidden border-t backdrop-blur-md shadow-lg bg-white dark:bg-[#111111]"
             >
               <div className="container mx-auto px-4 py-3 space-y-1">
-                {navItems.map((item) => (
+                {NAV_ITEMS.map((item) => (
                   <Link
                     key={item.path}
                     href={item.path}
@@ -298,7 +252,7 @@ export function Navbar() {
                   </Link>
                 ))}
 
-                {pollsMenu.map((it) => (
+                {POLLS_MENU.map((it) => (
                   <Link
                     key={it.href}
                     href={it.href}

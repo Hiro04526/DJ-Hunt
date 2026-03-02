@@ -2,7 +2,7 @@
 export interface ServiceItem {
   id: string
   title: string
-  icon: React.ReactNode
+  icon: string
   description: string
   subServices: string[]
   color: string

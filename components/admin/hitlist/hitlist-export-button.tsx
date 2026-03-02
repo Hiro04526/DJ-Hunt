@@ -1,7 +1,7 @@
 "use client"
 
 import { Download } from "lucide-react"
-import { useHitlistAdmin } from "@/hooks/use-hitlist-admin"
+import { useHitlistAdmin } from "@/hooks/admin/hitlist/use-hitlist-admin"
 
 export default function HitlistExportButton() {
   const { isExporting, handleExport } = useHitlistAdmin()

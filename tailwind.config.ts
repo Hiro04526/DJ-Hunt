@@ -23,6 +23,7 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        // ... ALL YOUR EXISTING SHADCN COLORS STAY EXACTLY THE SAME ...
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: { DEFAULT: "hsl(var(--card))", foreground: "hsl(var(--card-foreground))" },
@@ -46,6 +47,12 @@ const config: Config = {
           DEFAULT: "hsl(var(--navbar))",
           foreground: "hsl(var(--navbar-foreground))",
         },
+        brand: {
+          DEFAULT: "#569429", // Green Giant FM Green
+          light: "#F5F2E9",   // Off-white background
+          dark: "#111111",    // Standard dark mode background
+          darker: "#191919",  // Slightly lighter dark Footer background
+        }
       },
       keyframes: {
         "accordion-down": { from: { height: "0" }, to: { height: "var(--radix-accordion-content-height)" } },

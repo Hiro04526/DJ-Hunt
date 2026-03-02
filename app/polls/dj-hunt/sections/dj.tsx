@@ -1,58 +1,23 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { FaChevronRight } from "react-icons/fa"
 import AudioPlayer from "@/components/dj-hunt/audio-player"
 import { DJVotingForm } from "@/components/dj-hunt/voting-form"
-import { getDJsAction } from "@/app/actions/dj-hunt"
-import { DJ } from "@/types/dj-hunt"
-
-const VOTING_START = new Date("2025-12-13T20:00:00+08:00").getTime()
-const VOTING_END   = new Date("2025-12-16T18:30:00+08:00").getTime()
+import { useDJSection } from "@/hooks/polls/dj-hunt/use-dj-section"
 
 export function DJSection() {
-  const [selectedDJ, setSelectedDJ] = useState<DJ | null>(null)
-  const [DJs, setDJs] = useState<DJ[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [isVotingOpen, setIsVotingOpen] = useState(false)
-  const [now, setNow] = useState<number | null>(null)
-
-  useEffect(() => {
-    setNow(Date.now())
-    const id = setInterval(() => setNow(Date.now()), 60_000)
-    return () => clearInterval(id)
-  }, [])
-
-  const isWithinVotingWindow = now !== null && now >= VOTING_START && now <= VOTING_END
-
-  useEffect(() => {
-    async function fetchDJs() {
-      try {
-        const result = await getDJsAction()
-
-        if (result.success && result.data) {
-          setDJs(result.data as DJ[])
-        } else {
-          setError(result.error || "Failed to load DJs")
-        }
-      } catch (err) {
-        console.error(err)
-        setError("Something went wrong while fetching DJs")
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchDJs()
-  }, [])
-
-  const buildDriveEmbedSrc = (raw: string) => {
-    const m = raw.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/);
-    return m ? `https://drive.google.com/file/d/${m[1]}/preview` : raw;
-  }
+  const {
+    DJs,
+    loading,
+    error,
+    selectedDJ, setSelectedDJ,
+    isVotingOpen, setIsVotingOpen,
+    isWithinVotingWindow,
+    buildDriveEmbedSrc
+  } = useDJSection()
 
   return (
     <section id="djs" className="bg-[#569429]">

@@ -7,7 +7,7 @@ export function TalentModal({ talent }: { talent: RadioTalentMember }) {
   return (
     <div className="flex flex-col md:flex-row h-full max-h-[80vh]">
       {/* LEFT: Image Side */}
-      <div className="w-full md:w-2/5 relative min-h-75 md:min-h-0">
+      <div className="w-full md:w-2/5 relative min-h-81.75 md:min-h-0">
         <img
           src={talent.image_url}
           alt={talent.name}

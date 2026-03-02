@@ -2,16 +2,13 @@
 
 import { Trophy, RefreshCw } from "lucide-react"
 import { LeaderboardProps } from "@/types/hitlist"
+import { useLeaderboard } from "@/hooks/polls/hitlist/use-leaderboard"
+import { cn } from "@/lib/utils"
 
 export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: LeaderboardProps) {
-  // 1. Sort by votes (highest first) and take Top 5
-  const sortedSongs = [...songs]
-    .sort((a, b) => (b.votes || 0) - (a.votes || 0))
-    .slice(0, 5)
+  const { sortedSongs, maxVotes, isEmpty } = useLeaderboard(songs)
 
-  const maxVotes = sortedSongs[0]?.votes || 1
-
-  if (sortedSongs.length === 0) return null
+  if (isEmpty) return null
 
   return (
     <div className="h-full relative gap-4 flex flex-col lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
@@ -33,7 +30,7 @@ export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: Leaderboa
           <button 
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors hover:cursor-pointer"
+            className="rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors hover:cursor-pointer disabled:opacity-50"
             title="Refresh Leaderboard"
           >
             <RefreshCw size={16} className={isRefreshing ? "animate-spin text-[#569429]" : ""} />
@@ -50,39 +47,49 @@ export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: Leaderboa
           return (
             <div key={`leaderboard-${song.id}`} className="group relative">
               <div className="flex items-center gap-4 relative z-10">
-                <div className={`
-                  w-8 text-left font-black text-lg 
-                  ${index === 0 ? "text-[#569429] text-2xl" : "text-gray-400"}
-                `}>
+                
+                {/* Rank Number */}
+                <div 
+                  className={cn(
+                    "w-8 text-left font-black text-lg",
+                    index === 0 ? "text-[#569429] text-2xl" : "text-gray-400"
+                  )}
+                >
                   #{index + 1}
                 </div>
 
+                {/* Song Image */}
+                {/* Note: If you have configured domains in next.config.js, you should upgrade this to Next.js <Image /> */}
                 <img 
                   src={song.image_url} 
                   alt={song.title}
+                  loading="lazy"
                   className="w-12 h-12 rounded-lg object-cover shadow-sm"
                 />
 
+                {/* Song Details & Progress Bar */}
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-baseline mb-1">
                     <h4 className="font-bold truncate text-gray-900 dark:text-gray-100">
                       {song.title}
                     </h4>
-                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400 whitespace-nowrap ml-2">
                       {voteCount.toLocaleString()} votes
                     </span>
                   </div>
                   
                   <div className="h-2 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                     <div 
-                      className={`h-full rounded-full transition-all duration-1000 ease-out ${
+                      className={cn(
+                        "h-full rounded-full transition-all duration-1000 ease-out",
                         index === 0 ? "bg-[#569429]" : "bg-gray-400 dark:bg-gray-600"
-                      }`}
+                      )}
                       style={{ width: `${percentage}%` }}
                     />
                   </div>
                   <p className="text-xs text-gray-400 mt-1 truncate">{song.artist}</p>
                 </div>
+
               </div>
             </div>
           )
