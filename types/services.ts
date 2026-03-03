@@ -57,5 +57,5 @@ export interface ContactSuccessProps {
 }
 
 export interface ServicesCTAProps {
-  prefilledSubject?: string;
+  prefilledSubject?: string
 }

@@ -37,14 +37,22 @@ export function useRoster() {
     
     async function fetchData() {
       setLoading(true)
-      const res = await getRadioTalentByYear(activeYear)
-      if (res.success && res.data) {
-        setTalents(res.data)
-      } else {
+
+      try {
+        const res = await getRadioTalentByYear(activeYear)
+        if (res?.success && res.data) {
+          setTalents(res.data)
+        } else {
+          setTalents([])
+        }
+      } catch (error) {
+        console.error("Failed to fetch talent data:", error) 
         setTalents([])
+      } finally {
+        setLoading(false) 
       }
-      setLoading(false)
     }
+
     fetchData()
   }, [activeYear])
 
