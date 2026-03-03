@@ -33,30 +33,42 @@ export function useRoster() {
 
   // 2. Fetch Data when Year changes
   useEffect(() => {
-    if (!activeYear) return
+    if (!activeYear) return;
     
+    let ignore = false; 
+
     async function fetchData() {
       setLoading(true)
 
       try {
         const res = await getRadioTalentByYear(activeYear)
+        
+        if (ignore) return; 
+
         if (res?.success && res.data) {
           setTalents(res.data)
         } else {
           setTalents([])
         }
       } catch (error) {
+        if (ignore) return;
         console.error("Failed to fetch talent data:", error) 
         setTalents([])
       } finally {
-        setLoading(false) 
+        if (!ignore) {
+          setLoading(false) 
+        }
       }
     }
 
     fetchData()
+
+    // Cleanup function: runs when activeYear changes or component unmounts
+    return () => {
+      ignore = true;
+    }
   }, [activeYear])
 
-  // Group the data
   const seniors = talents.filter((t) => t.rank === TALENT_RANKS.SENIOR)
   const trainees = talents.filter((t) => t.rank === TALENT_RANKS.TRAINEE)
   const isEmpty = talents.length === 0
