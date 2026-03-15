@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { ContactFormData, ContactFormProps } from "@/types/services"
-import { DEFAULT_CONTACT_SUBJECT } from "@/lib/constants/services"
+import { DEFAULT_CONTACT_SUBJECT } from "@/constants/services"
 import { getEmailSuggestion } from "@/lib/email-validator"
-import { submitContactFormAction } from "@/app/actions/services"
+import { submitContactFormAction } from "@/actions/services"
 
 export function useContactForm({ onSuccess, prefilledSubject }: ContactFormProps) {
   // --- Form State ---

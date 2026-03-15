@@ -3,7 +3,7 @@
 import { useHitlistAdmin } from "@/hooks/admin/hitlist/use-hitlist-admin"
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { SortableSongRow } from "@/components/hitlist/sortable-song-row"
+import { SortableSongRow } from "@/components/admin/hitlist/sortable-song-row"
 import { Search, Music, RefreshCw, Layers, Trash2, Eye, EyeOff, Download } from "lucide-react"
 import { FaSpotify } from "react-icons/fa"
 

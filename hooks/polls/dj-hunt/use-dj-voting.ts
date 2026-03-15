@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { getVotesAction, submitVotesAction } from "@/app/actions/dj-hunt"
-import { MAX_VOTES_PER_USER } from "@/lib/constants/dj-hunt"
+import { getVotesAction, submitVotesAction } from "@/actions/dj-hunt"
+import { MAX_VOTES_PER_USER } from "@/constants/dj-hunt"
 import { decodeJwtPayload } from "@/lib/utils"
 import { AuthUser } from "@/types/dj-hunt"
 

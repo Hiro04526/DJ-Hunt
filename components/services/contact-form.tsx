@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ContactFormProps } from "@/types/services"
-import { NAME_TITLES, ANIMATION_VARIANTS } from "@/lib/constants/services"
+import { NAME_TITLES, ANIMATION_VARIANTS } from "@/constants/services"
 import { useContactForm } from "@/hooks/services/use-contact-form"
 
 export function ContactForm({ onSuccess, prefilledSubject }: ContactFormProps) {

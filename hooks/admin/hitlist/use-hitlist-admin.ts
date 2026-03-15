@@ -5,7 +5,7 @@ import { PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
 import { 
   addSongServerAction, searchSongsAction, getHitlistSongsAction, 
   deleteSongAction, deleteAllSongsAction, updateSongOrderAction, exportHitlistToCSV 
-} from "@/app/actions/admin"
+} from "@/actions/admin"
 
 export function useHitlistAdmin() {
   const [query, setQuery] = useState("")

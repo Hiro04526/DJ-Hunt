@@ -1,4 +1,4 @@
-import { TalentRank } from "@/lib/constants/radio-talent"
+import { TalentRank } from "@/constants/radio-talent"
 
 // --- RADIO TALENT MEMBER PROP ---
 export interface RadioTalentMember {

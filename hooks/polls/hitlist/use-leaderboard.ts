@@ -2,7 +2,7 @@
 
 import { useMemo } from "react"
 import { LeaderboardProps } from "@/types/hitlist" 
-import { MAX_LEADERBOARD_ITEMS } from "@/lib/constants/hitlist"
+import { MAX_LEADERBOARD_ITEMS } from "@/constants/hitlist"
 
 export function useLeaderboard(songs: LeaderboardProps["songs"]) {
   const { sortedSongs, maxVotes } = useMemo(() => {

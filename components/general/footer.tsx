@@ -2,7 +2,7 @@ import Image from "next/image"
 import { FaFacebookF, FaSpotify, FaInstagram, FaLinkedinIn } from "react-icons/fa"
 import { FaXTwitter } from "react-icons/fa6"
 import { SiGmail } from "react-icons/si"
-import { SOCIAL_LINKS, FOOTER_INFO } from "@/lib/constants/footer"
+import { SOCIAL_LINKS, FOOTER_INFO } from "@/constants/footer"
 
 const ICON_MAP: Record<string, React.ElementType> = {
   twitter: FaXTwitter,

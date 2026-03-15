@@ -4,9 +4,9 @@ import { useEffect, useState, useCallback } from "react"
 import { toast } from "sonner"
 import { supabase } from "@/lib/supabase/client"
 import { googleLogout } from "@react-oauth/google"
-import { getHitlistDataAction, submitHitlistVoteAction, loginAction, logoutAction } from "@/app/actions/hitlist"
+import { getHitlistDataAction, submitHitlistVoteAction, loginAction, logoutAction } from "@/actions/hitlist"
 import { Song, StatusState } from "@/types/hitlist"
-import { HITLIST_DB } from "@/lib/constants/hitlist"
+import { HITLIST_DB } from "@/constants/hitlist"
 
 export function useHitlist() {
   // Cookie/User State

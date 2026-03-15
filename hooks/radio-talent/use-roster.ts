@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
-import { getRadioTalentByYear, getAvailableYears } from "@/app/actions/radio-talent"
+import { getRadioTalentByYear, getAvailableYears } from "@/actions/radio-talent"
 import { RadioTalentMember } from "@/types/radio-talent"
-import { DEFAULT_ROSTER_YEAR, TALENT_RANKS } from "@/lib/constants/radio-talent"
+import { DEFAULT_ROSTER_YEAR, TALENT_RANKS } from "@/constants/radio-talent"
 
 export function useRoster() {
   const [years, setYears] = useState<string[]>([])

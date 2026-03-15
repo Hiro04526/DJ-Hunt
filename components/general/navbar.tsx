@@ -7,7 +7,7 @@ import { ChevronDown, Menu, Moon, Sun } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useNavbar } from "@/hooks/general/use-navbar"
-import { NAV_ITEMS, POLLS_MENU } from "@/lib/constants/navbar"
+import { NAV_ITEMS, POLLS_MENU } from "@/constants/navbar"
 
 // --- 1. EXTRACTED STATIC NAVBAR ---
 function StaticNavbar({ linkActive }: { linkActive: (path: string) => boolean }) {

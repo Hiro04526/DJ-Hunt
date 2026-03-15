@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { SERVICES_DATA } from "@/lib/constants/services"
+import { SERVICES_DATA } from "@/constants/services"
 import { ServiceCard } from "@/components/services/service-card"
 import { ServicesGridProps } from "@/types/services"
 

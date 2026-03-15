@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { getDJsAction } from "@/app/actions/dj-hunt"
+import { getDJsAction } from "@/actions/dj-hunt"
 import { DJ } from "@/types/dj-hunt"
-import { VOTING_START, VOTING_END } from "@/lib/constants/dj-hunt"
+import { VOTING_START, VOTING_END } from "@/constants/dj-hunt"
 import { buildDriveEmbedSrc } from "@/lib/utils"
 
 export function useDJSection() {
