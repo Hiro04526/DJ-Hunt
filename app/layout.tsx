@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/general/theme-provider"
 import { Navbar } from "@/components/general/navbar"
 import { Footer } from "@/components/general/footer"
 import { Toaster } from "@/components/ui/toaster"
+import { Providers } from "./providers"
 
 export const metadata: Metadata = {
   title: "Green Giant FM",
@@ -32,19 +33,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="theme-color" content="#569429" />
       </head>
       <body className="font-primary">
-        <ThemeProvider 
-          attribute="class" 
-          defaultTheme="system" 
-          enableSystem 
-          disableTransitionOnChange
-        >
-          <div className="relative min-h-screen">
-            <Navbar />
-            <main>{children}</main>
-            <Footer />
-          </div>
-          <Toaster />
-        </ThemeProvider>
+        {/* 2. Wrap everything inside the body with the new Providers */}
+        <Providers>
+          <ThemeProvider 
+            attribute="class" 
+            defaultTheme="system" 
+            enableSystem 
+            disableTransitionOnChange
+          >
+            <div className="relative min-h-screen">
+              <Navbar />
+              <main>{children}</main>
+              <Footer />
+            </div>
+            <Toaster />
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

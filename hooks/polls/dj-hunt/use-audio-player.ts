@@ -1,7 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
-// If you still want the hook to provide the formatter, import it:
+import { useRef, useState, useCallback } from "react"
 import { formatAudioTime } from "@/lib/utils"
 
 export function useAudioPlayer() {
@@ -13,7 +12,7 @@ export function useAudioPlayer() {
   const [isMuted, setIsMuted] = useState(false)
 
   // --- 1. PLAYBACK CONTROLS ---
-  const togglePlay = async () => {
+  const togglePlay = useCallback(async () => {
     const el = audioRef.current
     if (!el) return
     
@@ -27,46 +26,45 @@ export function useAudioPlayer() {
         console.warn("Autoplay blocked until user interaction:", err)
       })
     }
-  }
+  }, [isPlaying])
 
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     const el = audioRef.current
     if (!el) return
-    setIsMuted(!isMuted)
-    if (isMuted) {
-      el.volume = volume
-    } else {
+    setIsMuted(prev => !prev)
+    if (!isMuted) { 
       el.volume = 0
+    } else {
+      el.volume = volume
     }
-  }
+  }, [isMuted, volume])
 
   // --- 2. INPUT HANDLERS ---
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSeek = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const t = Number(e.target.value)
     if (audioRef.current) audioRef.current.currentTime = t
     setCurrentTime(t)
-  }
+  }, [])
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVolumeChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const v = Number(e.target.value)
     setVolume(v)
     if (audioRef.current) audioRef.current.volume = v
-    if (v === 0) setIsMuted(true)
-    else setIsMuted(false)
-  }
+    setIsMuted(v === 0)
+  }, [])
 
   // --- 3. AUDIO ELEMENT EVENT HANDLERS ---
-  const handleTimeUpdate = () => {
+  const handleTimeUpdate = useCallback(() => {
     setCurrentTime(audioRef.current?.currentTime ?? 0)
-  }
+  }, [])
 
-  const handleLoadedMetadata = () => {
+  const handleLoadedMetadata = useCallback(() => {
     setDuration(audioRef.current?.duration ?? 0)
-  }
+  }, [])
 
-  const handleEnded = () => {
+  const handleEnded = useCallback(() => {
     setIsPlaying(false)
-  }
+  }, [])
 
   return {
     audioRef,

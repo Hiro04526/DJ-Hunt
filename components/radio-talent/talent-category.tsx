@@ -1,9 +1,10 @@
 "use client"
 
+import { memo } from "react"
 import { ArrowRight } from "lucide-react"
 import { TalentCategoryProps } from "@/types/radio-talent"
 
-export function TalentCategory({ title, members, onSelect }: TalentCategoryProps) {
+function TalentCategoryComponent({ title, members, onSelect }: TalentCategoryProps) {
   return (
     <div className="space-y-8">
       <h2 className="text-3xl font-black text-white uppercase tracking-tighter border-l-4 border-[#569429] pl-4">
@@ -22,16 +23,17 @@ export function TalentCategory({ title, members, onSelect }: TalentCategoryProps
                <img 
                  src={member.image_url} 
                  alt={member.name}
+                 loading="lazy"
                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                />
                {/* Base Gradient for readability */}
                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-transparent to-transparent opacity-80" />
                
-               {/* [NEW] Blur Overlay on Hover */}
+               {/* Blur Overlay on Hover */}
                <div className="absolute inset-0 bg-black/40 backdrop-blur-[3px] opacity-0 group-hover:opacity-100 transition-all duration-300" />
             </div>
 
-            {/* [NEW] Centered View Profile Button */}
+            {/* Centered View Profile Button */}
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-90 group-hover:scale-100">
               <span className="flex items-center gap-2 px-5 py-2.5 bg-[#569429] rounded-full text-black font-bold text-xs uppercase tracking-widest shadow-xl hover:bg-[#6abd35] transition-colors">
                 View Profile <ArrowRight size={14} />
@@ -50,3 +52,5 @@ export function TalentCategory({ title, members, onSelect }: TalentCategoryProps
     </div>
   )
 }
+
+export const TalentCategory = memo(TalentCategoryComponent)

@@ -1,17 +1,30 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, useCallback, memo } from "react"
 import { ChevronDown, Check, Loader2, Mic2, X } from "lucide-react"
 import { RadioTalentMember } from "@/types/radio-talent"
 import { TalentCategory } from "@/components/radio-talent/talent-category"
 import { TalentModal } from "@/components/radio-talent/talent-modal"
 import { useRoster } from "@/hooks/radio-talent/use-roster"
 
-export function RosterSection() {
+function RosterSectionComponent() {
   const { years, activeYear, setActiveYear, seniors, trainees, loading, isEmpty } = useRoster()
   const [selectedTalent, setSelectedTalent] = useState<RadioTalentMember | null>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const toggleDropdown = useCallback(() => {
+    setIsDropdownOpen((prev) => !prev)
+  }, [])
+
+  const handleYearSelect = useCallback((year: string) => {
+    setActiveYear(year)
+    setIsDropdownOpen(false)
+  }, [setActiveYear])
+
+  const closeModal = useCallback(() => {
+    setSelectedTalent(null)
+  }, [])
 
   // Click Outside Handler for Dropdown
   useEffect(() => {
@@ -43,7 +56,7 @@ export function RosterSection() {
             View Roster For
           </label>
           <button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            onClick={toggleDropdown}
             className={`w-full flex items-center justify-between px-6 py-4 bg-[#1a1a1a] border border-white/10 rounded-2xl text-white font-bold text-lg tracking-wide hover:border-[#569429]/50 hover:bg-[#222] transition-all shadow-lg shadow-black/20 ${
               isDropdownOpen ? "border-[#569429] ring-2 ring-[#569429]/20" : ""
             }`}
@@ -59,10 +72,7 @@ export function RosterSection() {
             {years.map((year) => (
               <button
                 key={year}
-                onClick={() => {
-                  setActiveYear(year)
-                  setIsDropdownOpen(false)
-                }}
+                onClick={() => handleYearSelect(year)}
                 className={`w-full text-left px-6 py-4 text-sm font-medium transition-colors flex items-center justify-between border-b border-white/5 last:border-0 ${
                   activeYear === year ? "bg-[#569429]/10 text-[#569429]" : "text-gray-400 hover:bg-white/5 hover:text-white"
                 }`}
@@ -114,7 +124,7 @@ export function RosterSection() {
            <div className="bg-[#1a1a1a] border border-white/10 w-full max-w-4xl rounded-2xl overflow-hidden relative max-h-[90vh] overflow-y-auto shadow-2xl shadow-black">
               
               <button 
-                onClick={() => setSelectedTalent(null)}
+                onClick={closeModal}
                 className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 hover:bg-white/20 text-white transition backdrop-blur-md cursor-pointer"
               >
                 <X size={24} />
@@ -127,3 +137,5 @@ export function RosterSection() {
     </>
   )
 }
+
+export const RosterSection = memo(RosterSectionComponent)

@@ -1,8 +1,9 @@
 "use client"
 
+import { memo } from "react"
 import { HeaderProps } from "@/types/hitlist"
 
-export function HitlistHeader({ user, onLogout }: HeaderProps) {
+function HitlistHeaderComponent({ user, onLogout }: HeaderProps) {
   return (
     <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
@@ -31,3 +32,5 @@ export function HitlistHeader({ user, onLogout }: HeaderProps) {
     </header>
   )
 }
+
+export const HitlistHeader = memo(HitlistHeaderComponent)

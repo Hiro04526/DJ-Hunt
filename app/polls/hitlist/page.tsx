@@ -1,9 +1,19 @@
+import { Metadata } from "next"
 import TitleSection from "./sections/title"
-import SongsSection from "./sections/songs"
+import dynamic from "next/dynamic"
 
-export const metadata = {
-	title: 'Hitlist',
-	description: "Voting polls for this week's Top 20 songs!",
+// 1. Lazy load the heavy section
+const SongsSection = dynamic(() => import("./sections/songs"), {
+  loading: () => (
+    <div className="min-h-[50vh] w-full flex items-center justify-center bg-black text-white">
+      <p className="animate-pulse">Loading the hitlist...</p>
+    </div>
+  )
+})
+
+export const metadata: Metadata = {
+  title: 'Hitlist',
+  description: "Voting polls for this week's Top 20 songs!",
 }
 
 export default function Hitlist() {

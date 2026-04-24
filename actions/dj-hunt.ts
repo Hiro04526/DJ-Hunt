@@ -1,24 +1,8 @@
 "use server"
 
-import { OAuth2Client } from "google-auth-library"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { cookies } from "next/headers"
-
-// --- CONFIGURATION ---
-const googleClient = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID)
-
-// --- HELPER: Verify Google Token ---
-async function getEmailFromToken(token: string) {
-  try {
-    const ticket = await googleClient.verifyIdToken({
-      idToken: token,
-      audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-    })
-    return ticket.getPayload()?.email
-  } catch (error) {
-    return null
-  }
-}
+import { MAX_VOTES_PER_USER } from "@/constants/dj-hunt"
+import { getEmailFromSession } from "./auth"
 
 // --- ACTION: Get All DJs (Public) ---
 export async function getDJsAction() {
@@ -37,37 +21,10 @@ export async function getDJsAction() {
   }
 }
 
-// --- ACTION: Update DJ (Admin Only) ---
-export async function updateDJAction(id: number, updates: any) {
-  // FIX: cookies() is now async in Next.js 15
-  const cookieStore = await cookies() 
-  const adminCookie = cookieStore.get("admin")
-  
-  if (adminCookie?.value !== "1") {
-    return { success: false, error: "Unauthorized: Admin access required" }
-  }
-
-  try {
-    const { data, error } = await supabaseAdmin
-      .from("DJs")
-      .update(updates)
-      .eq("id", id)
-      .select()
-      .single()
-
-    if (error) throw error
-
-    return { success: true, data }
-  } catch (error: any) {
-    console.error("Update DJ Error:", error)
-    return { success: false, error: error.message }
-  }
-}
-
 // --- ACTION: Get User Votes ---
-export async function getVotesAction(token: string) {
+export async function getVotesAction() {
   try {
-    const email = await getEmailFromToken(token)
+    const email = await getEmailFromSession()
     if (!email) return { success: false, error: "Invalid or expired session" }
 
     const { data, error } = await supabaseAdmin
@@ -87,12 +44,22 @@ export async function getVotesAction(token: string) {
 }
 
 // --- ACTION: Submit User Votes ---
-export async function submitVotesAction(token: string, djIds: number[]) {
+export async function submitVotesAction(djIds: number[]) {
   try {
-    const email = await getEmailFromToken(token)
+    const email = await getEmailFromSession()
     if (!email) return { success: false, error: "Invalid or expired session" }
 
-    // 1. Delete old votes
+    // 1. Remove duplicate IDs and enforce maximum vote limit
+    const uniqueIds = Array.from(new Set(djIds))
+    
+    if (uniqueIds.length > MAX_VOTES_PER_USER) {
+      return { 
+        success: false, 
+        error: `Manipulation detected: You can only vote for up to ${MAX_VOTES_PER_USER} DJs.` 
+      }
+    }
+
+    // 2. Delete old votes
     const { error: deleteError } = await supabaseAdmin
       .from("DJ Hunt Votes")
       .delete()
@@ -100,9 +67,9 @@ export async function submitVotesAction(token: string, djIds: number[]) {
 
     if (deleteError) throw deleteError
 
-    // 2. Insert new votes (if any)
-    if (djIds.length > 0) {
-      const rowsToInsert = djIds.map((id) => ({
+    // 3. Insert new votes (if any)
+    if (uniqueIds.length > 0) {
+      const rowsToInsert = uniqueIds.map((id) => ({
         email: email,
         dj_id: id,
         created_at: new Date().toISOString(),

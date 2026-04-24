@@ -1,10 +1,11 @@
 "use client"
 
+import { memo } from "react"
 import { motion } from "framer-motion"
 import { FaCheckCircle } from "react-icons/fa"
 import { ContactSuccessProps } from "@/types/services"
 
-export function ContactSuccess({ onReset }: ContactSuccessProps) {
+function ContactSuccessComponent({ onReset }: ContactSuccessProps) {
   return (
     <motion.div
       key="success-state"
@@ -28,3 +29,5 @@ export function ContactSuccess({ onReset }: ContactSuccessProps) {
     </motion.div>
   )
 }
+
+export const ContactSuccess = memo(ContactSuccessComponent)

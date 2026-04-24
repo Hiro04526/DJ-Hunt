@@ -1,19 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, memo } from "react"
 import { ServicesGrid } from "./grid"
 import { ServicesCTA } from "./call-to-action"
 
-export function ServicesContainer() {
+function ServicesContainerComponent() {
   const [inquirySubject, setInquirySubject] = useState("")
 
-  const handleInquireClick = (subjectText: string) => {
+  const handleInquireClick = useCallback((subjectText: string) => {
     setInquirySubject(subjectText)
     
     const formElement = document.getElementById("contact-section")
     if (formElement) {
       const elementPosition = formElement.getBoundingClientRect().top + window.scrollY
-      
       const offsetPosition = elementPosition - 20
 
       window.scrollTo({
@@ -21,7 +20,7 @@ export function ServicesContainer() {
         behavior: "smooth"
       })
     }
-  }
+  }, [])
 
   return (
     <>
@@ -30,3 +29,5 @@ export function ServicesContainer() {
     </>
   )
 }
+
+export const ServicesContainer = memo(ServicesContainerComponent)

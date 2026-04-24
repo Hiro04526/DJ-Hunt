@@ -1,9 +1,10 @@
 "use client"
 
+import { memo } from "react"
 import { RadioTalentMember } from "@/types/radio-talent"
 import { PlayCircle } from "lucide-react"
 
-export function TalentModal({ talent }: { talent: RadioTalentMember }) {
+function TalentModalComponent({ talent }: { talent: RadioTalentMember }) {
   return (
     <div className="flex flex-col md:flex-row h-full max-h-[80vh]">
       {/* LEFT: Image Side */}
@@ -69,7 +70,12 @@ export function TalentModal({ talent }: { talent: RadioTalentMember }) {
             <div className="grid grid-cols-3 gap-2">
               {talent.event_hosting_images.map((img, idx) => (
                 <div key={idx} className="aspect-square rounded-md overflow-hidden bg-black">
-                  <img src={img} alt="Event" className="w-full h-full object-cover opacity-80 hover:opacity-100 transition" />
+                  <img 
+                    src={img} 
+                    alt="Event" 
+                    loading="lazy"
+                    className="w-full h-full object-cover opacity-80 hover:opacity-100 transition" 
+                  />
                 </div>
               ))}
             </div>
@@ -79,3 +85,5 @@ export function TalentModal({ talent }: { talent: RadioTalentMember }) {
     </div>
   )
 }
+
+export const TalentModal = memo(TalentModalComponent)

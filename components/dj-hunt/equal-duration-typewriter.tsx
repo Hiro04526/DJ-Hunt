@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from "react"
 import { useEqualDurationTypewriter } from "@/hooks/polls/dj-hunt/use-typewriter"
 
 export interface TypeWriterProps {
@@ -11,7 +12,7 @@ export interface TypeWriterProps {
   showCursor?: boolean;
 }
 
-export default function EqualDurationTypewriter({
+function EqualDurationTypewriterComponent({
   lines,
   typeMs = 2000,
   holdMs = 1000,
@@ -33,3 +34,5 @@ export default function EqualDurationTypewriter({
     </span>
   )
 }
+
+export default memo(EqualDurationTypewriterComponent)

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, memo } from "react"
 import { 
   ChevronDown, CheckCircle2, Mail, FileText, X, Play, 
   Megaphone, Share2, Mic2, Users, Camera 
@@ -16,11 +16,11 @@ const ICON_MAP: Record<string, React.ElementType> = {
   camera: Camera,
 }
 
-export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: ServiceCardProps) {
+function ServiceCardComponent({ service, isExpanded, onToggle, onInquireClick }: ServiceCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
 
-  // --- 2. FIX: SIDE EFFECTS IN USE-EFFECT ---
+  // --- 2. SIDE EFFECTS IN USE-EFFECT ---
   // Safely handle body scroll locking without interrupting the render cycle
   useEffect(() => {
     if (isModalOpen) {
@@ -29,13 +29,11 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
       document.body.style.overflow = "unset"
     }
     
-    // Cleanup function ensures we don't accidentally leave the body locked
     return () => {
       document.body.style.overflow = "unset"
     }
   }, [isModalOpen])
 
-  // Get the dynamically mapped icon, fallback to Megaphone if not found
   const IconComponent = ICON_MAP[service.icon] || Megaphone
 
   return (
@@ -52,7 +50,6 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
         >
           <div className="flex items-center gap-6">
             <div className={`p-4 rounded-xl bg-linear-to-br ${service.color} text-white shadow-lg group-hover:scale-110 transition-transform`}>
-              {/* Render the dynamically mapped icon here */}
               <IconComponent className="w-8 h-8" />
             </div>
             <div>
@@ -163,7 +160,6 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
                 
                 {/* Tab System */}
                 <div className="flex overflow-x-auto gap-2 pb-4 mb-4 border-b border-[#222] scrollbar-hide">
-                  {/* FIX: Removed inline 'any' by relying on inferred types from your strictly typed ServiceItem */}
                   {service.sampleTabs?.map((tab, index) => (
                     <button
                       key={index}
@@ -186,7 +182,6 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
                 <div className="flex-1 overflow-y-auto pr-2">
                   {service.sampleTabs && service.sampleTabs[activeTab]?.media ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 auto-rows-max">
-                      {/* FIX: Removed inline 'any' */}
                       {service.sampleTabs[activeTab].media.map((mediaItem, i) => (
                         <div 
                           key={i} 
@@ -230,3 +225,5 @@ export function ServiceCard({ service, isExpanded, onToggle, onInquireClick }: S
     </>
   )
 }
+
+export const ServiceCard = memo(ServiceCardComponent)

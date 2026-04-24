@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, memo } from "react"
 import { ChevronLeft, ChevronRight, CheckCircle2, Lock } from "lucide-react"
 import {
   Carousel,
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/carousel"
 import { CarouselSectionProps } from "@/types/hitlist"
 
-export function CarouselSection({ 
+function CarouselSectionComponent({ 
   songs, 
   selected, 
   onToggle, 
@@ -127,7 +127,7 @@ export function CarouselSection({
             </CarouselContent>
           </Carousel>
         ) : (
-           <div className="text-gray-400">Loading songs...</div>
+           <div className="text-gray-400">No songs to display...</div>
         )}
       </div>
 
@@ -149,3 +149,5 @@ export function CarouselSection({
     </div>
   )
 }
+
+export const CarouselSection = memo(CarouselSectionComponent)

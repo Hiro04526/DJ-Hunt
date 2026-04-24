@@ -1,16 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, memo } from "react"
 import { SERVICES_DATA } from "@/constants/services"
 import { ServiceCard } from "@/components/services/service-card"
 import { ServicesGridProps } from "@/types/services"
 
-export function ServicesGrid({ onInquireClick }: ServicesGridProps) {
+function ServicesGridComponent({ onInquireClick }: ServicesGridProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
-  const handleToggle = (id: string) => {
-    setExpandedId(expandedId === id ? null : id)
-  }
+  const handleToggle = useCallback((id: string) => {
+    setExpandedId((prevId) => (prevId === id ? null : id))
+  }, [])
 
   return (
     <div className="max-w-5xl mx-auto grid grid-cols-1 gap-6">
@@ -26,3 +26,5 @@ export function ServicesGrid({ onInquireClick }: ServicesGridProps) {
     </div>
   )
 }
+
+export const ServicesGrid = memo(ServicesGridComponent)

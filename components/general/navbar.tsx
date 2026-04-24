@@ -21,7 +21,7 @@ function StaticNavbar({ linkActive }: { linkActive: (path: string) => boolean })
     >
       <div className="w-full px-4">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="w-32 h-32 relative">
+          <Link href="/" className="w-32 h-12 relative">
             <Image
               src="/assets/GGFM Logo_Black.png"
               alt="DLSU Radio: Green Giant FM"
@@ -101,7 +101,7 @@ export function Navbar() {
         <div className="w-full px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="w-32 h-32 relative hover:scale-105">
+            <Link href="/" className="w-32 h-12 relative hover:scale-105">
               <Image
                 src="/assets/GGFM Logo_Black.png"
                 alt="DLSU Radio: Green Giant FM"
@@ -218,6 +218,8 @@ export function Navbar() {
                 variant="ghost"
                 size="icon"
                 className="md:hidden"
+                aria-label="Toggle mobile menu"
+                aria-expanded={isMobileMenuOpen}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 <Menu className="h-6 w-6" />

@@ -1,13 +1,16 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, memo } from "react"
 import { AnimatePresence } from "framer-motion"
 import { ContactForm } from "@/components/services/contact-form"
 import { ContactSuccess } from "@/components/services/success-message"
 import { ServicesCTAProps } from "@/types/services"
 
-export function ServicesCTA({ prefilledSubject }: ServicesCTAProps) {
+function ServicesCTAComponent({ prefilledSubject }: ServicesCTAProps) {
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  const handleSuccess = useCallback(() => setIsSubmitted(true), [])
+  const handleReset = useCallback(() => setIsSubmitted(false), [])
 
   return (
     <div id="contact-section" className="max-w-3xl mx-auto mt-20 bg-linear-to-br from-[#111] to-[#0a0a0a] border border-[#222] rounded-3xl shadow-2xl overflow-hidden">
@@ -24,10 +27,10 @@ export function ServicesCTA({ prefilledSubject }: ServicesCTAProps) {
         {/* Form / Success Area */}
         <AnimatePresence mode="wait">
           {isSubmitted ? (
-            <ContactSuccess onReset={() => setIsSubmitted(false)} />
+            <ContactSuccess onReset={handleReset} />
           ) : (
             <ContactForm 
-              onSuccess={() => setIsSubmitted(true)} 
+              onSuccess={handleSuccess} 
               prefilledSubject={prefilledSubject}
             />
           )}
@@ -36,3 +39,5 @@ export function ServicesCTA({ prefilledSubject }: ServicesCTAProps) {
     </div>
   )
 }
+
+export const ServicesCTA = memo(ServicesCTAComponent)

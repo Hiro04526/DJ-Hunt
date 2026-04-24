@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, memo } from "react"
 
-export default function StatusBadge() {
+function StatusBadgeComponent() {
   const [online, setOnline] = useState(false)
 
   useEffect(() => {
@@ -27,3 +27,5 @@ export default function StatusBadge() {
     </div>
   )
 }
+
+export default memo(StatusBadgeComponent)

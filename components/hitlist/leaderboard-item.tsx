@@ -1,9 +1,11 @@
+import { memo } from "react"
 import { cn } from "@/lib/utils"
 import { LeaderboardItemProps } from "@/types/hitlist" 
 
-export function LeaderboardItem({ song, index, maxVotes }: LeaderboardItemProps) {
+function LeaderboardItemComponent({ song, index, maxVotes }: LeaderboardItemProps) {
   const voteCount = song.votes || 0
-  const percentage = Math.round((voteCount / maxVotes) * 100)
+  // Prevent division by zero if maxVotes is somehow 0
+  const percentage = maxVotes > 0 ? Math.round((voteCount / maxVotes) * 100) : 0
   
   return (
     <div className="group relative">
@@ -13,7 +15,6 @@ export function LeaderboardItem({ song, index, maxVotes }: LeaderboardItemProps)
         <div 
           className={cn(
             "w-8 text-left font-black text-lg",
-            // Updated to use the custom 'brand' color from tailwind.config.ts
             index === 0 ? "text-brand text-2xl" : "text-gray-400" 
           )}
         >
@@ -54,3 +55,5 @@ export function LeaderboardItem({ song, index, maxVotes }: LeaderboardItemProps)
     </div>
   )
 }
+
+export const LeaderboardItem = memo(LeaderboardItemComponent)

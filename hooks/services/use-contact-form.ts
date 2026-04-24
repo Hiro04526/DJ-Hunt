@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { ContactFormData, ContactFormProps } from "@/types/services"
 import { DEFAULT_CONTACT_SUBJECT } from "@/constants/services"
 import { getEmailSuggestion } from "@/lib/email-validator"
@@ -24,45 +24,51 @@ export function useContactForm({ onSuccess, prefilledSubject }: ContactFormProps
 
   // --- Effect: Handle prefilled subject ---
   useEffect(() => {
-    if (prefilledSubject && formState.subject !== prefilledSubject) {
-      setFormState((prev) => ({ ...prev, subject: prefilledSubject }))
+    if (prefilledSubject) {
+      setFormState((prev) => 
+        prev.subject !== prefilledSubject 
+          ? { ...prev, subject: prefilledSubject } 
+          : prev
+      )
     }
-  }, [prefilledSubject, formState.subject])
+  }, [prefilledSubject])
 
   // --- Input Handlers ---
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormState(prev => ({ ...prev, [name]: value }))
-    if (errors[name as keyof ContactFormData]) {
-      setErrors(prev => ({ ...prev, [name]: "" }))
-    }
-  }
+    
+    setErrors(prev => {
+      if (prev[name as keyof ContactFormData]) {
+        return { ...prev, [name]: undefined }
+      }
+      return prev
+    })
+  }, [])
 
-  const handleSelectChange = (value: string) => {
+  const handleSelectChange = useCallback((value: string) => {
     setFormState(prev => ({ ...prev, title: value }))
-    if (errors.title) {
-      setErrors(prev => ({ ...prev, title: "" }))
-    }
-  }
+    setErrors(prev => prev.title ? { ...prev, title: undefined } : prev)
+  }, [])
 
   // --- Email Suggestion Handlers ---
-  const handleEmailBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+  const handleEmailBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
     const suggestedEmail = getEmailSuggestion(e.target.value)
     setSuggestion(suggestedEmail)
-  }
+  }, [])
 
-  const acceptSuggestion = () => {
-    if (suggestion) {
-      setFormState((prev) => ({ ...prev, email: suggestion }))
-      setSuggestion(null) 
-      if (errors.email) {
-        setErrors((prev) => ({ ...prev, email: undefined }))
+  const acceptSuggestion = useCallback(() => {
+    setSuggestion((currentSuggestion) => {
+      if (currentSuggestion) {
+        setFormState((prev) => ({ ...prev, email: currentSuggestion }))
+        setErrors((prev) => prev.email ? { ...prev, email: undefined } : prev)
       }
-    }
-  }
+      return null
+    })
+  }, [])
 
   // --- Submission Logic ---
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
     setGlobalError("")
     
@@ -96,7 +102,7 @@ export function useContactForm({ onSuccess, prefilledSubject }: ContactFormProps
     } finally {
       setIsSubmitting(false)
     }
-  }
+  }, [formState, onSuccess])
 
   return { 
     formState, 

@@ -1,9 +1,10 @@
 "use client"
 
+import { memo } from "react"
 import { Music2, XCircle, CheckCircle2 } from "lucide-react"
 import { VoteListProps } from "@/types/hitlist"
 
-export function HitlistVoteList({
+function HitlistVoteListComponent({
   selectedSongs,
   onToggle,
   user,
@@ -91,3 +92,5 @@ export function HitlistVoteList({
     </div>
   )
 }
+
+export const HitlistVoteList = memo(HitlistVoteListComponent)

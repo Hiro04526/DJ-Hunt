@@ -1,11 +1,12 @@
 "use client"
 
+import { memo } from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { GripVertical, Trash2 } from "lucide-react"
 import { SortableSongRowProps } from "@/types/hitlist-admin"
 
-export function SortableSongRow({ song, handleDelete, index, showVotes = false }: SortableSongRowProps) {
+function SortableSongRowComponent({ song, handleDelete, index, showVotes = false }: SortableSongRowProps) {
   const {
     attributes,
     listeners,
@@ -80,3 +81,5 @@ export function SortableSongRow({ song, handleDelete, index, showVotes = false }
     </div>
   )
 }
+
+export const SortableSongRow = memo(SortableSongRowComponent)

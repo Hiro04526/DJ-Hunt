@@ -1,14 +1,13 @@
 "use client"
 
+import { memo } from "react"
 import { Trophy, RefreshCw } from "lucide-react"
 import { LeaderboardProps } from "@/types/hitlist"
 import { useLeaderboard } from "@/hooks/polls/hitlist/use-leaderboard"
 import { cn } from "@/lib/utils"
 
-export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: LeaderboardProps) {
+function HitlistLeaderboardComponent({ songs, onRefresh, isRefreshing }: LeaderboardProps) {
   const { sortedSongs, maxVotes, isEmpty } = useLeaderboard(songs)
-
-  if (isEmpty) return null
 
   return (
     <div className="h-full relative gap-4 flex flex-col lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
@@ -30,7 +29,7 @@ export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: Leaderboa
           <button 
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors hover:cursor-pointer disabled:opacity-50"
+            className="rounded-full hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 transition-colors hover:cursor-pointer disabled:opacity-50 p-1"
             title="Refresh Leaderboard"
           >
             <RefreshCw size={16} className={isRefreshing ? "animate-spin text-[#569429]" : ""} />
@@ -39,62 +38,70 @@ export function HitlistLeaderboard({ songs, onRefresh, isRefreshing }: Leaderboa
       </div>
 
       {/* List Content */}
-      <div className="p-6 flex flex-col gap-4">
-        {sortedSongs.map((song, index) => {
-          const voteCount = song.votes || 0
-          const percentage = Math.round((voteCount / maxVotes) * 100)
-          
-          return (
-            <div key={`leaderboard-${song.id}`} className="group relative">
-              <div className="flex items-center gap-4 relative z-10">
-                
-                {/* Rank Number */}
-                <div 
-                  className={cn(
-                    "w-8 text-left font-black text-lg",
-                    index === 0 ? "text-[#569429] text-2xl" : "text-gray-400"
-                  )}
-                >
-                  #{index + 1}
-                </div>
-
-                {/* Song Image */}
-                {/* Note: If you have configured domains in next.config.js, you should upgrade this to Next.js <Image /> */}
-                <img 
-                  src={song.image_url} 
-                  alt={song.title}
-                  loading="lazy"
-                  className="w-12 h-12 rounded-lg object-cover shadow-sm"
-                />
-
-                {/* Song Details & Progress Bar */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-baseline mb-1">
-                    <h4 className="font-bold truncate text-gray-900 dark:text-gray-100">
-                      {song.title}
-                    </h4>
-                    <span className="text-xs font-bold text-gray-500 dark:text-gray-400 whitespace-nowrap ml-2">
-                      {voteCount.toLocaleString()} votes
-                    </span>
-                  </div>
+      <div className="p-6 flex flex-col gap-4 h-full">
+        {isEmpty ? (
+          <div className="flex flex-col items-center justify-center h-full min-h-50 text-gray-400 dark:text-gray-500">
+            <Trophy className="opacity-20 mb-3" size={48} />
+            <p className="font-semibold">No rankings to display...</p>
+          </div>
+        ) : (
+          sortedSongs.map((song, index) => {
+            const voteCount = song.votes || 0
+            const percentage = Math.round((voteCount / maxVotes) * 100)
+            
+            return (
+              <div key={`leaderboard-${song.id}`} className="group relative">
+                <div className="flex items-center gap-4 relative z-10">
                   
-                  <div className="h-2 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
-                    <div 
-                      className={cn(
-                        "h-full rounded-full transition-all duration-1000 ease-out",
-                        index === 0 ? "bg-[#569429]" : "bg-gray-400 dark:bg-gray-600"
-                      )}
-                      style={{ width: `${percentage}%` }}
-                    />
+                  {/* Rank Number */}
+                  <div 
+                    className={cn(
+                      "w-8 text-left font-black text-lg",
+                      index === 0 ? "text-[#569429] text-2xl" : "text-gray-400"
+                    )}
+                  >
+                    #{index + 1}
                   </div>
-                  <p className="text-xs text-gray-400 mt-1 truncate">{song.artist}</p>
-                </div>
 
+                  {/* Song Image */}
+                  <img 
+                    src={song.image_url} 
+                    alt={song.title}
+                    loading="lazy"
+                    className="w-12 h-12 rounded-lg object-cover shadow-sm"
+                  />
+
+                  {/* Song Details & Progress Bar */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-baseline mb-1">
+                      <h4 className="font-bold truncate text-gray-900 dark:text-gray-100">
+                        {song.title}
+                      </h4>
+                      <span className="text-xs font-bold text-gray-500 dark:text-gray-400 whitespace-nowrap ml-2">
+                        {voteCount.toLocaleString()} votes
+                      </span>
+                    </div>
+                    
+                    <div className="h-2 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                      <div 
+                        className={cn(
+                          "h-full rounded-full transition-all duration-1000 ease-out",
+                          index === 0 ? "bg-[#569429]" : "bg-gray-400 dark:bg-gray-600"
+                        )}
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1 truncate">{song.artist}</p>
+                  </div>
+
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })
+        )}
       </div>
     </div>
   )
 }
+
+export const HitlistLeaderboard = memo(HitlistLeaderboardComponent)

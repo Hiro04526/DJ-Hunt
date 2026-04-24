@@ -37,7 +37,7 @@ export async function searchSpotifyTracks(query: string) {
 
   const data = await response.json()
   
-  // Format the messy Spotify data into something clean for your DB
+  // Format the messy Spotify data into something clean for the DB
   return data.tracks.items.map((track: any) => ({
     title: track.name,
     artist: track.artists.map((a: any) => a.name).join(", "),

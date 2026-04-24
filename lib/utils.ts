@@ -1,4 +1,3 @@
-// lib/utils.ts
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -14,7 +13,7 @@ export function formatAudioTime(t: number): string {
 }
 
 export function buildDriveEmbedSrc(raw: string): string {
-  const m = raw.match(/\/file\/d\/([a-zA-Z0-9_-]{10,})/)
+  const m = raw.match(/\/file\/d\/([a-zA-Z0-9_-]+)(?:\/|\?|$)/)
   return m ? `https://drive.google.com/file/d/${m[1]}/preview` : raw
 }
 

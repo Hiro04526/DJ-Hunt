@@ -10,6 +10,7 @@ export interface Song {
   image_url?: string
   votes?: number
   spotify_link?: string
+  sort_order?: number
 }
 
 // --- STATE INTERFACES --- 

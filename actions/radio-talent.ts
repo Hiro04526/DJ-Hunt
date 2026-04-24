@@ -35,8 +35,8 @@ async function fetchTalentFromDB(year: string) {
   return data as RadioTalentMember[]
 }
 
-
 // --- EXPORTED SERVER ACTIONS ---
+
 // 1. Get Available Years (Cached for 1 hour)
 export const getAvailableYears = unstable_cache(
   async () => {
@@ -47,20 +47,21 @@ export const getAvailableYears = unstable_cache(
       return []
     }
   },
-  ['available-roster-years'], // Cache key tag
-  { revalidate: 3600 } // Revalidates every 3600 seconds (1 hour)
+  ['available-roster-years'],
+  { revalidate: 3600 } 
 )
 
-// 2. Get Talent By Year (Cached for 1 hour per year)
+// 2. Define the cached function outside the Server Action
+const getCachedRadioTalent = unstable_cache(
+  async (year: string) => fetchTalentFromDB(year),
+  ['radio-talent-roster'], 
+  { revalidate: 3600 }
+)
+
+// 3. Get Talent By Year
 export async function getRadioTalentByYear(year: string) {
   try {
-    const getCachedRoster = unstable_cache(
-      async () => fetchTalentFromDB(year),
-      [`roster-${year}`], 
-      { revalidate: 3600 }
-    );
-
-    const data = await getCachedRoster();
+    const data = await getCachedRadioTalent(year);
 
     if (!data) {
        return { success: false, error: "Failed to load roster" };

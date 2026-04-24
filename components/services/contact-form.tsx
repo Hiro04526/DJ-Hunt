@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { FaPaperPlane } from "react-icons/fa"
 import { Input } from "@/components/ui/input"
@@ -11,7 +12,7 @@ import { ContactFormProps } from "@/types/services"
 import { NAME_TITLES, ANIMATION_VARIANTS } from "@/constants/services"
 import { useContactForm } from "@/hooks/services/use-contact-form"
 
-export function ContactForm({ onSuccess, prefilledSubject }: ContactFormProps) {
+function ContactFormComponent({ onSuccess, prefilledSubject }: ContactFormProps) {
   const { 
     formState, 
     errors, 
@@ -131,3 +132,5 @@ export function ContactForm({ onSuccess, prefilledSubject }: ContactFormProps) {
     </motion.form>
   )
 }
+
+export const ContactForm = memo(ContactFormComponent)

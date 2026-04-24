@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { getDJsAction } from "@/actions/dj-hunt"
 import { DJ } from "@/types/dj-hunt"
 import { VOTING_START, VOTING_END } from "@/constants/dj-hunt"
@@ -26,7 +26,9 @@ export function useDJSection() {
     return () => clearInterval(id)
   }, [])
 
-  const isWithinVotingWindow = now !== null && now >= VOTING_START && now <= VOTING_END
+  const isWithinVotingWindow = useMemo(() => 
+    now !== null && now >= VOTING_START && now <= VOTING_END, 
+  [now])
 
   // 2. FETCH DATA EFFECT
   useEffect(() => {

@@ -7,7 +7,7 @@ export async function submitContactFormAction(data: ContactFormData): Promise<Ac
     // 1. Check if the API key is actually loaded
     const apiKey = process.env.WEB3FORMS_ACCESS_KEY;
     if (!apiKey) {
-      console.error("CRITICAL ERROR: WEB3FORMS_ACCESS_KEY is missing from .env.local")
+      console.error("CRITICAL ERROR: WEB3FORMS_ACCESS_KEY is missing from .env")
       return { success: false, error: "Server configuration error. Please contact support." }
     }
 
@@ -26,6 +26,7 @@ export async function submitContactFormAction(data: ContactFormData): Promise<Ac
         subject: `New GGFM Inquiry: ${data.subject}`,
         from_name: `${data.title} ${data.name}`,
         email: data.email, 
+        replyto: data.email,
         message: data.message,
       }),
     });

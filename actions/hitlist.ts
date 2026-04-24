@@ -1,24 +1,19 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { OAuth2Client } from "google-auth-library"
-import { cookies } from "next/headers"
 import { supabaseAdmin } from "@/lib/supabase/admin"
-import { startNewHitlistCycle } from "./admin" //
+import { startNewHitlistCycle } from "./admin"
+import { getEmailFromSession } from "./auth"
 
 // --- CONFIGURATION ---
-const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 const TABLE_SONGS = "Hitlist Songs"
 const TABLE_VOTES = "Hitlist Votes"
 const TABLE_METADATA = "system_metadata"
 const ID_COLUMN = "target_id"
-
 const REFERENCE_MONDAY = new Date("2026-02-02T08:00:00+08:00")
-const COOKIE_NAME = "hitlist_session"
-const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID)
 
 // ==========================================
-//              HELPERS
+//               HELPERS
 // ==========================================
 
 async function checkAndTriggerLazyReset() {
@@ -65,21 +60,8 @@ export async function getVotingStatus() {
   return { isOpen, message, startOfCurrentCycle, nextOpeningTime }
 }
 
-async function getEmailFromSession() {
-  const cookieStore = await cookies()
-  const token = cookieStore.get(COOKIE_NAME)?.value
-  if (!token) return null
-
-  try {
-    const ticket = await googleClient.verifyIdToken({ idToken: token, audience: GOOGLE_CLIENT_ID })
-    return ticket.getPayload()?.email
-  } catch (error) {
-    return null
-  }
-}
-
 // ==========================================
-//              PUBLIC VOTING ACTIONS
+//             PUBLIC VOTING ACTIONS
 // ==========================================
 
 export async function getHitlistDataAction() {
@@ -141,29 +123,4 @@ export async function submitHitlistVoteAction(targetIds: number[]) {
   } catch (error: any) {
     return { success: false, error: error.message || "Server Error" }
   }
-}
-
-export async function loginAction(token: string) {
-  try {
-    const ticket = await googleClient.verifyIdToken({ idToken: token, audience: GOOGLE_CLIENT_ID })
-    const email = ticket.getPayload()?.email
-    if (!email) throw new Error("Invalid Token")
-
-    const cookieStore = await cookies()
-    cookieStore.set(COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 7, 
-      path: "/",
-    })
-    return { success: true, email }
-  } catch (e) {
-    return { success: false, error: "Login failed" }
-  }
-}
-
-export async function logoutAction() {
-  const cookieStore = await cookies()
-  cookieStore.delete(COOKIE_NAME)
-  return { success: true }
 }

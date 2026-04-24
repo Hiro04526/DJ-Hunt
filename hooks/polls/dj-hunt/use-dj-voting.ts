@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { getVotesAction, submitVotesAction } from "@/actions/dj-hunt"
 import { MAX_VOTES_PER_USER } from "@/constants/dj-hunt"
 import { decodeJwtPayload } from "@/lib/utils"
@@ -8,7 +8,6 @@ import { AuthUser } from "@/types/dj-hunt"
 
 export function useDJVoting() {
   const [user, setUser] = useState<AuthUser | null>(null)
-  const [ready, setReady] = useState(false)
   
   const [selected, setSelected] = useState<number[]>([])
   const [savedVotes, setSavedVotes] = useState<number[]>([])
@@ -18,14 +17,14 @@ export function useDJVoting() {
   const [fetching, setFetching] = useState(false)
 
   // --- 1. GOOGLE ONE TAP HANDLER ---
-  function handleToken({ credential }: { credential: string }) {
+  const handleToken = useCallback((credential: string) => {
     const payload = decodeJwtPayload(credential)
     if (payload && payload.email) {
       setUser({ email: payload.email, token: credential })
     } else {
       setMessage("Failed to read Google token.")
     }
-  }
+  }, [])
 
   // --- 2. FETCH EXISTING VOTES ---
   useEffect(() => {
@@ -33,7 +32,7 @@ export function useDJVoting() {
       if (!user?.token) return
       
       setFetching(true)
-      const result = await getVotesAction(user.token)
+      const result = await getVotesAction()
       
       if (result.success && result.votedIds) {
         setSelected(result.votedIds)
@@ -47,30 +46,12 @@ export function useDJVoting() {
     fetchVotes()
   }, [user])
 
-  // --- 3. INITIALIZE GOOGLE AUTH ---
-  useEffect(() => {
-    if (ready && !user) {
-      // @ts-ignore
-      window.google?.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-        callback: handleToken,
-      })
-      // @ts-ignore
-      window.google?.accounts.id.renderButton(document.getElementById("gbtn"), {
-        theme: "outline",
-        size: "large",
-        shape: "pill",
-      })
-    }
-  }, [ready, user])
-
-  // --- 4. SELECTION HELPERS ---
-  const toggle = (id: number) => {
+  // --- 3. SELECTION HELPERS ---
+  const toggle = useCallback((id: number) => {
     setMessage("") 
     setSelected((prev) => {
       if (prev.includes(id)) return prev.filter((x) => x !== id)
       
-      // Using the extracted business rule here
       if (prev.length >= MAX_VOTES_PER_USER) {
         setMessage(`You can only select up to ${MAX_VOTES_PER_USER} DJs.`)
         return prev
@@ -78,21 +59,23 @@ export function useDJVoting() {
       
       return [...prev, id]
     })
-  }
+  }, [])
 
-  const isSelected = (id: number) => selected.includes(id)
+  const isSelected = useCallback((id: number) => selected.includes(id), [selected])
 
-  const hasChanges = JSON.stringify([...selected].sort()) !== JSON.stringify([...savedVotes].sort())
+  const hasChanges = useMemo(() => 
+    JSON.stringify([...selected].sort()) !== JSON.stringify([...savedVotes].sort()), 
+  [selected, savedVotes])
 
   // --- 5. SUBMISSION LOGIC ---
-  const submit = async () => {
+  const submit = useCallback(async () => {
     setMessage("")
     if (!user) return setMessage("Please sign in first.")
     if (selected.length === 0) return setMessage("Select at least one DJ.")
 
     setLoading(true)
     try {
-      const result = await submitVotesAction(user.token, selected)
+      const result = await submitVotesAction(selected)
 
       if (!result.success) {
         throw new Error(result.error)
@@ -105,11 +88,10 @@ export function useDJVoting() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [user, selected])
 
   return {
     user, setUser,
-    setReady,
     selected, setSelected,
     savedVotes, setSavedVotes,
     message,
@@ -118,6 +100,7 @@ export function useDJVoting() {
     toggle,
     isSelected,
     hasChanges,
-    submit
+    submit,
+    handleToken
   }
 }

@@ -1,13 +1,13 @@
 "use client"
 
-import Script from "next/script"
+import { memo } from "react"
 import { DJ } from "@/types/dj-hunt"
 import { useDJVoting } from "@/hooks/polls/dj-hunt/use-dj-voting"
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google"
 
-export function DJVotingForm({ djs }: { djs: DJ[] }) {
+function DJVotingFormComponent({ djs }: { djs: DJ[] }) {
   const {
     user, setUser,
-    setReady,
     selected, setSelected,
     savedVotes, setSavedVotes,
     message,
@@ -16,22 +16,25 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
     toggle,
     isSelected,
     hasChanges,
-    submit
+    submit,
+    handleToken
   } = useDJVoting()
 
   return (
-    <>
-      <Script
-        src="https://accounts.google.com/gsi/client"
-        async
-        defer
-        onReady={() => setReady(true)}
-      />
-
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
       {/* Auth State: Not Signed In */}
       {!user && (
-        <div className="mb-4 grid place-items-center">
-          <div id="gbtn" />
+        <div className="mb-4 flex flex-col items-center justify-center min-h-25">
+          <GoogleLogin
+            onSuccess={(credentialResponse) => {
+              if (credentialResponse.credential && handleToken) {
+                handleToken(credentialResponse.credential)
+              }
+            }}
+            onError={() => console.error('Login Failed')}
+            theme="outline"
+            shape="pill"
+          />
           <p className="mt-4 text-sm opacity-70">Sign in with Google to vote.</p>
         </div>
       )}
@@ -49,7 +52,7 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
                 setSelected([])
                 setSavedVotes([])
               }}
-              className="text-sm underline hover:no-underline opacity-80"
+              className="text-sm underline hover:no-underline opacity-80 transition-opacity"
             >
               [Sign out]
             </button>
@@ -105,7 +108,7 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
 
                       <div className="flex items-center pr-4">
                         <div
-                          className={`h-5 w-5 rounded-full border flex items-center justify-center text-xs ${
+                          className={`h-5 w-5 rounded-full border flex items-center justify-center text-xs transition-colors ${
                             selectedState
                               ? "border-green-500 bg-green-500 text-white"
                               : "border-neutral-300 dark:border-neutral-600"
@@ -126,7 +129,7 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
                   "mt-5 w-full rounded-full py-2 text-white transition-all",
                   !hasChanges && savedVotes.length > 0
                     ? "bg-neutral-400 cursor-default" // Locked (Saved)
-                    : "bg-green-600 hover:bg-green-700 shadow-lg shadow-green-900/20", // Active (Changes made)
+                    : "bg-green-600 hover:bg-green-700 shadow-lg shadow-green-900/20", // Active
                   "disabled:opacity-60 disabled:cursor-not-allowed"
                 ].join(" ")}
               >
@@ -144,6 +147,8 @@ export function DJVotingForm({ djs }: { djs: DJ[] }) {
           )}
         </div>
       )}
-    </>
+    </GoogleOAuthProvider>
   )
 }
+
+export const DJVotingForm = memo(DJVotingFormComponent)

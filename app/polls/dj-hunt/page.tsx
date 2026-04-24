@@ -1,7 +1,8 @@
+import { Metadata } from "next"
 import { TitleSection } from "./sections/title"
 import { DJSection } from "./sections/dj"
 
-export const metadata = {
+export const metadata: Metadata = {
 	title: 'DJ Hunt',
 	description: 'Voting polls for voting the next Green Giant FM DJ!',
 }

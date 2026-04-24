@@ -1,9 +1,10 @@
 "use client"
 
+import { memo } from "react"
 import { Download } from "lucide-react"
 import { useHitlistAdmin } from "@/hooks/admin/hitlist/use-hitlist-admin"
 
-export default function HitlistExportButton() {
+function HitlistExportButtonComponent() {
   const { isExporting, handleExport } = useHitlistAdmin()
 
   return (
@@ -17,3 +18,5 @@ export default function HitlistExportButton() {
     </button>
   )
 }
+
+export default memo(HitlistExportButtonComponent)

@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react"
+"use client"
+
+import { useState, useEffect, useMemo } from "react"
 import { getRadioTalentByYear, getAvailableYears } from "@/actions/radio-talent"
 import { RadioTalentMember } from "@/types/radio-talent"
 import { DEFAULT_ROSTER_YEAR, TALENT_RANKS } from "@/constants/radio-talent"
@@ -63,14 +65,14 @@ export function useRoster() {
 
     fetchData()
 
-    // Cleanup function: runs when activeYear changes or component unmounts
     return () => {
       ignore = true;
     }
   }, [activeYear])
 
-  const seniors = talents.filter((t) => t.rank === TALENT_RANKS.SENIOR)
-  const trainees = talents.filter((t) => t.rank === TALENT_RANKS.TRAINEE)
+  const seniors = useMemo(() => talents.filter((t) => t.rank === TALENT_RANKS.SENIOR), [talents])
+  const trainees = useMemo(() => talents.filter((t) => t.rank === TALENT_RANKS.TRAINEE), [talents])
+  
   const isEmpty = talents.length === 0
 
   return {

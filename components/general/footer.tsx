@@ -44,7 +44,6 @@ export function Footer() {
                   aria-label={link.label}
                   className="inline-flex items-center justify-center hover:scale-105 rounded-full text-[#569429] hover:opacity-90 transition h-12 w-12 md:h-16 md:w-16 basis-1/5 md:basis-auto"
                 >
-                  {/* Removed w-6 h-6 to use your custom text-3xl md:text-5xl sizing */}
                   <IconComponent className="text-3xl md:text-5xl" />
                 </a>
               );
@@ -76,7 +75,7 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Logo Container - With fixed sizing so it doesn't disappear */}
+          {/* Logo Container */}
           <div className="mx-auto h-18 w-50 relative mt-8">
             <Image
               src="/assets/GGFM Logo_Black.png"

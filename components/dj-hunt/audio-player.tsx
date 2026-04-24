@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from "react"
 import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute } from "react-icons/fa"
 import { useAudioPlayer } from "@/hooks/polls/dj-hunt/use-audio-player"
 
@@ -7,7 +8,7 @@ export interface AudioPlayerProps {
   src: string | null | undefined
 }
 
-export default function AudioPlayer({ src }: AudioPlayerProps) {
+function AudioPlayerComponent({ src }: AudioPlayerProps) {
   const {
     audioRef,
     isPlaying,
@@ -88,3 +89,5 @@ export default function AudioPlayer({ src }: AudioPlayerProps) {
     </div>
   )
 }
+
+export default memo(AudioPlayerComponent)

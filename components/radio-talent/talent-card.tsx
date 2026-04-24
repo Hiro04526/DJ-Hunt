@@ -1,7 +1,8 @@
 import Image from "next/image"
+import { memo } from "react"
 import { RadioTalentMember } from "@/types/radio-talent"
 
-export function TalentCard({ member }: { member: RadioTalentMember }) {
+function TalentCardComponent({ member }: { member: RadioTalentMember }) {
   return (
     <div className="group relative flex flex-col items-center w-48 md:w-56">
       {/* Image Container */}
@@ -26,3 +27,5 @@ export function TalentCard({ member }: { member: RadioTalentMember }) {
     </div>
   )
 }
+
+export const TalentCard = memo(TalentCardComponent)

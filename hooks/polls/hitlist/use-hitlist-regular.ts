@@ -1,106 +1,121 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useMemo } from "react"
 import { toast } from "sonner"
 import { supabase } from "@/lib/supabase/client"
 import { googleLogout } from "@react-oauth/google"
-import { getHitlistDataAction, submitHitlistVoteAction, loginAction, logoutAction } from "@/actions/hitlist"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { getHitlistDataAction, submitHitlistVoteAction } from "@/actions/hitlist"
+import { loginAction, logoutAction } from "@/actions/auth"
 import { Song, StatusState } from "@/types/hitlist"
 import { HITLIST_DB } from "@/constants/hitlist"
 
 export function useHitlist() {
-  // Cookie/User State
-  const [userEmail, setUserEmail] = useState<string | null>(null) 
-  const [ready, setReady] = useState(false) // For Google Script
-  
-  // Data State
-  const [songs, setSongs] = useState<Song[]>([]) 
+  const queryClient = useQueryClient()
+
+  // --- LOCAL UI STATE ---
   const [selected, setSelected] = useState<number[]>([])
-  
-  // UI State
-  const [hasVoted, setHasVoted] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
-  
-  const [status, setStatus] = useState<StatusState>({ 
-      isOpen: true, 
-      loading: true, 
-      message: "",
-      nextOpeningTime: null 
-  })
-  
-  const [submitting, setSubmitting] = useState(false)
   const [showLoginModal, setShowLoginModal] = useState(false)
-  const [isRefreshing, setIsRefreshing] = useState(false)
 
-  // --- 1. FETCH DATA ---
-  const fetchStatus = useCallback(async (showSpinner = false) => {
-    if (showSpinner) setIsRefreshing(true)
-
-    try {
+  // --- 1. FETCH DATA (React Query) ---
+  const { 
+    data, 
+    isLoading, 
+    isRefetching: isRefreshing,
+    refetch: fetchStatus 
+  } = useQuery({
+    queryKey: ["hitlist-data"],
+    queryFn: async () => {
       const result = await getHitlistDataAction()
-
-      if (!result.success) {
-        throw new Error(result.error || "Failed to load data")
-      }
-
-      if (result.userEmail) setUserEmail(result.userEmail)
-      else setUserEmail(null)
-
-      if (result.songs) {
-        setSongs(result.songs.map((s: any) => ({ ...s, votes: s.votes })))
-      }
-
-      if (result.votedIds && result.votedIds.length > 0) {
-        setSelected(result.votedIds)
-        setHasVoted(true)
-      }
-
-      setStatus({ 
-          isOpen: result.isOpen ?? false, 
-          loading: false, 
-          message: result.message || "",
-          nextOpeningTime: result.nextOpeningTime
-      })
-
-    } catch (error: any) {
-      setStatus((prev) => ({ ...prev, loading: false, message: error.message }))
-    } finally {
-      if (showSpinner) setIsRefreshing(false)
+      if (!result.success) throw new Error(result.error || "Failed to load data")
+      return result
     }
-  }, [])
+  })
+
+  // Sync initial voted state once the data loads
+  useEffect(() => {
+    if (data?.votedIds && data.votedIds.length > 0 && selected.length === 0) {
+      setSelected(data.votedIds)
+    }
+  }, [data?.votedIds, selected.length])
+
+  // Derive variables directly from React Query's cached data
+  const songs: Song[] = useMemo(() => data?.songs?.map((s: any) => ({ ...s, votes: s.votes })) || [], [data?.songs])
+  const userEmail = data?.userEmail || null
+  const hasVoted = !!(data?.votedIds && data.votedIds.length > 0)
+  
+  const status: StatusState = useMemo(() => ({
+    isOpen: data?.isOpen ?? false,
+    loading: isLoading,
+    message: data?.message || (isLoading ? "" : "Failed to load status"),
+    nextOpeningTime: data?.nextOpeningTime || null
+  }), [data?.isOpen, data?.message, data?.nextOpeningTime, isLoading])
 
   // --- 2. GOOGLE LOGIN ---
-  async function handleToken({ credential }: { credential: string }) {
+  const handleToken = useCallback(async ({ credential }: { credential: string }) => {
     try {
         const res = await loginAction(credential)
-        
         if (res.success && res.email) {
-            setUserEmail(res.email)
             setShowLoginModal(false)
             toast.success(`Signed in as ${res.email}`)
-            fetchStatus()
+            // Tell React Query to fetch fresh data now when you are logged in
+            queryClient.invalidateQueries({ queryKey: ["hitlist-data"] }) 
         } else {
             toast.error("Login verification failed")
         }
     } catch { 
         toast.error("Failed to sign in") 
     }
-  }
+  }, [queryClient])
 
   // --- 3. LOGOUT ---
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
       await logoutAction() 
       googleLogout() 
-      setUserEmail(null)
       setSelected([])
-      setHasVoted(false)
       toast.success("Logged out")
-  }
+      // Clear cache and fetch logged-out state
+      queryClient.invalidateQueries({ queryKey: ["hitlist-data"] })
+  }, [queryClient])
 
-  // --- EFFECT: INITIAL LOAD & REALTIME ---
+  // --- 4. SUBMIT MUTATION (Optimistic UI) ---
+  const voteMutation = useMutation({
+    mutationFn: async (votes: number[]) => {
+      const result = await submitHitlistVoteAction(votes)
+      if (!result.success) throw new Error(result.error || "Submission failed")
+      return result
+    },
+    onMutate: async (newVotes) => {
+      // 1. Cancel outgoing refetches so they don't overwrite our optimistic update
+      await queryClient.cancelQueries({ queryKey: ["hitlist-data"] })
+      
+      // 2. Snapshot the previous value
+      const previousData = queryClient.getQueryData(["hitlist-data"])
+      
+      // 3. Optimistically update the UI to show they voted instantly
+      queryClient.setQueryData(["hitlist-data"], (old: any) => ({
+         ...old,
+         votedIds: newVotes
+      }))
+      
+      return { previousData }
+    },
+    onError: (err: any, newVotes, context) => {
+      // Rollback to snapshot if the server action fails
+      queryClient.setQueryData(["hitlist-data"], context?.previousData)
+      toast.error(err.message)
+    },
+    onSuccess: (res) => {
+      toast.success(res.message || "Votes submitted!")
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["hitlist-data"] })
+    }
+  })
+
+  // --- EFFECT: REALTIME UPDATES ---
   useEffect(() => {
-    fetchStatus()
-
     const channel = supabase
       .channel(HITLIST_DB.CHANNEL_NAME) 
       .on(
@@ -112,51 +127,49 @@ export function useHitlist() {
         },
         () => {
           console.log("⚡ Live vote detected!")
-          fetchStatus(false)
+          queryClient.invalidateQueries({ queryKey: ["hitlist-data"] })
         }
       )
       .subscribe()
 
     return () => { supabase.removeChannel(channel) }
-  }, [fetchStatus])
+  }, [queryClient])
 
-  // --- TOGGLE & SUBMIT ---
-  const toggle = (id: number) => {
+  // --- TOGGLE & SUBMIT HANDLERS ---
+  const toggle = useCallback((id: number) => {
     if (hasVoted || !status.isOpen) return
     setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])
-  }
+  }, [hasVoted, status.isOpen])
 
-  const submit = async () => {
+  const submit = useCallback(() => {
      if (!status.isOpen) return toast.error("Voting is currently closed.") 
      if (!userEmail) { setShowLoginModal(true); return }
      if (selected.length === 0) return toast.error("Select at least one song")
      
-     setSubmitting(true)
-     try {
-       const result = await submitHitlistVoteAction(selected)
+     voteMutation.mutate(selected)
+  }, [status.isOpen, userEmail, selected, voteMutation.mutate])
 
-       if (!result.success) throw new Error(result.error || "Submission failed")
-       
-       setHasVoted(true)
-       toast.success(result.message || "Votes submitted!")
-       fetchStatus(true) 
-
-     } catch (e: any) { 
-        toast.error(e.message) 
-     } finally { 
-        setSubmitting(false) 
-     }
-  }
-
-  const activeSong = songs[activeIndex] || songs[0]
-  const selectedSongsList = songs.filter((s) => selected.includes(s.id))
+  const activeSong = useMemo(() => songs[activeIndex] || songs[0], [songs, activeIndex])
+  const selectedSongsList = useMemo(() => songs.filter((s) => selected.includes(s.id)), [songs, selected])
 
   return {
     userEmail,
-    ready, setReady,
-    songs, activeSong, selected, selectedSongsList,
-    hasVoted, activeIndex, setActiveIndex,
-    status, submitting, showLoginModal, setShowLoginModal, isRefreshing,
-    fetchStatus, handleToken, handleLogout, toggle, submit
+    songs, 
+    activeSong, 
+    selected, 
+    selectedSongsList,
+    hasVoted, 
+    activeIndex, 
+    setActiveIndex,
+    status, 
+    submitting: voteMutation.isPending,
+    showLoginModal, 
+    setShowLoginModal, 
+    isRefreshing, 
+    fetchStatus, 
+    handleToken, 
+    handleLogout, 
+    toggle, 
+    submit
   }
 }
