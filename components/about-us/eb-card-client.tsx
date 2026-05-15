@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, memo } from "react"
+import { useState, useRef, useEffect, memo, useMemo } from "react"
 import { Play, Pause, VolumeX } from "lucide-react"
 
 interface EBMemberCardClientProps {
@@ -9,10 +9,7 @@ interface EBMemberCardClientProps {
   image: string | null
   path?: string | null
   title?: string | null
-  pools: {
-    pool_name: string
-    role: string 
-  }[]
+  pools: any
 }
 
 function EBMemberCardClient({ 
@@ -20,12 +17,36 @@ function EBMemberCardClient({
   role, 
   image, 
   path,
-  title, // Added this missing destructure
+  title,
   pools
 }: EBMemberCardClientProps) {
-  
   const [isPlaying, setIsPlaying] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  // 1. SAFE ARRAY CHECK: This prevents the "is not a function" crash
+  const isPD = useMemo(() => {
+    if (!pools) return false
+    
+    // If it's a proper array, use .some()
+    if (Array.isArray(pools)) {
+      return pools.some(p => p?.role?.toLowerCase() === "pool director")
+    }
+    
+    // If it's a single object (fallback for inconsistent DB entries)
+    if (typeof pools === 'object') {
+      return pools.role?.toLowerCase() === "pool director"
+    }
+    
+    return false
+  }, [pools])
+
+  // 2. SAFE POOL NAME: Show the first pool if multiple, or the only pool if one
+  const primaryPoolName = useMemo(() => {
+    if (!pools) return ""
+    if (Array.isArray(pools)) return pools[0]?.pool_name || ""
+    if (typeof pools === 'object') return pools.pool_name || ""
+    return ""
+  }, [pools])
 
   // 1. Listen for other cards playing to stop this one
   useEffect(() => {
@@ -135,8 +156,10 @@ function EBMemberCardClient({
       <p className="text-sm font-secondary max-w-48 text-[#569429] uppercase tracking-wide">
         {isPlaying ? (
           <span className="animate-pulse">{title}</span>
+        ) : isPD ? (
+          primaryPoolName
         ) : (
-          role // Changed from 'position' to 'role'
+          role
         )}
       </p>
     </div>
