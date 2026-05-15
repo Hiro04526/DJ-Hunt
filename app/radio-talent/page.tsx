@@ -1,26 +1,19 @@
 "use client"
 
-import { Metadata } from "next"
 import { TitleSection } from "./sections/title"
 import { RosterSection } from "./sections/roster"
-import { useEffect } from "react"
+import { Suspense, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 
-const metadata: Metadata = {
-  title: 'Radio Talent',
-  description: 'The faces and voices of Green Giant FM.',
-}
-
-export default function RadioTalentPage() {
+function ScrollManager() {
   const searchParams = useSearchParams()
 
   useEffect(() => {
     const hash = window.location.hash.replace("#", "")
-    
     if (!hash) return
 
     let retryCount = 0
-    const maxRetries = 30 // Stop trying after 3 seconds
+    const maxRetries = 20
 
     const scrollInterval = setInterval(() => {
       const element = document.getElementById(hash)
@@ -33,13 +26,20 @@ export default function RadioTalentPage() {
       }
       
       retryCount++
-    }, 100) // Check every 100ms
+    }, 100)
 
     return () => clearInterval(scrollInterval)
-  }, [searchParams]) // Re-run if the URL changes
+  }, [searchParams])
 
+  return null // It doesn't render anything visually
+}
+
+export default function RadioTalentPage() {
   return (
     <main className="min-h-screen bg-[#111] text-white mt-12 pb-16 font-sans">
+      <Suspense fallback={null}>
+        <ScrollManager />
+      </Suspense>
       <TitleSection />
       <RosterSection />
     </main>
