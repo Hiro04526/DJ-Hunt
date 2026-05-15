@@ -2,17 +2,27 @@ import { HeaderComponent } from "@/components/about-us/header"
 import { Top3Grid } from "@/components/about-us/top3-grid"
 import { VpiManagersGrid } from "@/components/about-us/vpi-grid"
 import { PoolDirectorsGrid } from "@/components/about-us/pd-grid"
-import { BoardMember } from "@/types/about-us"
+import { EBMember } from "@/types/about-us"
 
 interface ExecutiveBoardSectionProps {
-  members: BoardMember[]
+  members: EBMember[]
 }
 
 export function ExecutiveBoardSection({ members }: ExecutiveBoardSectionProps) {
-  // 1. Categorize the members (no hooks needed!)
-  const top3 = members.filter(m => m.category === 'top3')
-  const vpiManagers = members.filter(m => m.category === 'vpi manager')
-  const poolDirectors = members.filter(m => m.category === 'pool director')
+  const top3 = members.filter((m) => {
+    const roleCheck = (m.role  || "").toLowerCase()
+    return roleCheck === "president" || roleCheck.includes("president")
+  })
+
+  const vpiManagers = members.filter((m) => {
+    const roleCheck = (m.role || "").toLowerCase()
+    return ["human resources", "training & development", "formations"].includes(roleCheck)
+  })
+
+  const poolDirectors = members.filter((m) => {
+    const roleCheck = (m.role || "").toLowerCase()
+    return roleCheck === "pool director"
+  })
 
   return (
     <section>
@@ -33,7 +43,7 @@ export function ExecutiveBoardSection({ members }: ExecutiveBoardSectionProps) {
       
       {/* Fallback if database is completely empty */}
       {members.length === 0 && (
-        <div className="text-center text-gray-500 py-12">
+        <div className="text-center text-zinc-500 py-12">
           No board members found.
         </div>
       )}

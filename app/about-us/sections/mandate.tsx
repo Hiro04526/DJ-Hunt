@@ -1,13 +1,11 @@
-import { Target } from "lucide-react"
 import { HeaderComponent } from "@/components/about-us/header"
 import { MANDATE_DATA } from "@/constants/about-us"
 
 export function MandateSection() {
   return (
-    <section className="grid gap-8 md:grid-cols-3">
-      <div className="col-span-1">
+    <section className="grid gap-8 md:grid-cols-3 items-center">
+      <div className="col-span-1"> 
         <HeaderComponent 
-          icon={<Target className="text-[#1DB954]" />} 
           title="The Mandate" 
           description="The core foundation and purpose driving the Green Giant FM community." 
         />
@@ -18,7 +16,7 @@ export function MandateSection() {
             key={i} 
             className={`rounded-xl border border-[#222] bg-[#111] p-6 hover:border-[#333] transition-colors ${mandate.span === 2 ? 'sm:col-span-2' : ''}`}
           >
-            <h3 className="mb-3 text-lg font-bold text-[#1DB954]">{mandate.title}</h3>
+            <h3 className="mb-3 text-lg font-bold text-[#569429]">{mandate.title}</h3>
             <p className="text-gray-300 italic">"{mandate.content}"</p>
           </div>
         ))}

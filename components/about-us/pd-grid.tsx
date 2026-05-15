@@ -1,9 +1,8 @@
-// components/about-us/directors-grid.tsx
-import EBMemberCard from "@/components/about-us/eb-card"
-import { BoardMember } from "@/types/about-us"
+import EBMemberCard from "@/components/about-us/eb-card-client"
+import { EBMember } from "@/types/about-us"
 
 interface PoolDirectorsGridProps {
-  members: BoardMember[]
+  members: EBMember[]
 }
 
 export function PoolDirectorsGrid({ members }: PoolDirectorsGridProps) {
@@ -14,13 +13,16 @@ export function PoolDirectorsGrid({ members }: PoolDirectorsGridProps) {
       <h3 className="text-center text-xl font-bold text-white mb-8">
         Pool Directors
       </h3>
-      <div className="grid gap-6 grid-cols-2 sm:grid-cols-4 md:grid-cols-7">
+      <div className="flex flex-wrap justify-center gap-6">
         {members.map((member) => (
           <EBMemberCard 
-            key={member.id} 
+            key={member.id}
             name={member.name} 
-            position={member.position} 
-            imageUrl={member.image_url} 
+            role={member.role} 
+            image={member.image} 
+            path={member.path}
+            title={member.title}
+            pools={member.pools}
           />
         ))}
       </div>

@@ -1,8 +1,8 @@
-import EBMemberCard from "@/components/about-us/eb-card"
-import { BoardMember } from "@/types/about-us"
+import EBMemberCard from "@/components/about-us/eb-card-client"
+import { EBMember } from "@/types/about-us"
 
 interface VpiManagersGridProps {
-  members: BoardMember[]
+  members: EBMember[]
 }
 
 export function VpiManagersGrid({ members }: VpiManagersGridProps) {
@@ -10,16 +10,17 @@ export function VpiManagersGrid({ members }: VpiManagersGridProps) {
 
   return (
     <div className="mb-12">
-      <h3 className="text-center text-xl font-bold text-white mb-8">
-        VPI Managers
-      </h3>
-      <div className="grid gap-6 sm:grid-cols-3">
+      <h3 className="text-center text-xl font-bold text-white mb-8">VPI Managers</h3>
+      <div className="grid gap-6 sm:grid-cols-3 max-w-4xl mx-auto">
         {members.map((member) => (
           <EBMemberCard 
-            key={member.id} 
+            key={member.id}
             name={member.name} 
-            position={member.position} 
-            imageUrl={member.image_url} 
+            role={member.role} 
+            image={member.image} 
+            path={member.path}
+            title={member.title}
+            pools={member.pools}
           />
         ))}
       </div>

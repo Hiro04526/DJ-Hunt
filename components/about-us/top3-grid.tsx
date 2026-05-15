@@ -1,8 +1,8 @@
-import EBMemberCard from "@/components/about-us/eb-card"
-import { BoardMember } from "@/types/about-us"
+import EBMemberCard from "@/components/about-us/eb-card-client"
+import { EBMember } from "@/types/about-us"
 
 interface Top3GridProps {
-  members: BoardMember[]
+  members: EBMember[]
 }
 
 export function Top3Grid({ members }: Top3GridProps) {
@@ -14,11 +14,13 @@ export function Top3Grid({ members }: Top3GridProps) {
       <div className="grid gap-6 sm:grid-cols-3 max-w-4xl mx-auto">
         {members.map((member) => (
           <EBMemberCard 
-            key={member.id} 
+            key={member.id}
             name={member.name} 
-            position={member.position} 
-            imageUrl={member.image_url} 
-            isTop3={true} 
+            role={member.role} 
+            image={member.image} 
+            path={member.path}
+            title={member.title}
+            pools={member.pools}
           />
         ))}
       </div>

@@ -12,5 +12,5 @@ export const SOCIAL_LINKS: SocialLink[] = [
 export const FOOTER_INFO: FooterInfo = {
   address: "Br. Bloemen Hall, De La Salle University, 2401 Taft Ave., Malate, Manila, 1004 Metro Manila",
   email: "publicrelations.ggfm@gmail.com",
-  emailHref: "https://mail.google.com/mail/?view=cm&fs=1&to=publicrelations.ggfm@gmail.com"
+  emailHref: "/services"
 }

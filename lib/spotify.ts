@@ -8,7 +8,7 @@ const TOKEN_ENDPOINT = `https://accounts.spotify.com/api/token`
 const SEARCH_ENDPOINT = `https://api.spotify.com/v1/search`
 
 // 1. Get Access Token (Valid for 1 hour)
-async function getAccessToken() {
+export async function getAccessToken() {
   const response = await fetch(TOKEN_ENDPOINT, {
     method: "POST",
     headers: {

@@ -16,83 +16,91 @@ const ICON_MAP: Record<string, React.ElementType> = {
 export function Footer() {
   return (
     <footer className="w-full">
-      <div className="bg-[#F5F2E9] text-black dark:bg-[#191919] dark:text-white">
-        {/* Container */}
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-8 sm:py-10 space-y-8">
+      <div className="bg-[#F5F2E9] text-black dark:bg-[#191919] dark:text-white border-t border-black/5 dark:border-white/5">
+        <div className="mx-auto w-full max-w-7xl px-4 py-12 md:py-16">
+          
+          {/* Main Row: Uses xl:items-stretch to force all 3 columns to match the tallest element's height */}
+          <div className="flex flex-col xl:flex-row xl:items-stretch justify-between gap-12 xl:gap-8">
+            
+            {/* 1. Scaled Up Logo (Centered Vertically) */}
+            <div className="flex flex-col justify-center items-center xl:items-start shrink-0">
+              <div className="relative h-35.75 w-86.5">
+                <Image
+                  src="/assets/GGFM Logo_Black.png"
+                  alt="DLSU Radio: Green Giant FM"
+                  fill
+                  priority
+                  className="object-contain block dark:hidden"
+                />
+                <Image
+                  src="/assets/GGFM Logo_White.png"
+                  alt="DLSU Radio: Green Giant FM"
+                  fill
+                  priority
+                  className="hidden dark:block"
+                />
+              </div>
+            </div>
 
-          {/* Title */}
-          <h2 className="text-center text-3xl sm:text-4xl md:text-6xl font-medium leading-tight">
-            Keep it locked with us!
-          </h2>
+            {/* 2. Scaled Up Slogan & Stacked Socials (Tallest element that sets the height) */}
+            <div className="flex flex-col items-center justify-center gap-5 text-center">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight">
+                Keep it locked with us!
+              </h2>
 
-          {/* Social Icons using ICON_MAP */}
-          <div className="mx-auto flex flex-wrap justify-center gap-x-4 gap-y-3 md:gap-x-6 md:gap-y-4 max-w-3xl">
-            {SOCIAL_LINKS.map((link) => {
-              const IconComponent = ICON_MAP[link.icon]
+              <div className="flex flex-row items-center gap-3">
+                {SOCIAL_LINKS.map((link) => {
+                  const IconComponent = ICON_MAP[link.icon]
 
-              if (!IconComponent) {
-                console.warn(`Missing icon mapping for: ${link.icon}`)
-                return null; 
-              }
+                  if (!IconComponent) return null;
+
+                  return (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target={link.external ? "_blank" : undefined}
+                      rel={link.external ? "noopener noreferrer" : undefined}
+                      aria-label={link.label}
+                      className="inline-flex items-center justify-center shrink-0 hover:scale-110 rounded-full text-[#569429] hover:opacity-90 transition-all h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 bg-black/5 dark:bg-white/5 xl:bg-transparent"
+                    >
+                      <IconComponent className="text-2xl sm:text-3xl md:text-4xl" />
+                    </a>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* 3. Distinct Address & Contact Block (Stacked, stretched height) */}
+            <div className="flex flex-col justify-center items-center text-center sm:items-start sm:text-left gap-5 bg-black/5 dark:bg-white/5 px-8 py-6 rounded-3xl shrink-0">
               
-              return (
-                <a 
-                  key={link.label} 
-                  href={link.href} 
-                  target={link.external ? "_blank" : undefined}
-                  rel={link.external ? "noopener noreferrer" : undefined}
-                  aria-label={link.label}
-                  className="inline-flex items-center justify-center hover:scale-105 rounded-full text-[#569429] hover:opacity-90 transition h-12 w-12 md:h-16 md:w-16 basis-1/5 md:basis-auto"
+              {/* Address */}
+              <div className="flex flex-col w-full">
+                <span className="text-[16px] uppercase tracking-widest text-gray-500 dark:text-white mb-1.5">
+                  Address
+                </span>
+                <span className="text-[13px] font-secondary leading-snug max-w-70.5 text-gray-800 dark:text-gray-200">
+                  {FOOTER_INFO.address}
+                </span>
+              </div>
+              
+              {/* Contact */}
+              <div className="flex flex-col w-full">
+                <span className="text-[16px] uppercase tracking-widest text-gray-500 dark:text-white mb-1.5">
+                  Contact
+                </span>
+                <a
+                  href={FOOTER_INFO.emailHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[13px] font-secondary text-[#569429] hover:text-black dark:hover:text-white transition-colors"
                 >
-                  <IconComponent className="text-3xl md:text-5xl" />
+                  {FOOTER_INFO.email}
                 </a>
-              );
-            })}
-          </div>
+              </div>
+              
+            </div>
 
-          {/* Address */}
-          <div className="max-w-fit mx-auto text-center">
-            <h3 className="font-medium mb-2 text-2xl underline underline-offset-4">
-              ADDRESS
-            </h3>
-            <p className="text-base leading-relaxed font-secondary">
-              {FOOTER_INFO.address}
-            </p>
           </div>
-
-          {/* Contact */}
-          <div className="flex justify-center">
-            <p className="text-base font-secondary text-center">
-              Contact us at{" "}
-              <a
-                href={FOOTER_INFO.emailHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-[#569429]"
-              >
-                {FOOTER_INFO.email}
-              </a>
-            </p>
-          </div>
-
-          {/* Logo Container */}
-          <div className="mx-auto h-18 w-50 relative mt-8">
-            <Image
-              src="/assets/GGFM Logo_Black.png"
-              alt="DLSU Radio: Green Giant FM"
-              fill
-              priority
-              className="object-contain block dark:hidden"
-            />
-            <Image
-              src="/assets/GGFM Logo_White.png"
-              alt="DLSU Radio: Green Giant FM"
-              fill
-              priority
-              className="object-contain hidden dark:block"
-            />
-          </div>
-
         </div>
       </div>
     </footer>

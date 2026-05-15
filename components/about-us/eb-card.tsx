@@ -1,16 +1,23 @@
-import { memo } from "react"
+import EBMemberCardClient from "./eb-card-client"
+import { EBMember } from "@/types/about-us"
 
-function EBMemberCard({ name, position, imageUrl, isTop3 }: { name: string, position: string, imageUrl: string | null, isTop3?: boolean }) {
+export default async function EBMemberCard({ 
+  name, 
+  role, 
+  image, 
+  path,
+  title,
+  pools
+}: EBMember) {
+
   return (
-    <div className="flex flex-col items-center text-center p-4 bg-[#111] rounded-xl border border-[#222] transition-transform hover:scale-105">
-      <div 
-        className={`${isTop3 ? 'w-24 h-24 mb-4' : 'w-16 h-16 mb-3'} rounded-full bg-[#222] overflow-hidden`}
-        style={imageUrl ? { backgroundImage: `url(${imageUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
-      />
-      <h4 className={`font-bold text-white ${isTop3 ? 'text-base' : 'text-sm'}`}>{name}</h4>
-      <p className={`${isTop3 ? 'text-sm' : 'text-xs'} text-[#1DB954]`}>{position}</p>
-    </div>
+    <EBMemberCardClient
+      name={name}
+      role={role}
+      image={image}
+      path={path} 
+      title={title}
+      pools={pools}
+    />
   )
 }
-
-export default memo(EBMemberCard)

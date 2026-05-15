@@ -97,6 +97,7 @@
    VINYL BACKGROUND + ANIMATION
    =============================== */
 
+/* Centered on Section Vinyl Spin*/
 @keyframes vinyl-spin {
   from {
     transform: translate(-50%, -50%) rotate(0deg);
@@ -106,7 +107,18 @@
   }
 }
 
+/* Spin Only */
+@keyframes spin-record {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 @layer utilities {
+  /* Utility class for the EBMemberCard component */
+  .animate-spin-record {
+    animation: spin-record 4s linear infinite;
+  }
+
   /* Spinning Vinyl Rings Background */
   .vinyl-rings {
     position: absolute;
