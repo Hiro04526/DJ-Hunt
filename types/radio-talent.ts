@@ -10,6 +10,7 @@ export interface RadioTalentMember {
   bio?: string
   event_hosting_images?: string[]
   stingers?: string[]
+  rt_link?: string
 }
 
 // --- RADIO TALENT MEMBER CATEGORY ---

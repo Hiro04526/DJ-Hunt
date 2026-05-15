@@ -3,7 +3,7 @@ import { EBMember } from "@/types/about-us"
 
 export default async function EBMemberCard({ 
   name, 
-  role, 
+  position, 
   image, 
   path,
   title,
@@ -13,7 +13,7 @@ export default async function EBMemberCard({
   return (
     <EBMemberCardClient
       name={name}
-      role={role}
+      position={position}
       image={image}
       path={path} 
       title={title}

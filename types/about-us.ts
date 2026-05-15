@@ -1,12 +1,13 @@
 export interface EBMember {
   id: number | null
   name: string
-  role: "President" | "Vice President for Internals" | "Vice President for Externals" | 
+  position: "President" | "Vice President for Internals" | "Vice President for Externals" | 
         "Human Resources" | "Training & Development" | "Formations" | "Pool Director" | null
   image: string | null
   order?: number
   path?: string | null
   title?: string | null
+  rt_link?: string
   pools: {
     pool_name: string
     role: string 

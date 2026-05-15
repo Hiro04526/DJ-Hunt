@@ -205,3 +205,7 @@
     height: 350px;
   }
 }
+
+html {
+  scroll-behavior: smooth;
+}

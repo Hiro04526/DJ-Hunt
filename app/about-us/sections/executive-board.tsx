@@ -10,17 +10,17 @@ interface ExecutiveBoardSectionProps {
 
 export function ExecutiveBoardSection({ members }: ExecutiveBoardSectionProps) {
   const top3 = members.filter((m) => {
-    const roleCheck = (m.role  || "").toLowerCase()
+    const roleCheck = (m.position  || "").toLowerCase()
     return roleCheck === "president" || roleCheck.includes("president")
   })
 
   const vpiManagers = members.filter((m) => {
-    const roleCheck = (m.role || "").toLowerCase()
+    const roleCheck = (m.position || "").toLowerCase()
     return ["human resources", "training & development", "formations"].includes(roleCheck)
   })
 
   const poolDirectors = members.filter((m) => {
-    const roleCheck = (m.role || "").toLowerCase()
+    const roleCheck = (m.position || "").toLowerCase()
     return roleCheck === "pool director"
   })
 

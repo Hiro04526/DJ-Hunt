@@ -2,7 +2,7 @@
 
 import { memo, useState, useRef, useEffect } from "react"
 import * as LucideIcons from "lucide-react"
-import { OrgMember } from "@/types/about-us"
+import { EBMember, OrgMember } from "@/types/about-us"
 
 interface PoolCardProps {
   name: string
@@ -79,16 +79,21 @@ function PoolCardComponent({
     return a.name.localeCompare(b.name)
   })
 
-  const getContextualBadges = (member: OrgMember, poolRole: string) => {
+  const getContextualBadges = (member: any, poolRole: string) => {
     // 1. Start with a fresh, empty array for every card
     let badges: ("TOP 3" | "VPI MGR" | "PD" | "APD" | "CORE" | "HR REP")[] = []
     
     const roleLower = poolRole.toLowerCase()
     
-    // We check if they are EB based on the poolRole 
-    // (In case an EB member is viewing their role in a specific pool)
-    const isPresident = roleLower.includes("president")
-    const isVPI = ["human resources", "formations", "training & development"].includes(roleLower)
+    const positionString = Array.isArray(member.position) 
+      ? member.position.join(" ").toLowerCase() 
+      : (member.position || "").toLowerCase()
+
+    // We check if they are EB based on their overall 'positions' string
+    const isPresident = positionString.includes("president")
+    const isVPI = ["human resources", "formations", "training & development"].some(vpiRole => 
+      positionString.includes(vpiRole.toLowerCase())
+    )
 
     // 2. Re-apply badges strictly based on context
     if (isPresident) {
@@ -264,7 +269,7 @@ function MemberCard({
 }) {
   return (
     <a
-      href={member.rt_link ? `#${member.rt_link}` : undefined}
+      href={member.rt_link ? `/radio-talent#${member.rt_link}` : undefined}
       className={`flex flex-col items-center text-center w-32 p-4 rounded-xl bg-zinc-900/40 border border-zinc-800/50 transition-all group ${
         member.rt_link ? 'hover:bg-zinc-800 hover:border-zinc-700 cursor-pointer' : 'cursor-default'
       }`}

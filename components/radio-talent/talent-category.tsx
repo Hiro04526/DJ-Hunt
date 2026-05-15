@@ -15,8 +15,9 @@ function TalentCategoryComponent({ title, members, onSelect }: TalentCategoryPro
         {members.map((member) => (
           <div 
             key={member.id}
+            id={member.rt_link}
             onClick={() => onSelect(member)} 
-            className="group cursor-pointer relative aspect-3/4 bg-neutral-900 rounded-xl overflow-hidden border border-white/10 hover:border-[#569429] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#569429]/20"
+            className="scroll-mt-32 group cursor-pointer relative aspect-3/4 bg-neutral-900 rounded-xl overflow-hidden border border-white/10 hover:border-[#569429] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#569429]/20"
           >
             {/* Image Layer */}
             <div className="absolute inset-0">

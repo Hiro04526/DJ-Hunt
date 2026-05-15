@@ -18,7 +18,7 @@ export function PoolDirectorsGrid({ members }: PoolDirectorsGridProps) {
           <EBMemberCard 
             key={member.id}
             name={member.name} 
-            role={member.role} 
+            position={member.position} 
             image={member.image} 
             path={member.path}
             title={member.title}

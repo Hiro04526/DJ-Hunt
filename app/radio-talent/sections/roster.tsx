@@ -47,6 +47,21 @@ function RosterSectionComponent() {
     return () => { document.body.style.overflow = "unset" }
   }, [selectedTalent])
 
+  useEffect(() => {
+    // Check if the URL has a hash (e.g., #john-doe)
+    if (window.location.hash) {
+      const id = window.location.hash.substring(1); // remove the '#'
+      const element = document.getElementById(id);
+      
+      if (element) {
+        // Small timeout ensures the content has rendered before scrolling
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    }
+  }, []);
+
   return (
     <>
       {/* --- DROPDOWN SELECTOR --- */}

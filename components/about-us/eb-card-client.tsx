@@ -5,7 +5,7 @@ import { Play, Pause, VolumeX } from "lucide-react"
 
 interface EBMemberCardClientProps {
   name: string
-  role: string | null
+  position: string | null
   image: string | null
   path?: string | null
   title?: string | null
@@ -14,7 +14,7 @@ interface EBMemberCardClientProps {
 
 function EBMemberCardClient({ 
   name, 
-  role, 
+  position, 
   image, 
   path,
   title,
@@ -159,7 +159,7 @@ function EBMemberCardClient({
         ) : isPD ? (
           primaryPoolName
         ) : (
-          role
+          position
         )}
       </p>
     </div>
