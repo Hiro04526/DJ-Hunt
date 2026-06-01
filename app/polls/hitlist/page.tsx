@@ -14,6 +14,7 @@ const SongsSection = dynamic(() => import("./sections/songs"), {
 export const metadata: Metadata = {
   title: 'Hitlist',
   description: "Voting polls for this week's Top 20 songs!",
+  referrer: "strict-origin-when-cross-origin",
 }
 
 export default function Hitlist() {
