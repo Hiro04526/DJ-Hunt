@@ -51,7 +51,7 @@ function HitlistPlayerComponent({ activeSong }: { activeSong?: Song }) {
         {activeSong?.spotify_link && trackId ? (
           <iframe
             key={trackId + spotifyTheme}
-            src={`http://googleusercontent.com/spotify.com/${trackId}?utm_source=generator&theme=${spotifyTheme}`}
+            src={`https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=${spotifyTheme}`}
             width="100%" 
             height="352"
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
