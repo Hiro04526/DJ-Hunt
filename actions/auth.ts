@@ -66,7 +66,11 @@ export async function verifyAdminSession() {
 
 export async function loginAction(token: string) {
   try {
-    const ticket = await googleClient.verifyIdToken({ idToken: token, audience: GOOGLE_CLIENT_ID })
+    const ticket = await googleClient.verifyIdToken({ 
+      idToken: token, 
+      audience: GOOGLE_CLIENT_ID 
+    })
+    
     const email = ticket.getPayload()?.email
     if (!email) throw new Error("Invalid Token")
 

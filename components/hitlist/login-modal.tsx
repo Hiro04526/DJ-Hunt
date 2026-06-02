@@ -33,13 +33,19 @@ function LoginModalComponent({ isOpen, onClose, onToken }: LoginModalProps) {
 
           <div className="flex justify-center min-h-12.5">
             <GoogleLogin
-              onSuccess={(credentialResponse) => {
+              onSuccess={async (credentialResponse) => {
                 if (credentialResponse.credential) {
-                  onToken(credentialResponse.credential)
+                  try {
+                    await onToken({ credential: credentialResponse.credential })
+                    onClose()
+                  } catch (error) {
+                    console.error("Authentication submission error:", error)
+                  }
                 }
               }}
-              onError={() => console.error('Login Failed')}
-              useOneTap
+              onError={() => console.error("Google login failed")}
+              use_fedcm_for_button={true}
+              use_fedcm_for_prompt={true}
               theme="outline" 
               shape="pill"
             />

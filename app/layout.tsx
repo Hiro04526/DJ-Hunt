@@ -6,6 +6,7 @@ import { Navbar } from "@/components/general/navbar"
 import { Footer } from "@/components/general/footer"
 import { Toaster } from "@/components/ui/toaster"
 import { Providers } from "./providers"
+import { GoogleOAuthProvider } from "@react-oauth/google"
 
 export const metadata: Metadata = {
   title: "Green Giant FM",
@@ -34,21 +35,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-primary">
         {/* 2. Wrap everything inside the body with the new Providers */}
-        <Providers>
-          <ThemeProvider 
-            attribute="class" 
-            defaultTheme="system" 
-            enableSystem 
-            disableTransitionOnChange
-          >
-            <div className="relative min-h-screen">
-              <Navbar />
-              <main>{children}</main>
-              <Footer />
-            </div>
-            <Toaster />
-          </ThemeProvider>
-        </Providers>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+          <Providers>
+            <ThemeProvider 
+              attribute="class" 
+              defaultTheme="system" 
+              enableSystem 
+              disableTransitionOnChange
+            >
+              <div className="relative min-h-screen">
+                <Navbar />
+                <main>{children}</main>
+                <Footer />
+              </div>
+              <Toaster />
+            </ThemeProvider>
+          </Providers>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
