@@ -38,29 +38,32 @@ async function fetchTalentFromDB(year: string) {
 // --- EXPORTED SERVER ACTIONS ---
 
 // 1. Get Available Years (Cached for 1 hour)
-export const getAvailableYears = unstable_cache(
+const getCachedAvailableYears = unstable_cache(
   async () => {
-    try {
-      return await fetchYearsFromDB()
-    } catch (error) {
-      console.error("Server Action Failed:", error)
-      return []
-    }
+    return await fetchYearsFromDB()
   },
   ['available-roster-years'],
-  { revalidate: 3600 } 
-)
-
-// 2. Define the cached function outside the Server Action
-const getCachedRadioTalent = unstable_cache(
-  async (year: string) => fetchTalentFromDB(year),
-  ['radio-talent-roster'], 
   { revalidate: 3600 }
 )
 
-// 3. Get Talent By Year
+export async function getAvailableYears() {
+  try {
+    return await getCachedAvailableYears()
+  } catch (error) {
+    console.error("Server Action Failed (Years):", error)
+    return []
+  }
+}
+
+// 2. Get Talent By Year (With Dynamic Cache Keys)
 export async function getRadioTalentByYear(year: string) {
   try {
+    const getCachedRadioTalent = unstable_cache(
+      async (targetYear: string) => fetchTalentFromDB(targetYear),
+      ['radio-talent-roster', year], 
+      { revalidate: 3600 }
+    )
+
     const data = await getCachedRadioTalent(year);
 
     if (!data) {
