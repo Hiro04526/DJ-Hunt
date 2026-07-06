@@ -1,6 +1,6 @@
 import { Metadata } from "next"
 import { TitleSection } from "./sections/title"
-import { DJSection } from "./sections/dj"
+import { FinalistsSection } from "./sections/finalists"
 
 export const metadata: Metadata = {
 	title: 'DJ Hunt',
@@ -11,7 +11,7 @@ export default function DJHunt() {
   return (
     <div className="flex flex-col">
       <TitleSection />
-      <DJSection/>
+      <FinalistsSection/>
     </div>
   )
 }

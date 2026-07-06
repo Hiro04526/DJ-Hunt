@@ -8,7 +8,7 @@ import AudioPlayer from "@/components/dj-hunt/audio-player"
 import { FinalistVotingForm } from "@/components/dj-hunt/voting-form"
 import { useFinalistSection } from "@/hooks/polls/dj-hunt/use-finalist-section"
 
-export function FinalistSection() {
+export function FinalistsSection() {
   const {
     Finalists,
     loading,
