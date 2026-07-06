@@ -1,19 +1,19 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { getDJsAction } from "@/actions/dj-hunt"
-import { DJ } from "@/types/dj-hunt"
+import { getFinalistsAction } from "@/actions/dj-hunt"
+import { Finalist } from "@/types/dj-hunt"
 import { VOTING_START, VOTING_END } from "@/constants/dj-hunt"
 import { buildDriveEmbedSrc } from "@/lib/utils"
 
-export function useDJSection() {
+export function useFinalistSection() {
   // --- Data State ---
-  const [DJs, setDJs] = useState<DJ[]>([])
+  const [Finalists, setFinalists] = useState<Finalist[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
   // --- UI State ---
-  const [selectedDJ, setSelectedDJ] = useState<DJ | null>(null)
+  const [selectedFinalist, setSelectedFinalist] = useState<Finalist | null>(null)
   const [isVotingOpen, setIsVotingOpen] = useState(false)
   
   // --- Timer State ---
@@ -32,31 +32,31 @@ export function useDJSection() {
 
   // 2. FETCH DATA EFFECT
   useEffect(() => {
-    async function fetchDJs() {
+    async function fetchFinalists() {
       try {
-        const result = await getDJsAction()
+        const result = await getFinalistsAction()
 
         if (result.success && result.data) {
-          setDJs(result.data as DJ[])
+          setFinalists(result.data as Finalist[])
         } else {
-          setError(result.error || "Failed to load DJs")
+          setError(result.error || "Failed to load Finalists")
         }
       } catch (err) {
         console.error(err)
-        setError("Something went wrong while fetching DJs")
+        setError("Something went wrong while fetching Finalists")
       } finally {
         setLoading(false)
       }
     }
-    fetchDJs()
+    fetchFinalists()
   }, [])
 
   return {
-    DJs,
+    Finalists,
     loading,
     error,
-    selectedDJ, 
-    setSelectedDJ,
+    selectedFinalist, 
+    setSelectedFinalist,
     isVotingOpen, 
     setIsVotingOpen,
     isWithinVotingWindow,

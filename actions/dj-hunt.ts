@@ -4,11 +4,11 @@ import { supabaseAdmin } from "@/lib/supabase/admin"
 import { MAX_VOTES_PER_USER } from "@/constants/dj-hunt"
 import { getEmailFromSession } from "./auth"
 
-// --- ACTION: Get All DJs (Public) ---
-export async function getDJsAction() {
+// --- ACTION: Get All Finalists (Public) ---
+export async function getFinalistsAction() {
   try {
     const { data, error } = await supabaseAdmin
-      .from("DJs")
+      .from("Finalists")
       .select("id,name,description,image,videoshoot,stinger,segue,voiceover")
       .order("id", { ascending: true })
 
@@ -16,7 +16,7 @@ export async function getDJsAction() {
 
     return { success: true, data }
   } catch (error: any) {
-    console.error("Fetch DJs Error:", error)
+    console.error("Fetch Finalists Error:", error)
     return { success: false, error: error.message }
   }
 }
@@ -29,12 +29,12 @@ export async function getVotesAction() {
 
     const { data, error } = await supabaseAdmin
       .from("DJ Hunt Votes")
-      .select("dj_id")
+      .select("finalist_id")
       .eq("email", email)
 
     if (error) throw error
 
-    const votedIds = data?.map((row) => row.dj_id) || []
+    const votedIds = data?.map((row) => row.finalist_id) || []
     return { success: true, votedIds }
 
   } catch (error) {
@@ -44,18 +44,18 @@ export async function getVotesAction() {
 }
 
 // --- ACTION: Submit User Votes ---
-export async function submitVotesAction(djIds: number[]) {
+export async function submitVotesAction(finalistIds: number[]) {
   try {
     const email = await getEmailFromSession()
     if (!email) return { success: false, error: "Invalid or expired session" }
 
     // 1. Remove duplicate IDs and enforce maximum vote limit
-    const uniqueIds = Array.from(new Set(djIds))
+    const uniqueIds = Array.from(new Set(finalistIds))
     
     if (uniqueIds.length > MAX_VOTES_PER_USER) {
       return { 
         success: false, 
-        error: `Manipulation detected: You can only vote for up to ${MAX_VOTES_PER_USER} DJs.` 
+        error: `Manipulation detected: You can only vote for up to ${MAX_VOTES_PER_USER} Finalists.` 
       }
     }
 

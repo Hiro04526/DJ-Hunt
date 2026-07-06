@@ -1,26 +1,15 @@
 "use client"
 
 import { useState, useEffect, memo } from "react"
-import { 
-  ChevronDown, CheckCircle2, Mail, FileText, X, Play, 
-  Megaphone, Share2, Mic2, Users, Camera 
-} from "lucide-react"
+import { ChevronDown, CheckCircle2, Mail, FileText, X, Play } from "lucide-react"
 import { ServiceCardProps } from "@/types/services"
-
-// --- 1. ICON MAP ---
-const ICON_MAP: Record<string, React.ElementType> = {
-  megaphone: Megaphone,
-  share: Share2,
-  mic: Mic2,
-  users: Users,
-  camera: Camera,
-}
 
 function ServiceCardComponent({ service, isExpanded, onToggle, onInquireClick }: ServiceCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
+  const Icon = service.icon
 
-  // --- 2. SIDE EFFECTS IN USE-EFFECT ---
+  // --- SIDE EFFECTS IN USE-EFFECT ---
   // Safely handle body scroll locking without interrupting the render cycle
   useEffect(() => {
     if (isModalOpen) {
@@ -33,8 +22,6 @@ function ServiceCardComponent({ service, isExpanded, onToggle, onInquireClick }:
       document.body.style.overflow = "unset"
     }
   }, [isModalOpen])
-
-  const IconComponent = ICON_MAP[service.icon] || Megaphone
 
   return (
     <>
@@ -50,7 +37,7 @@ function ServiceCardComponent({ service, isExpanded, onToggle, onInquireClick }:
         >
           <div className="flex items-center gap-6">
             <div className={`p-4 rounded-xl bg-linear-to-br ${service.color} text-white shadow-lg group-hover:scale-110 transition-transform`}>
-              <IconComponent className="w-8 h-8" />
+              <Icon className="w-8 h-8" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white group-hover:text-[#569429] transition-colors">

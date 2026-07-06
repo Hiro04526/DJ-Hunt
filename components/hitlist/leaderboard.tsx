@@ -6,11 +6,15 @@ import { LeaderboardProps } from "@/types/hitlist"
 import { useLeaderboard } from "@/hooks/polls/hitlist/use-leaderboard"
 import { cn } from "@/lib/utils"
 
-function HitlistLeaderboardComponent({ songs, onRefresh, isRefreshing }: LeaderboardProps) {
-  const { sortedSongs, maxVotes, isEmpty } = useLeaderboard(songs)
+interface HitlistLeaderboardProps extends LeaderboardProps {
+  limit?: number;
+}
+
+function HitlistLeaderboardComponent({ songs, onRefresh, isRefreshing, limit }: HitlistLeaderboardProps) {
+  const { sortedSongs, maxVotes, isEmpty } = useLeaderboard(songs, limit)
 
   return (
-    <div className="h-full relative gap-4 flex flex-col lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
+    <div className="h-full relative flex flex-col lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
       <div className="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5 flex items-center justify-between">
         
         {/* Header Left */}

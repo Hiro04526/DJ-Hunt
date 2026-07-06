@@ -11,6 +11,7 @@ export interface RadioTalentMember {
   event_hosting_images?: string[]
   stingers?: string[]
   rt_link?: string
+  current_show?: string
 }
 
 // --- RADIO TALENT MEMBER CATEGORY ---

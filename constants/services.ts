@@ -1,10 +1,11 @@
 import { ServiceItem } from "@/types/services"
+import { Megaphone, Share2, Mic2, Users, Camera } from "lucide-react"
 
 export const SERVICES_DATA: ServiceItem[] = [
   {
     id: "aob",
     title: "Advertising & Onboarding",
-    icon: "megaphone",
+    icon: Megaphone,
     description: "Amplify your brand's reach with our targeted advertising and seamless onboarding campaigns.",
     subServices: ["Ad Placements", "On-Air Mentions"],
     color: "from-green-500 to-green-700",
@@ -28,7 +29,7 @@ export const SERVICES_DATA: ServiceItem[] = [
   {
     id: "social",
     title: "Social Media Services",
-    icon: "share",
+    icon: Share2,
     description: "Engage your target demographic through our established digital presence and creative content.",
     subServices: ["Content Creation", "Digital Campaigns"],
     color: "from-blue-500 to-blue-700",
@@ -52,7 +53,7 @@ export const SERVICES_DATA: ServiceItem[] = [
   {
     id: "guesting",
     title: "Show Guesting",
-    icon: "mic",
+    icon: Mic2,
     description: "Feature on our premium radio shows and podcasts to share your story with our listeners.",
     subServices: ["Radio Interviews", "Podcast Features"],
     color: "from-purple-500 to-purple-700",
@@ -76,7 +77,7 @@ export const SERVICES_DATA: ServiceItem[] = [
   {
     id: "talent",
     title: "Talent Provision",
-    icon: "users",
+    icon: Users,
     description: "Professional voices and dynamic hosts for your events and digital content.",
     subServices: ["Hosting", "Voiceovers"],
     color: "from-orange-500 to-orange-700",
@@ -100,7 +101,7 @@ export const SERVICES_DATA: ServiceItem[] = [
   {
     id: "media",
     title: "Media Coverage",
-    icon: "camera",
+    icon: Camera,
     description: "Comprehensive documentation of your events through high-quality visual and written media.",
     subServices: ["Live Instagram Coverage", "Photo Coverage"],
     color: "from-pink-500 to-pink-700",

@@ -6,7 +6,7 @@ import { MAX_VOTES_PER_USER } from "@/constants/dj-hunt"
 import { decodeJwtPayload } from "@/lib/utils"
 import { AuthUser } from "@/types/dj-hunt"
 
-export function useDJVoting() {
+export function useFinalistVoting() {
   const [user, setUser] = useState<AuthUser | null>(null)
   
   const [selected, setSelected] = useState<number[]>([])
@@ -53,7 +53,7 @@ export function useDJVoting() {
       if (prev.includes(id)) return prev.filter((x) => x !== id)
       
       if (prev.length >= MAX_VOTES_PER_USER) {
-        setMessage(`You can only select up to ${MAX_VOTES_PER_USER} DJs.`)
+        setMessage(`You can only select up to ${MAX_VOTES_PER_USER} Finalists.`)
         return prev
       }
       
@@ -71,7 +71,7 @@ export function useDJVoting() {
   const submit = useCallback(async () => {
     setMessage("")
     if (!user) return setMessage("Please sign in first.")
-    if (selected.length === 0) return setMessage("Select at least one DJ.")
+    if (selected.length === 0) return setMessage("Select at least one Finalist.")
 
     setLoading(true)
     try {

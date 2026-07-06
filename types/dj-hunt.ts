@@ -1,4 +1,4 @@
-export interface DJ {
+export interface Finalist {
   id: number
   name: string
   image: string

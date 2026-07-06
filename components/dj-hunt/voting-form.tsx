@@ -1,11 +1,11 @@
 "use client"
 
 import { memo } from "react"
-import { DJ } from "@/types/dj-hunt"
-import { useDJVoting } from "@/hooks/polls/dj-hunt/use-dj-voting"
+import { Finalist } from "@/types/dj-hunt"
+import { useFinalistVoting } from "@/hooks/polls/dj-hunt/use-finalist-voting"
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google"
 
-function DJVotingFormComponent({ djs }: { djs: DJ[] }) {
+function FinalistVotingFormComponent({ Finalists }: { Finalists: Finalist[] }) {
   const {
     user, setUser,
     selected, setSelected,
@@ -18,7 +18,7 @@ function DJVotingFormComponent({ djs }: { djs: DJ[] }) {
     hasChanges,
     submit,
     handleToken
-  } = useDJVoting()
+  } = useFinalistVoting()
 
   return (
     <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
@@ -65,13 +65,13 @@ function DJVotingFormComponent({ djs }: { djs: DJ[] }) {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {djs.map((dj) => {
-                  const selectedState = isSelected(dj.id)
+                {Finalists.map((Finalist) => {
+                  const selectedState = isSelected(Finalist.id)
                   return (
                     <button
-                      key={dj.id}
+                      key={Finalist.id}
                       type="button"
-                      onClick={() => toggle(dj.id)}
+                      onClick={() => toggle(Finalist.id)}
                       aria-pressed={selectedState}
                       className={[
                         "relative h-40 w-full rounded-xl border overflow-hidden text-left transition",
@@ -96,14 +96,14 @@ function DJVotingFormComponent({ djs }: { djs: DJ[] }) {
 
                       <div className="flex-none relative w-32">
                         <img
-                          src={dj.image}
-                          alt={dj.name}
+                          src={Finalist.image}
+                          alt={Finalist.name}
                           className="absolute inset-0 w-full h-full object-cover"
                         />
                       </div>
 
                       <div className="flex flex-col justify-center grow px-4 py-3">
-                        <p className="text-xl font-medium truncate">Finalist {dj.name}</p>
+                        <p className="text-xl font-medium truncate">Finalist {Finalist.name}</p>
                       </div>
 
                       <div className="flex items-center pr-4">
@@ -139,7 +139,7 @@ function DJVotingFormComponent({ djs }: { djs: DJ[] }) {
                   ? "Votes Saved"
                   : selected.length > 0 
                     ? `Submit ${selected.length} Vote${selected.length !== 1 ? "s" : ""}`
-                    : "Select a DJ"}
+                    : "Select a Finalist"}
               </button>
 
               {message && <p className="mt-2 text-center text-sm">{message}</p>}
@@ -151,4 +151,4 @@ function DJVotingFormComponent({ djs }: { djs: DJ[] }) {
   )
 }
 
-export const DJVotingForm = memo(DJVotingFormComponent)
+export const FinalistVotingForm = memo(FinalistVotingFormComponent)
