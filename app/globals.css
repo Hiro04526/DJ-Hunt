@@ -107,6 +107,16 @@
   }
 }
 
+@keyframes ggfm-equalizer {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes ggfm-rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 @keyframes ggfm-float-a {
   0%, 100% { transform: translateY(-8px); }
   50% { transform: translateY(8px); }

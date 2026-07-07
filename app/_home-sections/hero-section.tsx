@@ -1,8 +1,10 @@
+"use client"
+
 import Link from "next/link"
 import { Play, ArrowRight, ChevronDown } from "lucide-react"
 
 const eyebrowBars = [0.5, 1, 0.65, 0.85];
-const heroEchoBars = [0.3, 0.55, 0.8, 1, 0.7, 0.45, 0.25];
+const heroEchoBars = [0.25, 0.45, 0.65, 0.85, 0.55, 0.35, 0.7, 0.95, 0.6, 0.4, 0.8, 0.5, 0.3];
 
 export function HeroSection() {
   return (
@@ -37,7 +39,7 @@ export function HeroSection() {
           </div>
 
           <h1 className="font-kenyan text-[2.75rem] font-bold uppercase leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            The Official Sound of DLSU <span className="text-[#569429]">Green Giant FM</span>
+            The Official Sound of <span className="text-[#569429]">Green Giant FM</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-lg font-raleway text-base leading-relaxed text-[#a8a8a8] sm:text-lg lg:mx-0">
@@ -77,14 +79,18 @@ export function HeroSection() {
           />
           <div className="absolute inset-0 rounded-full bg-[#569429]/25 blur-3xl" />
           <div className="absolute inset-4 rounded-full border border-[#363636] bg-linear-to-br from-[#252525] to-[#191919] sm:inset-6" />
+          {/* Now spans the whole circle as a background layer, rather than a
+              small strip near the bottom — center-aligned so bars grow both
+              up and down, like a real spectrum display, not just upward from
+              a fixed baseline. */}
           <div
-            className="absolute inset-x-0 bottom-6 flex h-20 items-end justify-center gap-2 opacity-30 sm:h-24 lg:h-28"
+            className="absolute inset-10 flex items-center justify-between opacity-20 sm:inset-12 lg:inset-16"
             aria-hidden="true"
           >
             {heroEchoBars.map((h, i) => (
               <span
                 key={i}
-                className="w-3 origin-bottom rounded-full bg-[#569429]"
+                className="w-2 rounded-full bg-[#569429] sm:w-2.5 lg:w-3"
                 style={{
                   height: `${h * 100}%`,
                   animationName: "ggfm-equalizer",

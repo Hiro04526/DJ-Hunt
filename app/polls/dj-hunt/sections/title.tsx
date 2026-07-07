@@ -10,12 +10,8 @@ export function TitleSection() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       id="home"
-      className="relative flex min-h-[50vh] items-center justify-center overflow-hidden bg-[#191919] px-6 py-20 sm:px-10 lg:px-16"
+      className="relative flex min-h-[50vh] items-center justify-center overflow-hidden bg-[#191919] px-6 pt-26 pb-10 sm:px-10 lg:px-16"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-24 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-[#569429]/10 blur-[100px]"
-      />
 
       <div className="container relative z-10 mx-auto px-4 text-center">
         <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#363636] bg-[#252525] px-4 py-2 font-raleway text-xs font-semibold uppercase tracking-[0.2em] text-[#D8CEAE]">

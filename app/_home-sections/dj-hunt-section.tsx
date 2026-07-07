@@ -6,7 +6,6 @@ import { useDJHuntRows } from "@/hooks/_home-sections/use-dj-hunt-rows"
 
 export function DjHuntSection() {
   const { finalists, loading, isEmpty } = useDJHuntRows();
-
   const rowOne = finalists.slice(0, 8);
   const rowTwo = finalists.slice(8);
 
@@ -27,7 +26,7 @@ export function DjHuntSection() {
 
       <Star
         aria-hidden="true"
-        className="pointer-events-none absolute -left-2 -top-2 h-10 w-10 sm:left-2 sm:top-3 sm:h-12 sm:w-12 lg:left-4 lg:top-5 lg:h-16 lg:w-16"
+        className="pointer-events-none absolute left-2 top-2 h-9 w-9 sm:-left-1 sm:-top-1 sm:h-12 sm:w-12 lg:left-4 lg:top-5 lg:h-16 lg:w-16"
         style={{
           color: "#ffcf00",
           transform: "rotate(-18deg)",
@@ -38,7 +37,7 @@ export function DjHuntSection() {
       />
       <Star
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-2 -left-2 h-9 w-9 sm:bottom-3 sm:left-2 sm:h-11 sm:w-11 lg:bottom-5 lg:left-4 lg:h-14 lg:w-14"
+        className="pointer-events-none absolute bottom-2 left-2 h-8 w-8 sm:-bottom-1 sm:-left-1 sm:h-11 sm:w-11 lg:bottom-5 lg:left-4 lg:h-14 lg:w-14"
         style={{
           color: "#964de0",
           transform: "rotate(15deg)",
@@ -108,8 +107,6 @@ export function DjHuntSection() {
           16 finalists are in the running for a spot as our newest DJ Trainees. Show your support and help decide who joins the roster.
         </p>
 
-        {/* Every finalist, shown equally — two rows drifting in opposite
-            directions, hover to pause either one. */}
         <div
           className="relative w-full max-w-3xl overflow-hidden"
           style={{
