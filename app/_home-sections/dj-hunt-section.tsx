@@ -15,35 +15,6 @@ export function DjHuntSection() {
       id="dj-hunt"
       className="relative overflow-hidden bg-[#569429] px-6 py-16 sm:px-10 lg:px-16 lg:py-20"
     >
-      <style>{`
-        @keyframes ggfm-pulse-ring {
-          0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35); }
-          100% { box-shadow: 0 0 0 14px rgba(255, 255, 255, 0); }
-        }
-        @keyframes ggfm-marquee-left {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
-        }
-        @keyframes ggfm-marquee-right {
-          from { transform: translateX(-50%); }
-          to { transform: translateX(0); }
-        }
-        /* animation-play-state is intentionally left out of the inline style
-           on these rows below, so this class can control it on hover without
-           an inline/class specificity conflict. */
-        .ggfm-marquee-row {
-          width: max-content;
-        }
-        .ggfm-marquee-row:hover {
-          animation-play-state: paused;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .ggfm-marquee-row {
-            animation: none !important;
-          }
-        }
-      `}</style>
-
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
@@ -54,45 +25,73 @@ export function DjHuntSection() {
         }}
       />
 
-      {/* Colorful nods to the real /dj-hunt page's retro scrapbook energy —
-          reusing the brand's own pool-color palette (from the Chapter 2
-          branding sheet) so this stays on-brand rather than random, and gives
-          the wide top/bottom margins something to do instead of sitting empty. */}
       <Star
         aria-hidden="true"
-        className="pointer-events-none absolute left-[5%] top-8 hidden h-12 w-12 sm:block lg:left-[9%] lg:top-10 lg:h-16 lg:w-16"
-        style={{ color: "#ffcf00", transform: "rotate(-18deg)" }}
+        className="pointer-events-none absolute -left-2 -top-2 h-10 w-10 sm:left-2 sm:top-3 sm:h-12 sm:w-12 lg:left-4 lg:top-5 lg:h-16 lg:w-16"
+        style={{
+          color: "#ffcf00",
+          transform: "rotate(-18deg)",
+          filter:
+            "drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(1.4px 1.4px 0 #fff) drop-shadow(-1.4px 1.4px 0 #fff) drop-shadow(1.4px -1.4px 0 #fff) drop-shadow(-1.4px -1.4px 0 #fff) drop-shadow(2px 4px 3px rgba(0,0,0,0.35))",
+        }}
+        fill="currentColor"
+      />
+      <Star
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-2 -left-2 h-9 w-9 sm:bottom-3 sm:left-2 sm:h-11 sm:w-11 lg:bottom-5 lg:left-4 lg:h-14 lg:w-14"
+        style={{
+          color: "#964de0",
+          transform: "rotate(15deg)",
+          filter:
+            "drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(1.4px 1.4px 0 #fff) drop-shadow(-1.4px 1.4px 0 #fff) drop-shadow(1.4px -1.4px 0 #fff) drop-shadow(-1.4px -1.4px 0 #fff) drop-shadow(2px 4px 3px rgba(0,0,0,0.35))",
+        }}
         fill="currentColor"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-[6%] top-12 hidden rounded-2xl px-4 py-2 sm:block"
-        style={{ backgroundColor: "#f750a3", transform: "rotate(8deg)" }}
+        className="pointer-events-none absolute right-2 top-3 hidden rounded-2xl px-3 py-1.5 sm:block lg:right-5 lg:top-6 lg:px-4 lg:py-2"
+        style={{
+          backgroundColor: "#f750a3",
+          backgroundImage: "linear-gradient(135deg, rgba(255,255,255,0.3), transparent 55%)",
+          border: "3px solid white",
+          boxShadow: "2px 5px 10px rgba(0,0,0,0.3)",
+          transform: "rotate(8deg)",
+        }}
       >
-        <span className="font-kenyan text-xs uppercase tracking-wide text-white">Good Luck!</span>
+        <span className="font-kenyan text-[0.65rem] uppercase tracking-wide text-white lg:text-xs">Good Luck!</span>
       </div>
-      <Sparkles
-        aria-hidden="true"
-        className="pointer-events-none absolute left-[18%] top-20 hidden h-8 w-8 lg:block"
-        style={{ color: "#2173ff", transform: "rotate(-10deg)" }}
-      />
-      <Star
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-16 left-[6%] hidden h-10 w-10 sm:block"
-        style={{ color: "#964de0", transform: "rotate(15deg)" }}
-        fill="currentColor"
-      />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-10 right-[8%] hidden rounded-full px-4 py-2 sm:block lg:right-[13%]"
-        style={{ backgroundColor: "#ff8c13", transform: "rotate(-6deg)" }}
+        className="pointer-events-none absolute bottom-3 right-2 hidden rounded-full px-3 py-1.5 sm:block lg:bottom-6 lg:right-5 lg:px-4 lg:py-2"
+        style={{
+          backgroundColor: "#ff8c13",
+          backgroundImage: "linear-gradient(135deg, rgba(255,255,255,0.3), transparent 55%)",
+          border: "3px solid white",
+          boxShadow: "2px 5px 10px rgba(0,0,0,0.3)",
+          transform: "rotate(-6deg)",
+        }}
       >
-        <span className="font-kenyan text-xs uppercase tracking-wide text-white">You Got This!</span>
+        <span className="font-kenyan text-[0.65rem] uppercase tracking-wide text-white lg:text-xs">You Got This!</span>
       </div>
       <Sparkles
         aria-hidden="true"
-        className="pointer-events-none absolute right-[16%] bottom-24 hidden h-7 w-7 lg:block"
-        style={{ color: "#0a9068", transform: "rotate(12deg)" }}
+        className="pointer-events-none absolute right-8 top-16 hidden h-8 w-8 lg:block xl:right-16"
+        style={{
+          color: "#e50101",
+          transform: "rotate(-10deg)",
+          filter:
+            "drop-shadow(1.5px 0 0 #fff) drop-shadow(-1.5px 0 0 #fff) drop-shadow(0 1.5px 0 #fff) drop-shadow(0 -1.5px 0 #fff) drop-shadow(2px 3px 3px rgba(0,0,0,0.3))",
+        }}
+      />
+      <Sparkles
+        aria-hidden="true"
+        className="pointer-events-none absolute left-8 bottom-20 hidden h-7 w-7 lg:block xl:left-16"
+        style={{
+          color: "#2173ff",
+          transform: "rotate(12deg)",
+          filter:
+            "drop-shadow(1.5px 0 0 #fff) drop-shadow(-1.5px 0 0 #fff) drop-shadow(0 1.5px 0 #fff) drop-shadow(0 -1.5px 0 #fff) drop-shadow(2px 3px 3px rgba(0,0,0,0.3))",
+        }}
       />
 
       <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-8 text-center">

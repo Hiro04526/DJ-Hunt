@@ -144,7 +144,8 @@ export function RadioTalentSection() {
             </h2>
           </div>
           <p className="max-w-sm font-raleway text-base text-[#a8a8a8]">
-            Every voice on air brings something different. Meet the DJs behind your favorite segments.
+            Every voice on air brings something different. <br />
+            Meet the DJs behind your favorite shows.
           </p>
         </div>
 

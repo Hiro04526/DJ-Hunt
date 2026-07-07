@@ -107,6 +107,46 @@
   }
 }
 
+@keyframes ggfm-float-a {
+  0%, 100% { transform: translateY(-8px); }
+  50% { transform: translateY(8px); }
+}
+
+@keyframes ggfm-float-b {
+  0%, 100% { transform: translateY(16px); }
+  50% { transform: translateY(32px); }
+}
+
+@keyframes ggfm-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35); }
+  100% { box-shadow: 0 0 0 14px rgba(255, 255, 255, 0); }
+}
+
+@keyframes ggfm-marquee-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes ggfm-marquee-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+/* Marquee Row Controls */
+.ggfm-marquee-row {
+  width: max-content;
+}
+
+.ggfm-marquee-row:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ggfm-marquee-row {
+    animation: none !important;
+  }
+}
+
 /* Spin Only */
 @keyframes spin-record {
   from { transform: rotate(0deg); }
