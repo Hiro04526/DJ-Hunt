@@ -2,66 +2,41 @@
 
 import { motion } from "framer-motion"
 import EqualDurationTypewriter from "@/components/dj-hunt/equal-duration-typewriter"
-import { useState, useEffect } from "react"
 
 export function TitleSection() {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
-
-  if (!mounted) {
-    return (
-      <section
-        id="home"
-        className="relative mt-16 min-h-fit flex items-center justify-center overflow-hidden bg-white"
-      />
-    )
-  }
-
   return (
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       id="home"
-      className="relative mt-16 min-h-fit flex items-center justify-center overflow-hidden"
+      className="relative flex min-h-[50vh] items-center justify-center overflow-hidden bg-[#191919] px-6 py-20 sm:px-10 lg:px-16"
     >
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <div
-          className="absolute inset-0 transition-colors duration-500 bg-[#111111] dark:bg-white"
-        />
-      </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-24 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-[#569429]/10 blur-[100px]"
+      />
 
-      {/* Content */}
-      <div className="container mx-auto px-4 z-10">
-        <div className="text-center">
-          <motion.h1
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-6xl md:text-8xl font-medium mt-4 mb-6 transition-colors duration-500 text-white dark:text-[#111111]"
-          >
-            DJ HUNT
-          </motion.h1>
+      <div className="container relative z-10 mx-auto px-4 text-center">
+        <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#363636] bg-[#252525] px-4 py-2 font-raleway text-xs font-semibold uppercase tracking-[0.2em] text-[#D8CEAE]">
+          Green Giant FM
+        </span>
 
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="text-lg md:text-2xl font-secondary mb-4 transition-colors duration-500 text-white dark:text-[#111111]"
-          >
-            <EqualDurationTypewriter
-              lines={[
-                "Reaching you from across the airwaves",
-                "Shining from the heart of the metro",
-                "Serving up the hottest college radio",
-              ]}
-              typeMs={2000}
-              holdMs={1000}
-              backspaceMs={1000}
-            />
-          </motion.div>
+        <h1 className="font-kenyan text-6xl font-bold uppercase leading-[0.95] tracking-tight text-white sm:text-7xl md:text-8xl">
+          DJ <span className="text-[#569429]">Hunt</span>
+        </h1>
+
+        <div className="mt-4 font-raleway text-lg text-[#a8a8a8] md:text-2xl">
+          <EqualDurationTypewriter
+            lines={[
+              "Reaching you from across the airwaves",
+              "Shining from the heart of the metro",
+              "Serving up the hottest college radio",
+            ]}
+            typeMs={2000}
+            holdMs={1000}
+            backspaceMs={1000}
+          />
         </div>
       </div>
     </motion.section>

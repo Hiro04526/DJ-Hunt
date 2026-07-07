@@ -10,27 +10,9 @@ export function HeroSection() {
       id="hero"
       className="relative overflow-hidden bg-[#191919] px-6 pb-20 pt-24 sm:px-10 lg:px-16 lg:pb-24 lg:pt-32"
     >
-      {/* Keyframes only — every actual animation below is wired up via inline
-          style rather than a Tailwind animate-[...] class, since a custom
-          keyframe referenced through className proved fragile to compile
-          reliably elsewhere on this page (see RadioTalentSection). */}
-      <style>{`
-        @keyframes ggfm-equalizer {
-          0%, 100% { transform: scaleY(0.35); }
-          50% { transform: scaleY(1); }
-        }
-        @keyframes ggfm-rotate-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
-
-      {/* Tightened and pulled toward the mascot rather than sitting as an
-          independent corner blob — reads as Raffy's own light reaching out. */}
       <div className="pointer-events-none absolute -top-24 right-[-8%] h-96 w-96 rounded-full bg-[#569429]/10 blur-[100px]" />
 
       <div className="relative mx-auto flex max-w-7xl flex-col-reverse items-center gap-16 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
-        {/* copy */}
         <div className="max-w-2xl text-center lg:text-left">
           <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-[#363636] bg-[#252525] px-5 py-2.5">
             <div className="flex h-4 items-end gap-0.75" aria-hidden="true">
@@ -55,7 +37,7 @@ export function HeroSection() {
           </div>
 
           <h1 className="font-kenyan text-[2.75rem] font-bold uppercase leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            The Official Sound of <span className="text-[#569429]">Green Giant FM</span>
+            The Official Sound of DLSU <span className="text-[#569429]">Green Giant FM</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-lg font-raleway text-base leading-relaxed text-[#a8a8a8] sm:text-lg lg:mx-0">
@@ -81,8 +63,6 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* mascot visual — bumped up a size, plus a slow-rotating dashed ring
-            as a quiet nod to a broadcast signal, and a more visible echo */}
         <div className="relative flex h-56 w-56 shrink-0 items-center justify-center sm:h-80 sm:w-80 lg:h-112 lg:w-md">
           <div
             aria-hidden="true"
@@ -124,8 +104,6 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Gives the space at the foot of the hero an actual job instead of
-          just being unused padding. */}
       <div className="relative mt-16 flex justify-center lg:absolute lg:inset-x-0 lg:bottom-8 lg:mt-0">
         <div className="flex flex-col items-center gap-2 text-[#646464]">
           <span className="font-raleway text-[0.65rem] uppercase tracking-[0.3em]">Scroll</span>
