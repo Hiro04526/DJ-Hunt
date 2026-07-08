@@ -25,14 +25,11 @@ export function DjHuntSection() {
         }}
       />
 
-      {/* Positive offsets on mobile (no bleed) — a negative offset here gets
-          clipped by overflow-hidden on a narrow viewport, cutting off a real
-          chunk of the icon instead of reading as a deliberate edge-peek.
-          The slight bleed only kicks in at sm:/lg: where there's enough
-          room for it to look intentional. */}
+      {/* Stickers */}
+      {/* Top Left Yellow Star */}
       <Star
         aria-hidden="true"
-        className="pointer-events-none absolute left-2 top-2 h-9 w-9 sm:-left-1 sm:-top-1 sm:h-12 sm:w-12 lg:left-4 lg:top-5 lg:h-16 lg:w-16"
+        className="pointer-events-none absolute left-4 top-4 h-8 w-8 sm:-left-1 sm:-top-1 sm:h-12 sm:w-12 lg:left-4 lg:top-5 lg:h-16 lg:w-16"
         style={{
           color: "#ffcf00",
           transform: "rotate(-18deg)",
@@ -41,9 +38,11 @@ export function DjHuntSection() {
         }}
         fill="currentColor"
       />
+      
+      {/* Bottom Left Purple Star */}
       <Star
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-2 left-2 h-8 w-8 sm:-bottom-1 sm:-left-1 sm:h-11 sm:w-11 lg:bottom-5 lg:left-4 lg:h-14 lg:w-14"
+        className="pointer-events-none absolute bottom-4 left-4 h-8 w-8 sm:-bottom-1 sm:-left-1 sm:h-11 sm:w-11 lg:bottom-5 lg:left-4 lg:h-14 lg:w-14"
         style={{
           color: "#964de0",
           transform: "rotate(15deg)",
@@ -52,9 +51,11 @@ export function DjHuntSection() {
         }}
         fill="currentColor"
       />
+
+      {/* Top Right "Good Luck!" Badge - Unhidden, sized down slightly for tiny viewports */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-2 top-3 hidden rounded-2xl px-3 py-1.5 sm:block lg:right-5 lg:top-6 lg:px-4 lg:py-2"
+        className="pointer-events-none absolute right-4 top-4 block rounded-2xl px-2.5 py-1 sm:right-2 sm:top-3 sm:px-3 sm:py-1.5 lg:right-5 lg:top-6 lg:px-4 lg:py-2"
         style={{
           backgroundColor: "#f750a3",
           backgroundImage: "linear-gradient(135deg, rgba(255,255,255,0.3), transparent 55%)",
@@ -63,11 +64,13 @@ export function DjHuntSection() {
           transform: "rotate(8deg)",
         }}
       >
-        <span className="font-kenyan text-[0.65rem] uppercase tracking-wide text-white lg:text-xs">Good Luck!</span>
+        <span className="font-kenyan text-[0.6rem] uppercase tracking-wide text-white xs:text-[0.65rem] lg:text-xs">Good Luck!</span>
       </div>
+
+      {/* Bottom Right "You Got This!" Badge - Unhidden */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-3 right-2 hidden rounded-full px-3 py-1.5 sm:block lg:bottom-6 lg:right-5 lg:px-4 lg:py-2"
+        className="pointer-events-none absolute bottom-4 right-4 block rounded-full px-2.5 py-1 sm:bottom-3 sm:right-2 sm:px-3 sm:py-1.5 lg:bottom-6 lg:right-5 lg:px-4 lg:py-2"
         style={{
           backgroundColor: "#ff8c13",
           backgroundImage: "linear-gradient(135deg, rgba(255,255,255,0.3), transparent 55%)",
@@ -76,11 +79,13 @@ export function DjHuntSection() {
           transform: "rotate(-6deg)",
         }}
       >
-        <span className="font-kenyan text-[0.65rem] uppercase tracking-wide text-white lg:text-xs">You Got This!</span>
+        <span className="font-kenyan text-[0.6rem] uppercase tracking-wide text-white xs:text-[0.65rem] lg:text-xs">You Got This!</span>
       </div>
+
+      {/* Sparkles - Optional decorative accents: Unhidden on small screens, scale gracefully */}
       <Sparkles
         aria-hidden="true"
-        className="pointer-events-none absolute right-8 top-16 hidden h-8 w-8 lg:block xl:right-16"
+        className="pointer-events-none absolute right-4 top-20 block h-5 w-5 sm:right-8 sm:top-16 sm:h-6 sm:w-6 lg:h-8 lg:w-8 xl:right-16"
         style={{
           color: "#e50101",
           transform: "rotate(-10deg)",
@@ -90,7 +95,7 @@ export function DjHuntSection() {
       />
       <Sparkles
         aria-hidden="true"
-        className="pointer-events-none absolute left-8 bottom-20 hidden h-7 w-7 lg:block xl:left-16"
+        className="pointer-events-none absolute left-4 bottom-24 block h-5 w-5 sm:left-8 sm:bottom-20 sm:h-6 sm:w-6 lg:h-7 lg:w-7 xl:left-16"
         style={{
           color: "#2173ff",
           transform: "rotate(12deg)",
