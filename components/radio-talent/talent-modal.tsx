@@ -6,24 +6,22 @@ import { PlayCircle } from "lucide-react"
 
 function TalentModalComponent({ talent }: { talent: RadioTalentMember }) {
   return (
-    <div className="flex flex-col md:flex-row h-full max-h-[80vh]">
-      {/* LEFT: Image Side */}
-      <div className="w-full md:w-2/5 relative min-h-81.75 md:min-h-0">
+    <div className="flex w-full flex-col md:flex-row">
+      <div className="relative aspect-4/5 w-full shrink-0 md:aspect-auto md:w-2/5">
         <img
           src={talent.image_url}
           alt={talent.name}
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-linear-to-t from-[#1a1a1a] md:bg-linear-to-r md:from-transparent md:to-[#1a1a1a]" />
       </div>
 
-      {/* RIGHT: Content Side */}
-      <div className="w-full md:w-3/5 p-8 md:p-10 overflow-y-auto custom-scrollbar bg-[#1a1a1a]">
+      <div className="w-full bg-[#1a1a1a] p-6 md:w-3/5 md:p-10">
         <div className="mb-6">
           <span className="inline-block px-3 py-1 bg-[#569429]/20 text-[#569429] rounded-full text-xs font-bold uppercase tracking-wider mb-2">
             {talent.rank}
           </span>
-          <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-1">
+          <h2 className="text-3xl md:text-4xl font-black text-white uppercase tracking-tighter mb-1">
             {talent.name}
           </h2>
         </div>
