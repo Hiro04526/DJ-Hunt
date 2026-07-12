@@ -19,7 +19,7 @@ function HitlistVoteListComponent({
       <div className="p-6 border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-white/5 shrink-0">
         <h3 className="font-bold text-lg flex items-center justify-between">
           Your Hitlist
-          <span className={`text-xs px-2 py-1 rounded-full text-white ${hasVoted ? "bg-gray-500" : "bg-[#569429]"}`}>
+          <span className={`text-xs font-secondary px-2 py-1 rounded-full text-white ${hasVoted ? "bg-gray-500" : "bg-[#569429]"}`}>
             {selectedSongs.length} {hasVoted ? "Locked" : "Selected"}
           </span>
         </h3>
@@ -32,7 +32,7 @@ function HitlistVoteListComponent({
             <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center mb-3">
               <Music2 size={20} />
             </div>
-            <p className="font-bold text-sm">No songs selected</p>
+            <p className="font-secondary font-bold text-sm">No songs selected</p>
             {!hasVoted && <p className="text-xs">Tap (+) to add songs</p>}
           </div>
         ) : (
@@ -83,7 +83,7 @@ function HitlistVoteListComponent({
             {submitting ? "Processing..." : user ? "Submit Votes" : "Sign in to Vote"}
           </button>
         ) : (
-          <div className="w-full py-3 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl flex items-center justify-center gap-2 font-bold text-sm border border-green-200 dark:border-green-800">
+          <div className="w-full py-3 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl flex items-center justify-center gap-2 font-secondary font-bold text-sm border border-green-200 dark:border-green-800">
             <CheckCircle2 size={18} />
             Votes Submitted
           </div>

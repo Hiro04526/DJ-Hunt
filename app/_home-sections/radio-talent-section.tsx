@@ -136,14 +136,14 @@ export function RadioTalentSection() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col items-center justify-between gap-6 text-center sm:flex-row sm:text-left">
           <div>
-            <span className="font-raleway text-xs font-semibold uppercase tracking-[0.25em] text-[#569429]">
+            <span className="font-secondary text-xs font-semibold uppercase tracking-[0.25em] text-[#569429]">
               Radio Talent
             </span>
             <h2 className="mt-4 font-kenyan text-4xl font-bold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl">
               Find Your <span className="text-[#569429]">Flavor.</span>
             </h2>
           </div>
-          <p className="max-w-sm font-raleway text-base text-[#a8a8a8]">
+          <p className="max-w-sm font-secondary text-base text-[#a8a8a8]">
             Every voice on air brings something different. <br />
             Meet the DJs behind your favorite shows.
           </p>
@@ -159,7 +159,7 @@ export function RadioTalentSection() {
 
           {!loading && isEmpty && (
             <div className="flex h-64 items-center justify-center rounded-2xl border border-[#363636] bg-[#252525]/50">
-              <p className="font-raleway text-[#a8a8a8]">No featured DJs available at the moment.</p>
+              <p className="font-secondary text-[#a8a8a8]">No featured DJs available at the moment.</p>
             </div>
           )}
 
@@ -203,7 +203,7 @@ export function RadioTalentSection() {
                         <p className="font-kenyan text-lg font-bold uppercase tracking-wide text-white">
                           {dj.name}
                         </p>
-                        <p className="font-raleway text-[0.7rem] text-[#D8CEAE] duration-300">
+                        <p className="font-secondary text-[0.7rem] text-[#D8CEAE] duration-300">
                           {dj.current_show || "No show this term"}
                         </p>
                       </div>
@@ -235,7 +235,7 @@ export function RadioTalentSection() {
         <div className="mt-8 flex justify-center">
           <Link
             href="/radio-talent"
-            className="group inline-flex items-center justify-center gap-2 rounded-full border border-[#646464] px-8 py-4 font-raleway text-sm font-bold uppercase tracking-wide text-white transition-all duration-300 hover:border-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#569429] focus-visible:ring-offset-2 focus-visible:ring-offset-[#191919]"
+            className="group inline-flex items-center justify-center gap-2 rounded-full border border-[#646464] px-8 py-4 font-secondary text-sm font-bold uppercase tracking-wide text-white transition-all duration-300 hover:border-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#569429] focus-visible:ring-offset-2 focus-visible:ring-offset-[#191919]"
           >
             Meet The DJs
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />

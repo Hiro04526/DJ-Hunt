@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
+import { useHitlist } from "@/hooks/polls/hitlist/use-hitlist-regular"
 import StatusBadge from "@/components/hitlist/status-badge"
 import Playlist from "@/components/hitlist/playlist"
 
 export default function TitleSection() {
   const [mounted, setMounted] = useState(false)
+  const { status } = useHitlist()
+  
 
   useEffect(() => setMounted(true), [])
 
@@ -48,11 +51,11 @@ export default function TitleSection() {
               <div className="flex flex-col items-center lg:items-start text-center lg:text-left w-88 lg:max-w-xl gap-6">
                 
                 {/* Header & Status */}
-                <div className="px-2 flex items-center justify-between w-88 lg:w-full">
+                <div className="flex items-center justify-between w-88 lg:w-full">
                   <h2 className="pl-0 lg:pl-1 text-4xl sm:text-5xl lg:text-6xl font-medium leading-none text-white dark:text-black">
                     THE
                   </h2>
-                  <StatusBadge />
+                  <StatusBadge isOnline={status.isOpen} />
                 </div>
 
                 {/* "Hitlist" Title */}
@@ -62,7 +65,7 @@ export default function TitleSection() {
                   transition={{ duration: 0.5 }}
                   className="w-88 lg:w-full"
                 >
-                  <div className="px-2 flex justify-between text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-medium leading-[0.8] text-white dark:text-black">
+                  <div className="flex justify-between text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-medium leading-[0.8] text-white dark:text-black">
                     {"HITLIST".split("").map((char, index) => (
                       <span key={index}>{char}</span>
                     ))}
@@ -70,16 +73,19 @@ export default function TitleSection() {
                 </motion.div>
 
                 {/* Description */}
-                <motion.p
+                <motion.div
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
-                  className="pl-0 lg:pl-3.25 w-88 lg:w-full text-xl sm:text-2xl lg:text-3xl leading-snug text-white dark:text-black"
+                  className="font-secondary pl-0 lg:pl-1 w-88 lg:w-full text-[1.03rem] sm:text-[1.18rem] lg:text-[1.33rem] leading-snug text-white dark:text-black flex flex-col gap-1"
                 >
-                  Love music? This is your chance!
-                  <br />
-                  Vote for your favorite songs now!
-                </motion.p>
+                  <p className="text-justify [text-align-last:justify] w-full">
+                    Love music? This is your chance!
+                  </p>
+                  <p className="text-justify [text-align-last:justify] w-full">
+                    Vote for your favorite songs now!
+                  </p>
+                </motion.div>
               </div>
             </div>
 

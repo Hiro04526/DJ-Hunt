@@ -25,7 +25,7 @@ function HitlistLeaderboardComponent({ songs, onRefresh, isRefreshing, limit }: 
 
         {/* Header Right (Live Tag + Refresh Button) */}
         <div className="flex items-center gap-3">
-          <span className="hidden sm:flex text-sm font-bold uppercase tracking-wider text-red-500 items-center gap-1 animate-pulse">
+          <span className="hidden sm:flex text-sm font-secondary font-bold uppercase tracking-wider text-red-500 items-center gap-1 animate-pulse">
             <div className="w-3 h-3 rounded-full bg-red-500" />
             Live
           </span>
@@ -77,11 +77,12 @@ function HitlistLeaderboardComponent({ songs, onRefresh, isRefreshing, limit }: 
 
                   {/* Song Details & Progress Bar */}
                   <div className="flex-1 min-w-0">
+                    <h4 className="font-bold truncate text-gray-900 dark:text-gray-100">
+                      {song.title}
+                    </h4>
                     <div className="flex justify-between items-baseline mb-1">
-                      <h4 className="font-bold truncate text-gray-900 dark:text-gray-100">
-                        {song.title}
-                      </h4>
-                      <span className="text-xs font-bold text-gray-500 dark:text-gray-400 whitespace-nowrap ml-2">
+                      <p className="text-xs text-gray-400 font-secondary mt-1 truncate">{song.artist}</p>
+                      <span className="text-xs font-secondary font-bold text-gray-500 dark:text-gray-400 whitespace-nowrap ml-2">
                         {voteCount.toLocaleString()} votes
                       </span>
                     </div>
@@ -95,7 +96,6 @@ function HitlistLeaderboardComponent({ songs, onRefresh, isRefreshing, limit }: 
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
-                    <p className="text-xs text-gray-400 mt-1 truncate">{song.artist}</p>
                   </div>
 
                 </div>

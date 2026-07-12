@@ -79,15 +79,15 @@ function RosterSectionComponent() {
   return (
     <>
       {/* --- DROPDOWN SELECTOR --- */}
-      <div className="container mx-auto px-4 mb-16 relative">
+      <div className="container mx-auto px-4 my-16 relative">
         <div className="w-full md:w-80 mx-auto relative" ref={dropdownRef}>
-          <label className="block text-center text-gray-500 text-xs uppercase font-bold tracking-widest mb-3">
+          <label className="block text-center font-secondary text-xs uppercase font-semibold tracking-widest text-[#a8a8a8] mb-3">
             View Roster For
           </label>
           <button
             onClick={toggleDropdown}
             aria-expanded={isDropdownOpen}
-            className={`w-full flex items-center justify-between px-6 py-4 bg-[#1a1a1a] border border-white/10 rounded-2xl text-white font-bold text-lg tracking-wide hover:border-[#569429]/50 hover:bg-[#222] transition-all shadow-lg shadow-black/20 ${
+            className={`w-full flex items-center justify-between px-6 py-4 bg-[#252525] border border-[#363636] rounded-2xl font-secondary text-white font-bold text-lg tracking-wide hover:border-[#569429]/50 hover:bg-[#2a2a2a] transition-all shadow-lg shadow-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#569429] focus-visible:ring-offset-2 focus-visible:ring-offset-[#191919] ${
               isDropdownOpen ? "border-[#569429] ring-2 ring-[#569429]/20" : ""
             }`}
           >
@@ -95,7 +95,7 @@ function RosterSectionComponent() {
             <ChevronDown className={`text-[#569429] transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`} />
           </button>
 
-          <div className={`absolute top-full left-0 right-0 mt-2 bg-[#1a1a1a] border border-white/10 rounded-2xl shadow-2xl overflow-x-hidden overflow-y-auto custom-scrollbar origin-top transition-all duration-200 ease-out z-10 ${
+          <div className={`absolute top-full left-0 right-0 mt-2 bg-[#252525] border border-[#363636] rounded-2xl shadow-2xl overflow-x-hidden overflow-y-auto custom-scrollbar origin-top transition-all duration-200 ease-out z-10 ${
               isDropdownOpen ? "opacity-100 scale-100 max-h-80 visible" : "opacity-0 scale-95 max-h-0 invisible"
             }`}
           >
@@ -103,8 +103,8 @@ function RosterSectionComponent() {
               <button
                 key={year}
                 onClick={() => handleYearSelect(year)}
-                className={`w-full text-left px-6 py-4 text-sm font-medium transition-colors flex items-center justify-between border-b border-white/5 last:border-0 ${
-                  activeYear === year ? "bg-[#569429]/10 text-[#569429]" : "text-gray-400 hover:bg-white/5 hover:text-white"
+                className={`w-full text-left px-6 py-4 font-secondary text-sm font-medium transition-colors flex items-center justify-between border-b border-[#363636] last:border-0 focus-visible:outline-none focus-visible:bg-white/5 focus-visible:text-white ${
+                  activeYear === year ? "bg-[#569429]/10 text-[#569429]" : "text-[#a8a8a8] hover:bg-white/5 hover:text-white"
                 }`}
               >
                 {year}
@@ -122,10 +122,10 @@ function RosterSectionComponent() {
             <Loader2 className="animate-spin" size={48} />
           </div>
         ) : isEmpty ? (
-          <div className="text-center py-20 opacity-50">
-            <Mic2 className="mx-auto mb-4 w-12 h-12 text-gray-600" />
-            <h3 className="text-xl font-bold">No Records Found</h3>
-            <p className="text-sm">We haven't uploaded the roster for {activeYear} yet.</p>
+          <div className="text-center py-20 opacity-70">
+            <Mic2 className="mx-auto mb-4 h-12 w-12 text-[#646464]" />
+            <h3 className="font-kenyan text-xl font-bold uppercase tracking-tight text-white">No Records Found</h3>
+            <p className="mt-2 font-secondary text-sm text-[#a8a8a8]">We haven&apos;t uploaded the roster for {activeYear} yet.</p>
           </div>
         ) : (
           <div className="space-y-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -155,11 +155,11 @@ function RosterSectionComponent() {
           role="dialog"
           aria-modal="true"
         >
-          <div className="relative flex w-full max-w-4xl max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#1a1a1a] shadow-2xl shadow-black">
+          <div className="relative flex w-full max-w-4xl max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-[#363636] bg-[#191919] shadow-2xl shadow-black">
             <button
               onClick={closeModal}
               aria-label="Close"
-              className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-black/50 hover:bg-white/20 text-white transition backdrop-blur-md cursor-pointer"
+              className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-black/50 hover:bg-white/20 text-white transition backdrop-blur-md cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
               <X size={24} />
             </button>

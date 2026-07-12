@@ -42,7 +42,7 @@ export default function SongsSection() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-center font-medium"
+                className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-center font-secondary"
               >
                   <p>{status.message}</p>
                   {status.nextOpeningTime && (

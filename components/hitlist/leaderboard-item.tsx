@@ -14,7 +14,7 @@ function LeaderboardItemComponent({ song, index, maxVotes }: LeaderboardItemProp
         {/* Rank Number */}
         <div 
           className={cn(
-            "w-8 text-left font-black text-lg",
+            "w-8 text-left font-secondary font-black text-lg",
             index === 0 ? "text-brand text-2xl" : "text-gray-400" 
           )}
         >
@@ -31,14 +31,16 @@ function LeaderboardItemComponent({ song, index, maxVotes }: LeaderboardItemProp
         {/* Song Details & Progress Bar */}
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-baseline mb-1">
-            <h4 className="font-bold truncate text-gray-900 dark:text-gray-100">
+            <h4 className="font-secondary font-bold truncate text-gray-900 dark:text-gray-100">
               {song.title}
             </h4>
-            <span className="text-xs font-bold text-gray-500 dark:text-gray-400 whitespace-nowrap ml-2">
+            <span className="text-xs font-secondary font-bold text-gray-500 dark:text-gray-400 whitespace-nowrap ml-2">
               {voteCount.toLocaleString()} votes
             </span>
           </div>
           
+          <p className="text-xs text-gray-400 font-secondary mt-1 truncate">{song.artist}</p>
+
           <div className="h-2 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
             <div 
               className={cn(
@@ -48,7 +50,6 @@ function LeaderboardItemComponent({ song, index, maxVotes }: LeaderboardItemProp
               style={{ width: `${percentage}%` }}
             />
           </div>
-          <p className="text-xs text-gray-400 mt-1 truncate">{song.artist}</p>
         </div>
 
       </div>

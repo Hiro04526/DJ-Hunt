@@ -13,7 +13,6 @@ function TalentModalComponent({ talent }: { talent: RadioTalentMember }) {
           alt={talent.name}
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-[#1a1a1a] md:bg-linear-to-r md:from-transparent md:to-[#1a1a1a]" />
       </div>
 
       <div className="w-full bg-[#1a1a1a] p-6 md:w-3/5 md:p-10">

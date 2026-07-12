@@ -40,13 +40,13 @@ export function FinalistsSection() {
       >
         <div className="container relative z-10 mx-auto px-4">
           {loading && (
-            <p className="mb-4 text-center font-raleway font-medium text-[#191919]">Loading…</p>
+            <p className="mb-4 text-center font-secondary font-medium text-[#191919]">Loading…</p>
           )}
           {error && (
-            <p className="mb-4 text-center font-raleway font-bold text-[#e50101]">{error}</p>
+            <p className="mb-4 text-center font-secondary font-bold text-[#e50101]">{error}</p>
           )}
           {!loading && !error && Finalists.length === 0 && (
-            <p className="mb-4 text-center font-raleway font-medium text-[#191919]">No finalists found.</p>
+            <p className="mb-4 text-center font-secondary font-medium text-[#191919]">No finalists found.</p>
           )}
 
           {/* 4-Column Grid Layout (Internal vertical padding removed to prevent top space distortion) */}
@@ -84,7 +84,7 @@ export function FinalistsSection() {
                     {Finalist.name}
                   </motion.h3>
                   <motion.p
-                    className="mt-2 font-raleway text-sm text-[#a8a8a8]"
+                    className="mt-2 font-secondary text-sm text-[#a8a8a8]"
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 1 + index * 0.1, duration: 0.5 }}
@@ -99,7 +99,7 @@ export function FinalistsSection() {
                   >
                     <Button
                       size="lg"
-                      className="group w-full bg-[#569429] font-raleway font-bold uppercase tracking-wide text-black hover:scale-105 hover:bg-[#63a92f] hover:shadow-[0_0_25px_-5px_#569429]"
+                      className="group w-full bg-[#569429] font-secondary font-bold uppercase tracking-wide text-black hover:scale-105 hover:bg-[#63a92f] hover:shadow-[0_0_25px_-5px_#569429]"
                       onClick={() => setSelectedFinalist(Finalist)}
                     >
                       View Details
@@ -117,7 +117,7 @@ export function FinalistsSection() {
           {isWithinVotingWindow ? (
             <Button
               size="xl"
-              className="rounded-full bg-[#191919] px-10 py-5 font-raleway text-2xl font-extrabold uppercase tracking-widest text-white transition-all duration-300 hover:scale-105 hover:bg-white hover:text-[#191919] hover:shadow-[0_0_35px_-5px_rgba(255,255,255,0.6)]"
+              className="rounded-full bg-[#191919] px-10 py-5 font-secondary text-2xl font-extrabold uppercase tracking-widest text-white transition-all duration-300 hover:scale-105 hover:bg-white hover:text-[#191919] hover:shadow-[0_0_35px_-5px_rgba(255,255,255,0.6)]"
               onClick={() => setIsVotingOpen(true)}
             >
               Vote
@@ -127,11 +127,11 @@ export function FinalistsSection() {
               <Button
                 size="xl"
                 disabled
-                className="cursor-not-allowed rounded-full bg-[#191919]/40 px-10 py-5 font-raleway text-2xl font-extrabold uppercase tracking-widest text-white/50"
+                className="cursor-not-allowed rounded-full bg-[#191919]/40 px-10 py-5 font-secondary text-2xl font-extrabold uppercase tracking-widest text-white/50"
               >
                 Voting Closed
               </Button>
-              <p className="font-raleway text-sm text-[#191919]">
+              <p className="font-secondary text-sm text-[#191919]">
                 Thanks to everyone who voted — results will be announced soon.
               </p>
             </>
@@ -150,7 +150,7 @@ export function FinalistsSection() {
             {selectedFinalist && (
               <>
                 <div className="mb-6 flex flex-col items-center">
-                  <h1 className="m-0 mb-2 font-raleway text-xs font-semibold uppercase tracking-[0.2em] text-[#569429]">
+                  <h1 className="m-0 mb-2 font-secondary text-xs font-semibold uppercase tracking-[0.2em] text-[#569429]">
                     Stinger
                   </h1>
                   <AudioPlayer src={selectedFinalist.stinger} />
@@ -159,7 +159,7 @@ export function FinalistsSection() {
                 <div className="mt-2 grid w-full grid-cols-1 gap-6 md:grid-cols-3">
                   {/* Segue */}
                   <div className="flex flex-col items-center">
-                    <h2 className="mb-2 text-center font-raleway text-xs font-semibold uppercase tracking-[0.2em] text-[#569429]">
+                    <h2 className="mb-2 text-center font-secondary text-xs font-semibold uppercase tracking-[0.2em] text-[#569429]">
                       Segue Challenge
                     </h2>
                     <div className="relative aspect-9/16 w-full overflow-hidden rounded-2xl bg-black">
@@ -174,7 +174,7 @@ export function FinalistsSection() {
 
                   {/* Solo Videoshoot */}
                   <div className="flex flex-col items-center">
-                    <h2 className="mb-2 text-center font-raleway text-xs font-semibold uppercase tracking-[0.2em] text-[#569429]">
+                    <h2 className="mb-2 text-center font-secondary text-xs font-semibold uppercase tracking-[0.2em] text-[#569429]">
                       Solo Videoshoot
                     </h2>
                     <div className="relative aspect-9/16 w-full overflow-hidden rounded-2xl bg-black">
@@ -189,7 +189,7 @@ export function FinalistsSection() {
 
                   {/* Voiceover Challenge */}
                   <div className="flex flex-col items-center">
-                    <h2 className="mb-2 text-center font-raleway text-xs font-semibold uppercase tracking-[0.2em] text-[#569429]">
+                    <h2 className="mb-2 text-center font-secondary text-xs font-semibold uppercase tracking-[0.2em] text-[#569429]">
                       Voiceover Challenge
                     </h2>
                     <div className="relative aspect-9/16 w-full overflow-hidden rounded-2xl bg-black">

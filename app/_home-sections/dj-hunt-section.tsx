@@ -7,9 +7,6 @@ import { useDJHuntRows } from "@/hooks/_home-sections/use-dj-hunt-rows"
 export function DjHuntSection() {
   const { finalists } = useDJHuntRows();
 
-  const rowOne = finalists.slice(0, 8);
-  const rowTwo = finalists.slice(8);
-
   return (
     <section
       id="dj-hunt"
@@ -34,7 +31,7 @@ export function DjHuntSection() {
           color: "#ffcf00",
           transform: "rotate(-18deg)",
           filter:
-            "drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(1.4px 1.4px 0 #fff) drop-shadow(-1.4px 1.4px 0 #fff) drop-shadow(1.4px -1.4px 0 #fff) drop-shadow(-1.4px -1.4px 0 #fff) drop-shadow(2px 4px 3px rgba(0,0,0,0.35))",
+            "drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(1.4px 1.4px 0 #fff) drop-shadow(-1.4px 1.4px 0 #fff) drop-shadow(1.4px -1.4px 0 #fff) drop-shadow(2px 4px 3px rgba(0,0,0,0.35))",
         }}
         fill="currentColor"
       />
@@ -47,7 +44,7 @@ export function DjHuntSection() {
           color: "#964de0",
           transform: "rotate(15deg)",
           filter:
-            "drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(1.4px 1.4px 0 #fff) drop-shadow(-1.4px 1.4px 0 #fff) drop-shadow(1.4px -1.4px 0 #fff) drop-shadow(-1.4px -1.4px 0 #fff) drop-shadow(2px 4px 3px rgba(0,0,0,0.35))",
+            "drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(1.4px 1.4px 0 #fff) drop-shadow(-1.4px 1.4px 0 #fff) drop-shadow(1.4px -1.4px 0 #fff) drop-shadow(2px 4px 3px rgba(0,0,0,0.35))",
         }}
         fill="currentColor"
       />
@@ -105,7 +102,7 @@ export function DjHuntSection() {
       />
 
       <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-8 text-center">
-        <span className="inline-flex items-center gap-2 rounded-full bg-[#191919] px-4 py-1.5 font-raleway text-xs font-bold uppercase tracking-[0.2em] text-white">
+        <span className="inline-flex items-center gap-2 rounded-full bg-[#191919] px-4 py-1.5 font-secondary text-xs font-bold uppercase tracking-[0.2em] text-white">
           <Radio className="h-3.5 w-3.5" />
           DJ Hunt
         </span>
@@ -114,14 +111,14 @@ export function DjHuntSection() {
           The Next Voices of Green Giant FM.
         </h2>
 
-        <p className="max-w-xl font-raleway text-base font-medium leading-relaxed text-[#191919] sm:text-lg">
+        <p className="max-w-2xl font-secondary text-base font-medium leading-relaxed text-[#191919] sm:text-lg">
           16 finalists are in the running for a chance to be one of our newest DJ Trainees. Show your support and help decide who joins the roster.
         </p>
 
         {/* Every finalist, shown equally — two rows drifting in opposite
             directions, hover to pause either one. */}
         <div
-          className="relative w-full max-w-3xl overflow-hidden"
+          className="relative w-full max-w-6xl overflow-hidden"
           style={{
             WebkitMaskImage:
               "linear-gradient(to right, transparent 0, black 48px, black calc(100% - 48px), transparent 100%)",
@@ -129,25 +126,6 @@ export function DjHuntSection() {
               "linear-gradient(to right, transparent 0, black 48px, black calc(100% - 48px), transparent 100%)",
           }}
         >
-          <div
-            className="ggfm-marquee-row flex gap-4"
-            style={{
-              animationName: "ggfm-marquee-left",
-              animationDuration: "32s",
-              animationTimingFunction: "linear",
-              animationIterationCount: "infinite",
-            }}
-          >
-            {[...rowOne, ...rowOne].map((finalist, i) => (
-              <img
-                key={`${finalist.id}-${i}`}
-                src={finalist.image}
-                alt={finalist.name}
-                title={finalist.name}
-                className="h-14 w-14 shrink-0 rounded-full border-2 border-white object-cover"
-              />
-            ))}
-          </div>
           <div
             className="ggfm-marquee-row mt-4 flex gap-4"
             style={{
@@ -157,13 +135,13 @@ export function DjHuntSection() {
               animationIterationCount: "infinite",
             }}
           >
-            {[...rowTwo, ...rowTwo].map((finalist, i) => (
+            {finalists.map((finalist) => (
               <img
-                key={`${finalist.id}-${i}`}
+                key={finalist.id}
                 src={finalist.image}
                 alt={finalist.name}
                 title={finalist.name}
-                className="h-14 w-14 shrink-0 rounded-full border-2 border-white object-cover"
+                className="h-28 w-28 shrink-0 rounded-full border-2 border-white object-cover"
               />
             ))}
           </div>
@@ -171,7 +149,7 @@ export function DjHuntSection() {
 
         <Link
           href="/dj-hunt"
-          className="group mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-[#191919] px-8 py-4 font-raleway text-sm font-bold uppercase tracking-wide text-white transition-all duration-300 hover:bg-white hover:text-[#191919] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#569429]"
+          className="group mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-[#191919] px-8 py-4 font-secondary text-sm font-bold uppercase tracking-wide text-white transition-all duration-300 hover:bg-white hover:text-[#191919] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#569429]"
           style={{ animation: "ggfm-pulse-ring 2.4s ease-out infinite" }}
         >
           Support Your Finalist

@@ -59,7 +59,7 @@ function CarouselSectionComponent({
     <div className="relative flex flex-col h-125 lg:h-full bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/10 overflow-hidden shadow-sm">
       
       {/* Counter */}
-      <div className="absolute top-6 left-6 z-20 bg-black/60 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold tracking-widest border border-white/10">
+      <div className="absolute top-6 left-6 z-20 bg-black/60 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-secondary font-bold tracking-widest border border-white/10">
         {songs.length > 0 ? activeIndex + 1 : 0} / {songs.length}
       </div>
 
@@ -100,7 +100,7 @@ function CarouselSectionComponent({
                         <h2 className="text-3xl font-black text-white mb-1 leading-none drop-shadow-lg truncate">
                           {song.title}
                         </h2>
-                        <p className="text-lg text-[#569429] font-bold tracking-wide drop-shadow-md truncate">
+                        <p className="text-lg font-secondary text-[#569429] font-bold tracking-wide drop-shadow-md truncate">
                           {song.artist}
                         </p>
                       </div>

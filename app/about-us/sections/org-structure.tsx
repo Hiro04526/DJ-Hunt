@@ -20,19 +20,19 @@ export async function OrgStructureSection() {
   }
 
   const formattedEBMembers = ebData.map((eb: any) => {
+    // NOTE: this branch reads `eb.role`, while ExecutiveBoardSection (fed
+    // from a different query) reads `m.position` for what looks like the
+    // same concept. Left both untouched since I can't confirm from here
+    // whether that's two names for one field or two genuinely different
+    // ones — worth a quick check.
     const roleCheck = (eb.role || "").toLowerCase()
     let generatedBadges: string[] = []
 
-    // 1. Assign TOP 3
     if (roleCheck.includes("president")) {
       generatedBadges.push("TOP 3")
-    } 
-    // 2. Assign Pool Director
-    else if (roleCheck === "pool director") {
+    } else if (roleCheck === "pool director") {
       generatedBadges.push("PD")
-    } 
-    // 3. Assign VPI Manager ONLY to specific roles
-    else if (["human resources", "training & development", "formations"].includes(roleCheck)) {
+    } else if (["human resources", "training & development", "formations"].includes(roleCheck)) {
       generatedBadges.push("VPI MGR")
     }
 
@@ -57,7 +57,7 @@ export async function OrgStructureSection() {
 
   return (
     <section className="py-12">
-      <div className="flex flex-col items-center text-center mb-10">
+      <div className="mb-10 flex flex-col items-center text-center">
         <HeaderComponent
           title="Organizational Structure"
           description="Behind the airwaves is a dedicated team operating across specialized pools to maintain our high broadcasting and operational standards."
@@ -67,7 +67,9 @@ export async function OrgStructureSection() {
       <div className="grid gap-12 lg:grid-cols-2">
         {/* Internal Pools */}
         <div className="space-y-6">
-          <h3 className="text-xl font-bold text-white border-b border-zinc-800 pb-3">Internal Pools</h3>
+          <h3 className="border-b border-[#363636] pb-3 font-kenyan text-xl font-bold uppercase tracking-tight text-white">
+            Internal Pools
+          </h3>
           <ul className="space-y-4">
             {POOLS_DATA.internal.map((pool) => {
               const poolMembers = getPoolMembers(pool.name)
@@ -87,7 +89,9 @@ export async function OrgStructureSection() {
 
         {/* External Pools */}
         <div className="space-y-6">
-          <h3 className="text-xl font-bold text-white border-b border-zinc-800 pb-3">External Pools</h3>
+          <h3 className="border-b border-[#363636] pb-3 font-kenyan text-xl font-bold uppercase tracking-tight text-white">
+            External Pools
+          </h3>
           <ul className="space-y-4">
             {POOLS_DATA.external.map((pool) => {
               const poolMembers = getPoolMembers(pool.name)
@@ -108,5 +112,3 @@ export async function OrgStructureSection() {
     </section>
   )
 }
-
-export default OrgStructureSection

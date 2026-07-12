@@ -11,12 +11,12 @@ import { GoogleOAuthProvider } from "@react-oauth/google"
 export const metadata: Metadata = {
   title: "Green Giant FM",
   description: "DLSU Radio: Green Giant FM (GGFM) is De La Salle University-Manila's Official Radio Station, located and broadcasting live at Br. Bloemen Hall!",
-  metadataBase: new URL("https://dj-hunt-page.netlify.app/"),
+  metadataBase: new URL("https://greengiantfm.netlify.app/"),
   icons: { icon: "/assets/favicon.ico" },
   openGraph: {
     title: "Green Giant FM",
     description: "DLSU Radio: Green Giant FM (GGFM) is De La Salle University-Manila's Official Radio Station, located and broadcasting live at Br. Bloemen Hall!",
-    url: "https://dj-hunt-page.netlify.app/",
+    url: "https://greengiantfm.netlify.app/",
     siteName: "Green Giant FM",
     images: [{ url: "/assets/Raffy.png", width: 1200, height: 630, alt: "Green Giant FM" }],
     type: "website",

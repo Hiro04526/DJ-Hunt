@@ -4,13 +4,18 @@ interface HeaderComponentProps {
 }
 
 export function HeaderComponent({ title, description }: HeaderComponentProps) {
+  const words = title.trim().split(" ")
+  const lastWord = words.pop()
+  const leadingWords = words.join(" ")
+
   return (
-    <div className="flex flex-col items-center justify-center text-center w-full">
-      <h2 className="flex items-center justify-center gap-2 text-3xl font-bold text-white mb-4">
-        {title}
+    <div className="flex w-full flex-col items-center justify-center text-center">
+      <h2 className="mb-4 font-kenyan text-4xl font-bold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl">
+        {leadingWords && <>{leadingWords} </>}
+        <span className="text-[#569429]">{lastWord}</span>
       </h2>
       {description && (
-        <p className="text-gray-400 max-w-2xl text-center">
+        <p className="max-w-2xl text-center font-secondary text-base text-[#a8a8a8] sm:text-lg">
           {description}
         </p>
       )}

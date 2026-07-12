@@ -1,7 +1,5 @@
 import { HeaderComponent } from "@/components/about-us/header"
-import { Top3Grid } from "@/components/about-us/top3-grid"
-import { VpiManagersGrid } from "@/components/about-us/vpi-grid"
-import { PoolDirectorsGrid } from "@/components/about-us/pd-grid"
+import { EBMemberGrid } from "@/components/about-us/eb-member-grid"
 import { EBMember } from "@/types/about-us"
 
 interface ExecutiveBoardSectionProps {
@@ -10,7 +8,7 @@ interface ExecutiveBoardSectionProps {
 
 export function ExecutiveBoardSection({ members }: ExecutiveBoardSectionProps) {
   const top3 = members.filter((m) => {
-    const roleCheck = (m.position  || "").toLowerCase()
+    const roleCheck = (m.position || "").toLowerCase()
     return roleCheck === "president" || roleCheck.includes("president")
   })
 
@@ -26,24 +24,19 @@ export function ExecutiveBoardSection({ members }: ExecutiveBoardSectionProps) {
 
   return (
     <section>
-      {/* Header */}
-      <div className="relative flex flex-col items-center justify-center mb-12">
+      <div className="relative mb-12 flex flex-col items-center justify-center">
         <HeaderComponent
-          title="The Executive Board" 
-          description="The student leaders dedicated to directing the station's vision." 
+          title="The Executive Board"
+          description="The student leaders dedicated to directing the station's vision."
         />
       </div>
 
-      {/* Grid Renders (These handle their own empty states internally) */}
-      <Top3Grid members={top3} />
-      
-      <VpiManagersGrid members={vpiManagers} />
+      <EBMemberGrid title="Top 3" members={top3} layout="wide" />
+      <EBMemberGrid title="VPI Managers" members={vpiManagers} layout="wide" />
+      <EBMemberGrid title="Pool Directors" members={poolDirectors} layout="wrap" />
 
-      <PoolDirectorsGrid members={poolDirectors} />
-      
-      {/* Fallback if database is completely empty */}
       {members.length === 0 && (
-        <div className="text-center text-zinc-500 py-12">
+        <div className="py-12 text-center font-secondary text-[#646464]">
           No board members found.
         </div>
       )}

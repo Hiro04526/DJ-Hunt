@@ -33,16 +33,22 @@ export function HeroSection() {
                 />
               ))}
             </div>
-            <span className="font-raleway text-xs font-semibold uppercase tracking-[0.2em] text-[#D8CEAE]">
+            <span className="font-secondary text-xs font-semibold uppercase tracking-[0.2em] text-[#D8CEAE]">
               On Air Now
             </span>
           </div>
 
-          <h1 className="font-kenyan text-[2.75rem] font-bold uppercase leading-[0.95] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            The Official Sound of <span className="text-[#569429]">Green Giant FM</span>
-          </h1>
+          <div className="flex flex-col w-fit">
+            <h1 className="font-kenyan font-bold text-justify [text-align-last:justify] uppercase pl-0.5 tracking-tight w-full text-white sm:text-[2.145rem] lg:text-[2.575rem]">
+              The Official Sound of <span className="text-[#569429]">DLSU</span>
+            </h1>
+          
+            <h1 className="font-kenyan font-bold text-justify [text-align-last:justify] uppercase leading-[0.95] tracking-tight w-full text-white sm:text-6xl lg:text-7xl">
+              Green Giant <span className="text-[#569429]">FM</span>
+            </h1>
+          </div>
 
-          <p className="mx-auto mt-6 max-w-lg font-raleway text-base leading-relaxed text-[#a8a8a8] sm:text-lg lg:mx-0">
+          <p className="mx-auto mt-6 max-w-lg font-secondary text-base leading-relaxed text-[#a8a8a8] sm:text-lg lg:mx-0">
             Broadcasting from De La Salle University since 2008 —{" "}
             <span className="text-[#D8CEAE]">25+ student DJs</span>, live around the clock, one campus frequency.
           </p>
@@ -50,14 +56,14 @@ export function HeroSection() {
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
             <Link
               href="/listen"
-              className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#569429] px-8 py-4 font-raleway text-sm font-bold uppercase tracking-wide text-black transition-all duration-300 hover:bg-[#63a92f] hover:shadow-[0_0_35px_-5px_#569429] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#569429] focus-visible:ring-offset-2 focus-visible:ring-offset-[#191919] sm:w-auto"
+              className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#569429] px-8 py-4 font-secondary text-sm font-bold uppercase tracking-wide text-black transition-all duration-300 hover:bg-[#63a92f] hover:shadow-[0_0_35px_-5px_#569429] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#569429] focus-visible:ring-offset-2 focus-visible:ring-offset-[#191919] sm:w-auto"
             >
               <Play className="h-4 w-4 fill-black transition-transform duration-300 group-hover:scale-110" />
               Listen Live
             </Link>
             <Link
               href="/services"
-              className="group inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#646464] px-8 py-4 font-raleway text-sm font-bold uppercase tracking-wide text-white transition-all duration-300 hover:border-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#569429] focus-visible:ring-offset-2 focus-visible:ring-offset-[#191919] sm:w-auto"
+              className="group inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#646464] px-8 py-4 font-secondary text-sm font-bold uppercase tracking-wide text-white transition-all duration-300 hover:border-white hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#569429] focus-visible:ring-offset-2 focus-visible:ring-offset-[#191919] sm:w-auto"
             >
               Partner With Us
               <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -79,10 +85,6 @@ export function HeroSection() {
           />
           <div className="absolute inset-0 rounded-full bg-[#569429]/25 blur-3xl" />
           <div className="absolute inset-4 rounded-full border border-[#363636] bg-linear-to-br from-[#252525] to-[#191919] sm:inset-6" />
-          {/* Now spans the whole circle as a background layer, rather than a
-              small strip near the bottom — center-aligned so bars grow both
-              up and down, like a real spectrum display, not just upward from
-              a fixed baseline. */}
           <div
             className="absolute inset-10 flex items-center justify-between opacity-20 sm:inset-12 lg:inset-16"
             aria-hidden="true"
@@ -107,13 +109,6 @@ export function HeroSection() {
             alt="Raffy, the Green Giant FM mascot"
             className="relative h-40 w-40 object-contain drop-shadow-[0_0_40px_rgba(86,148,41,0.5)] sm:h-64 sm:w-64 lg:h-80 lg:w-80"
           />
-        </div>
-      </div>
-
-      <div className="relative mt-16 flex justify-center lg:absolute lg:inset-x-0 lg:bottom-8 lg:mt-0">
-        <div className="flex flex-col items-center gap-2 text-[#646464]">
-          <span className="font-raleway text-[0.65rem] uppercase tracking-[0.3em]">Scroll</span>
-          <ChevronDown className="h-4 w-4 animate-bounce" />
         </div>
       </div>
     </section>

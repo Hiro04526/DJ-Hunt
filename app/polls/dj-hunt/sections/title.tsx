@@ -14,15 +14,11 @@ export function TitleSection() {
     >
 
       <div className="container relative z-10 mx-auto px-4 text-center">
-        <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#363636] bg-[#252525] px-4 py-2 font-raleway text-xs font-semibold uppercase tracking-[0.2em] text-[#D8CEAE]">
-          Green Giant FM
-        </span>
-
         <h1 className="font-kenyan text-6xl font-bold uppercase leading-[0.95] tracking-tight text-white sm:text-7xl md:text-8xl">
           DJ <span className="text-[#569429]">Hunt</span>
         </h1>
 
-        <div className="mt-4 font-raleway text-lg text-[#a8a8a8] md:text-2xl">
+        <div className="mt-4 font-secondary text-lg text-[#a8a8a8] md:text-2xl">
           <EqualDurationTypewriter
             lines={[
               "Reaching you from across the airwaves",
