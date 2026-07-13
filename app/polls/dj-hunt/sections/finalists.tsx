@@ -36,9 +36,9 @@ export function FinalistsSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="relative flex min-h-screen flex-col items-center justify-center py-24"
+        className="container mx-auto min-h-100 relative flex flex-col items-center justify-center px-6 py-8"
       >
-        <div className="container relative z-10 mx-auto px-4">
+        <div className="container relative z-10 mx-auto">
           {loading && (
             <p className="mb-4 text-center font-secondary font-medium text-[#191919]">Loading…</p>
           )}
@@ -113,7 +113,7 @@ export function FinalistsSection() {
         </div>
 
         {/* Cleaned layout block separating the grid from the action elements below it */}
-        <div className="relative z-10 mt-16 flex flex-col items-center gap-3">
+        <div className="relative z-10 mt-8 flex flex-col items-center gap-3">
           {isWithinVotingWindow ? (
             <Button
               size="xl"
@@ -131,9 +131,6 @@ export function FinalistsSection() {
               >
                 Voting Closed
               </Button>
-              <p className="font-secondary text-sm text-[#191919]">
-                Thanks to everyone who voted — results will be announced soon.
-              </p>
             </>
           )}
         </div>

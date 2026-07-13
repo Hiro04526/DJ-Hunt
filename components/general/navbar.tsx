@@ -19,7 +19,7 @@ function StaticNavbar({ linkActive }: { linkActive: (path: string) => boolean })
         "dark:bg-[#111111] dark:text-white"
       )}
     >
-      <div className="w-full px-4">
+      <div className="w-full px-2">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="w-32 h-12 relative">
             <Image
@@ -98,7 +98,7 @@ export function Navbar() {
           "dark:bg-[#111111] dark:text-white"
         )}
       >
-        <div className="w-full px-4">
+        <div className="w-full px-2">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
             <Link href="/" className="w-32 h-12 relative hover:scale-105">
@@ -119,7 +119,7 @@ export function Navbar() {
             </Link>
 
             {/* Desktop nav */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4">
               <div className="hidden md:flex items-center space-x-8" ref={dropdownRef}>
                 {NAV_ITEMS.map((item) => (
                   <Link

@@ -10,7 +10,7 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative overflow-hidden bg-[#191919] px-6 pb-20 pt-24 sm:px-10 lg:px-16 lg:pb-24 lg:pt-32"
+      className="relative overflow-hidden bg-[#191919] px-6 pb-8 pt-24 sm:px-10 lg:px-16 lg:pb-16 lg:pt-32"
     >
       <div className="pointer-events-none absolute -top-24 right-[-8%] h-96 w-96 rounded-full bg-[#569429]/10 blur-[100px]" />
 
@@ -38,14 +38,14 @@ export function HeroSection() {
             </span>
           </div>
 
-          <div className="flex flex-col w-fit">
-            <h1 className="font-kenyan font-bold text-justify [text-align-last:justify] uppercase pl-0.5 tracking-tight w-full text-white sm:text-[2.145rem] lg:text-[2.575rem]">
+          <div className="flex flex-col w-fit mx-auto lg:mx-0">
+            <h1 className="font-kenyan font-bold text-center lg:text-justify lg:[text-align-last:justify] uppercase lg:pl-0.5 tracking-tight w-full text-white text-[2.145rem] lg:text-[2.575rem]">
               The Official Sound of <span className="text-[#569429]">DLSU</span>
             </h1>
           
-            <h1 className="font-kenyan font-bold text-justify [text-align-last:justify] uppercase leading-[0.95] tracking-tight w-full text-white sm:text-6xl lg:text-7xl">
+            <h1 className="font-kenyan font-bold text-center lg:text-justify lg:[text-align-last:justify] uppercase leading-[0.95] tracking-tight w-full text-white text-[3.755rem] lg:text-7xl">
               Green Giant <span className="text-[#569429]">FM</span>
-            </h1>
+            </h1> 
           </div>
 
           <p className="mx-auto mt-6 max-w-lg font-secondary text-base leading-relaxed text-[#a8a8a8] sm:text-lg lg:mx-0">

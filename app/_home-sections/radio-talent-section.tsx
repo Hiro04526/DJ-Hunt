@@ -59,14 +59,6 @@ export function RadioTalentSection() {
     };
 
     // 4. Momentum-based wheel scrolling.
-    // The previous version called el.scrollBy({ behavior: "smooth" }) on every
-    // wheel event. Wheel events fire many times a second, and each new
-    // smooth-scroll call cancels the browser's in-flight animation from the
-    // previous call before it finishes easing out — that's what read as
-    // stutter rather than one continuous glide. This replaces it with a
-    // single velocity value that every wheel event adds to, decayed by
-    // friction once per animation frame, so there's only ever one animation
-    // running and nothing ever interrupts itself.
     let velocity = 0;
     let rafId: number | null = null;
     const friction = 0.9; // closer to 1 = glides longer after you stop scrolling
@@ -90,10 +82,6 @@ export function RadioTalentSection() {
         e.preventDefault();
 
         const isTrackpad = Math.abs(e.deltaY) < 40;
-        // Trackpads already send small, frequent deltas that add up to
-        // natural motion on their own. A mouse sends one large delta per
-        // notch, so it's scaled down here and left to the friction above to
-        // turn it into a glide instead of one hard jump.
         velocity += isTrackpad ? e.deltaY : e.deltaY * 0.4;
 
         if (rafId === null) {
@@ -121,18 +109,7 @@ export function RadioTalentSection() {
   };
 
   return (
-    <section id="talent" className="bg-[#191919] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
-      <style>{`
-        @keyframes ggfm-float-a {
-          0%, 100% { transform: translateY(-8px); }
-          50% { transform: translateY(8px); }
-        }
-        @keyframes ggfm-float-b {
-          0%, 100% { transform: translateY(16px); }
-          50% { transform: translateY(32px); }
-        }
-      `}</style>
-
+    <section id="talent" className="bg-[#191919] px-6 py-8 sm:px-10 lg:px-16 lg:py-16">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col items-center justify-between gap-6 text-center sm:flex-row sm:text-left">
           <div>
@@ -144,7 +121,7 @@ export function RadioTalentSection() {
             </h2>
           </div>
           <p className="max-w-sm font-secondary text-base text-[#a8a8a8]">
-            Every voice on air brings something different. <br />
+            Each voice on air offers something unique. <br />
             Meet the DJs behind your favorite shows.
           </p>
         </div>

@@ -182,7 +182,7 @@ export function HistoricalImageStack({
 
       {state.cards.length > 1 && (
         <div className="pointer-events-none absolute -bottom-8 left-0 right-0 z-40 flex justify-center">
-          <span className="flex items-center gap-2 font-secondary text-xs font-bold uppercase tracking-widest text-[#569429]">
+          <span className="flex items-center gap-2 font-secondary text-[14px] font-bold uppercase tracking-widest text-[#569429]">
             <MousePointerClick size={14} /> Click to explore
           </span>
         </div>

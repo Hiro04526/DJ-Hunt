@@ -12,14 +12,14 @@ export function HitlistSection() {
   const { songs, isRefreshing, fetchStatus } = useHitlist()
 
   return (
-    <section id="hitlist" className="bg-[#252525] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+    <section id="hitlist" className="bg-[#252525] px-6 py-8 sm:px-10 lg:px-16 lg:py-16">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl text-center">
           <span className="font-secondary text-xs font-semibold uppercase tracking-[0.25em] text-[#569429]">
             The Hitlist
           </span>
           <h2 className="mt-4 font-kenyan text-4xl font-bold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl">
-            Curate the <span className="text-[#569429]">Airwaves.</span>
+            Curate the <span className="text-[#569429]">Airwaves</span>
           </h2>
           <p className="mt-4 font-secondary text-base text-[#a8a8a8] sm:text-lg">
             Every track in rotation is chosen by you. Vote for your favorites and help shape what Green Giant FM plays next.

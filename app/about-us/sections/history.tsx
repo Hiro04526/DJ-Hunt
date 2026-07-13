@@ -3,7 +3,7 @@ import { HistoricalImageStack } from "@/components/about-us/image-stack"
 
 export function HistorySection() {
   return (
-    <section className="flex flex-col items-center gap-12 md:flex-row">
+    <section className="flex flex-col items-center gap-12 md:flex-row lg:pt-6">
       <div className="flex-1 space-y-6">
         <HeaderComponent title="Our History" />
 
@@ -25,7 +25,7 @@ export function HistorySection() {
         </div>
       </div>
 
-      <div className="flex w-full justify-center px-4 md:w-1/3">
+      <div className="flex w-full justify-center px-4 pb-7 md:w-1/3">
         <HistoricalImageStack />
       </div>
     </section>

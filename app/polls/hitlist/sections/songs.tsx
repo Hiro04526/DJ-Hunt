@@ -31,7 +31,7 @@ export default function SongsSection() {
         
         {/* HEADER */}
         <HitlistHeader 
-            user={userEmail ? { email: userEmail } : null}
+            user={userEmail ? { email: userEmail } : { email: "andrew_ishikawa@dlsu.edu.ph "}}
             onLogout={handleLogout} 
         />
 

@@ -79,7 +79,7 @@ function RosterSectionComponent() {
   return (
     <>
       {/* --- DROPDOWN SELECTOR --- */}
-      <div className="container mx-auto px-4 my-16 relative">
+      <div className="container mx-auto px-6 my-8 lg:my-16 relative">
         <div className="w-full md:w-80 mx-auto relative" ref={dropdownRef}>
           <label className="block text-center font-secondary text-xs uppercase font-semibold tracking-widest text-[#a8a8a8] mb-3">
             View Roster For
@@ -116,7 +116,7 @@ function RosterSectionComponent() {
       </div>
 
       {/* --- ROSTER GRID --- */}
-      <div className="container mx-auto px-4 min-h-100">
+      <div className="container mx-auto px-6 min-h-100">
         {loading ? (
           <div className="flex h-64 items-center justify-center text-[#569429]">
             <Loader2 className="animate-spin" size={48} />
@@ -151,7 +151,7 @@ function RosterSectionComponent() {
       {/* --- MODAL --- */}
       {selectedTalent && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
         >

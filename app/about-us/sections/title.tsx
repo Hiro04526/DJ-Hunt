@@ -2,7 +2,7 @@ import { Radio } from "lucide-react"
 
 export function TitleSection() {
   return (
-    <section className="relative flex flex-col items-center justify-center overflow-hidden bg-[#191919] px-6 py-24 text-center sm:px-10 md:py-32">
+    <section className="relative flex flex-col items-center justify-center overflow-hidden bg-[#191919] px-6 pt-28 pb-12 text-center sm:px-10">
       {/* Glowing background gradient */}
       <div
         aria-hidden="true"

@@ -56,7 +56,7 @@ export async function OrgStructureSection() {
   }
 
   return (
-    <section className="py-12">
+    <section >
       <div className="mb-10 flex flex-col items-center text-center">
         <HeaderComponent
           title="Organizational Structure"

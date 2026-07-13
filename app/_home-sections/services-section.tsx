@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react"
 
 export function ServicesSection() {
   return (
-    <section id="services" className="bg-[#191919] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+    <section id="services" className="bg-[#191919] px-6 py-8 sm:px-10 lg:px-16 lg:py-16">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl text-center">
           <span className="font-secondary text-xs font-semibold uppercase tracking-[0.25em] text-[#569429]">

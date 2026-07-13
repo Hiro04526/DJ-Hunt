@@ -48,10 +48,10 @@ export default function TitleSection() {
             {/* --- 1. TEXT SECTION --- */}
             <div className="flex flex-col items-center lg:items-start justify-start w-full order-1">
               
-              <div className="flex flex-col items-center lg:items-start text-center lg:text-left w-88 lg:max-w-xl gap-6">
+              <div className="flex flex-col items-center lg:items-start text-center lg:text-left w-82 lg:max-w-xl gap-6">
                 
                 {/* Header & Status */}
-                <div className="flex items-center justify-between w-88 lg:w-full">
+                <div className="flex items-center justify-between w-72 lg:w-full">
                   <h2 className="pl-0 lg:pl-1 text-4xl sm:text-5xl lg:text-6xl font-medium leading-none text-white dark:text-black">
                     THE
                   </h2>
@@ -63,7 +63,7 @@ export default function TitleSection() {
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.5 }}
-                  className="w-88 lg:w-full"
+                  className="w-72 lg:w-full"
                 >
                   <div className="flex justify-between text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-medium leading-[0.8] text-white dark:text-black">
                     {"HITLIST".split("").map((char, index) => (
@@ -77,7 +77,7 @@ export default function TitleSection() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
-                  className="font-secondary pl-0 lg:pl-1 w-88 lg:w-full text-[1.03rem] sm:text-[1.18rem] lg:text-[1.33rem] leading-snug text-white dark:text-black flex flex-col gap-1"
+                  className="font-secondary pl-0 lg:pl-1 w-fit lg:w-full text-[1.03rem] sm:text-[1.18rem] lg:text-[1.33rem] leading-snug text-white dark:text-black flex flex-col gap-1"
                 >
                   <p className="text-justify [text-align-last:justify] w-full">
                     Love music? This is your chance!
@@ -102,7 +102,7 @@ export default function TitleSection() {
               transition={{ delay: 0.25, duration: 0.5 }}
               className="flex justify-center lg:justify-end w-full order-3"
             >
-              <div className="relative pt-6 lg:pt-0 w-88 lg:max-w-xl h-116 lg:h-[70vh] bg-transparent">
+              <div className="relative pt-6 lg:pt-0 w-82 lg:max-w-xl h-116 lg:h-[70vh] bg-transparent">
                 <Playlist />
               </div>
             </motion.div>

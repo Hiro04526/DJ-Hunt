@@ -17,7 +17,7 @@ export function Footer() {
   return (
     <footer className="w-full">
       <div className="bg-[#F5F2E9] text-black dark:bg-[#191919] dark:text-white border-t border-black/5 dark:border-white/5">
-        <div className="mx-auto w-full max-w-7xl px-4 py-12 md:py-16">
+        <div className="mx-auto w-full max-w-7xl px-6 py-12 md:py-16">
           
           {/* Main Row: Uses xl:items-stretch to force all 3 columns to match the tallest element's height */}
           <div className="flex flex-col xl:flex-row xl:items-stretch justify-between gap-12 xl:gap-8">
@@ -48,7 +48,7 @@ export function Footer() {
                 Keep it locked with us!
               </h2>
 
-              <div className="flex flex-row items-center gap-3">
+              <div className="flex flex-row items-center gap-1 md:gap-3">
                 {SOCIAL_LINKS.map((link) => {
                   const IconComponent = ICON_MAP[link.icon]
 

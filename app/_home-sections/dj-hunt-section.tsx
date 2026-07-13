@@ -10,7 +10,7 @@ export function DjHuntSection() {
   return (
     <section
       id="dj-hunt"
-      className="relative overflow-hidden bg-[#569429] px-6 py-16 sm:px-10 lg:px-16 lg:py-20"
+      className="relative overflow-hidden bg-[#569429] px-6 py-16 sm:px-10 lg:px-16"
     >
       <div
         aria-hidden="true"
@@ -115,8 +115,6 @@ export function DjHuntSection() {
           16 finalists are in the running for a chance to be one of our newest DJ Trainees. Show your support and help decide who joins the roster.
         </p>
 
-        {/* Every finalist, shown equally — two rows drifting in opposite
-            directions, hover to pause either one. */}
         <div
           className="relative w-full max-w-6xl overflow-hidden"
           style={{
@@ -135,9 +133,9 @@ export function DjHuntSection() {
               animationIterationCount: "infinite",
             }}
           >
-            {finalists.map((finalist) => (
+            {[...finalists, ...finalists].map((finalist, i) => (
               <img
-                key={finalist.id}
+                key={`${finalist.id}-${i}`} 
                 src={finalist.image}
                 alt={finalist.name}
                 title={finalist.name}
