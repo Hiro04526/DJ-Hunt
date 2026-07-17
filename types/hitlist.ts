@@ -42,12 +42,6 @@ export interface LeaderboardProps {
   isRefreshing: boolean
 }
 
-export interface LeaderboardItemProps {
-  song: Song
-  index: number
-  maxVotes: number 
-}
-
 export interface VoteListProps {
   selectedSongs: Song[]
   onToggle: (id: number) => void

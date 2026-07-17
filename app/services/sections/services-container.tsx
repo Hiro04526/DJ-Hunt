@@ -25,6 +25,7 @@ function ServicesContainerComponent() {
   return (
     <>
       <ServicesGrid onInquireClick={handleInquireClick} />
+      <hr className="border-[#363636]" />
       <ServicesCTA prefilledSubject={inquirySubject} />
     </>
   )

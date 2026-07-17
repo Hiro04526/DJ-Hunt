@@ -64,7 +64,7 @@ export async function getVotingStatus() {
 //             PUBLIC VOTING ACTIONS
 // ==========================================
 
-export async function getHitlistDataAction() {
+export async function getUserDataAction() {
   try {
     await checkAndTriggerLazyReset()
 
@@ -92,7 +92,42 @@ export async function getHitlistDataAction() {
 
     return { success: true, isOpen, message, nextOpeningTime: nextOpeningTime.toISOString(), songs, votedIds, userEmail: email }
   } catch (error: any) {
-    return { success: false, error: "Failed to load Hitlist data" }
+    return { success: false, error: "Failed to load User Votes data" }
+  }
+}
+
+export async function getVoteCountAction() {
+  try {
+    await checkAndTriggerLazyReset()
+
+    // Fetch the specific column containing the voted song IDs
+    const { data: voteData, error } = await supabaseAdmin
+      .from(TABLE_VOTES)
+      .select(ID_COLUMN)
+
+    if (error) throw error
+
+    // Create a dictionary to hold the tally: { [songId]: count }
+    const voteCounts: Record<string | number, number> = {}
+
+    voteData?.forEach((row: any) => {
+      const vote = row[ID_COLUMN]
+
+      if (Array.isArray(vote)) {
+        // If your DB stores an array of song IDs per user ballot
+        vote.forEach((id: string | number) => {
+          voteCounts[id] = (voteCounts[id] || 0) + 1
+        })
+      } else if (vote !== null && vote !== undefined) {
+        // If your DB stores one row per individual song vote
+        voteCounts[vote] = (voteCounts[vote] || 0) + 1
+      }
+    })
+
+    return { success: true, counts: voteCounts }
+  } catch (error: any) {
+    console.error("Database error in getVoteCountAction:", error)
+    return { success: false, error: "Failed to load Hitlist Vote Count data" }
   }
 }
 

@@ -9,9 +9,12 @@ export const metadata: Metadata = {
 
 export default function ServicesPage() {
   return (
-    <div className="min-h-screen bg-[#111] text-white mt-12 px-6 pb-20 font-sans">
-      <TitleSection />
-      <ServicesContainer />
+    <div className="bg-[#191919] text-white mt-12 pb-12 font-sans">
+      <div className="mx-auto min-h-screen max-w-6xl space-y-12">
+        <TitleSection />
+        <hr className="border-[#363636]" />
+        <ServicesContainer />
+      </div>
     </div>
   )
 }

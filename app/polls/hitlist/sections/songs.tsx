@@ -27,11 +27,11 @@ export default function SongsSection() {
         onToken={handleToken}
       />
 
-      <div className="max-w-360 mx-auto px-4 md:px-8 py-8 md:py-12">
+      <div className="max-w-360 mx-auto px-4 md:px-8 py-12">
         
         {/* HEADER */}
         <HitlistHeader 
-            user={userEmail ? { email: userEmail } : { email: "andrew_ishikawa@dlsu.edu.ph "}}
+            user={userEmail ? { email: userEmail } : null}
             onLogout={handleLogout} 
         />
 

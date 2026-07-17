@@ -10,7 +10,7 @@ export function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative overflow-hidden bg-[#191919] px-6 pb-8 pt-24 sm:px-10 lg:px-16 lg:pb-16 lg:pt-32"
+      className="relative overflow-hidden bg-[#191919] px-6 pb-12 pt-28 sm:px-10 lg:px-16"
     >
       <div className="pointer-events-none absolute -top-24 right-[-8%] h-96 w-96 rounded-full bg-[#569429]/10 blur-[100px]" />
 

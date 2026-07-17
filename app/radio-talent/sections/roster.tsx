@@ -79,7 +79,7 @@ function RosterSectionComponent() {
   return (
     <>
       {/* --- DROPDOWN SELECTOR --- */}
-      <div className="container mx-auto px-6 my-8 lg:my-16 relative">
+      <div className="container mx-auto px-6 my-12 relative">
         <div className="w-full md:w-80 mx-auto relative" ref={dropdownRef}>
           <label className="block text-center font-secondary text-xs uppercase font-semibold tracking-widest text-[#a8a8a8] mb-3">
             View Roster For

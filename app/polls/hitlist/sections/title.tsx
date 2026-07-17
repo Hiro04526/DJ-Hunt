@@ -40,7 +40,7 @@ export default function TitleSection() {
           <div className="vinyl-center opacity-0 lg:opacity-100 pointer-events-none" />
         </div>
 
-        <div className="max-w-360 relative mx-auto px-4 md:px-8 py-12 lg:py-20 z-10 h-full">
+        <div className="max-w-360 relative mx-auto px-4 md:px-8 py-12 z-10 h-full">
           
           {/* Grid Content */}
           <div className="w-full flex flex-col lg:grid lg:grid-cols-[1fr_auto_1fr] items-center gap-0 lg:gap-8">

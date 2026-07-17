@@ -5,7 +5,7 @@ import { toast } from "sonner"
 import { supabase } from "@/lib/supabase/client"
 import { googleLogout } from "@react-oauth/google"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getHitlistDataAction, submitHitlistVoteAction } from "@/actions/hitlist"
+import { getUserDataAction, submitHitlistVoteAction, getVoteCountAction } from "@/actions/hitlist"
 import { loginAction, logoutAction } from "@/actions/auth"
 import { Song, StatusState } from "@/types/hitlist"
 import { HITLIST_DB } from "@/constants/hitlist"
@@ -27,9 +27,19 @@ export function useHitlist() {
   } = useQuery({
     queryKey: ["hitlist-data"],
     queryFn: async () => {
-      const result = await getHitlistDataAction()
+      const result = await getUserDataAction()
       if (!result.success) throw new Error(result.error || "Failed to load data")
       return result
+    }
+  })
+
+  // NEW: Fetch the tally dictionary for each song
+  const { data: voteCounts = {} } = useQuery({
+    queryKey: ["hitlist-vote-counts"],
+    queryFn: async () => {
+      const result = await getVoteCountAction()
+      if (!result.success) throw new Error(result.error || "Failed to load counts")
+      return result.counts || {}
     }
   })
 
@@ -40,8 +50,15 @@ export function useHitlist() {
     }
   }, [data?.votedIds, selected.length])
 
-  // Derive variables directly from React Query's cached data
-  const songs: Song[] = useMemo(() => data?.songs?.map((s: any) => ({ ...s, votes: s.votes })) || [], [data?.songs])
+  // NEW: Merge the live vote counts directly into the songs array
+  const songs: Song[] = useMemo(() => {
+    return data?.songs?.map((s: any) => ({ 
+      ...s, 
+      // Overwrite static votes with the live tally (fallback to 0)
+      votes: voteCounts[s.id] ?? s.votes ?? 0 
+    })) || []
+  }, [data?.songs, voteCounts])
+
   const userEmail = data?.userEmail || null
   const hasVoted = !!(data?.votedIds && data.votedIds.length > 0)
   
@@ -59,7 +76,6 @@ export function useHitlist() {
         if (res.success && res.email) {
             setShowLoginModal(false)
             toast.success(`Signed in as ${res.email}`)
-            // Tell React Query to fetch fresh data now when you are logged in
             queryClient.invalidateQueries({ queryKey: ["hitlist-data"] }) 
         } else {
             toast.error("Login verification failed")
@@ -75,7 +91,6 @@ export function useHitlist() {
       googleLogout() 
       setSelected([])
       toast.success("Logged out")
-      // Clear cache and fetch logged-out state
       queryClient.invalidateQueries({ queryKey: ["hitlist-data"] })
   }, [queryClient])
 
@@ -87,13 +102,9 @@ export function useHitlist() {
       return result
     },
     onMutate: async (newVotes) => {
-      // 1. Cancel outgoing refetches so they don't overwrite our optimistic update
       await queryClient.cancelQueries({ queryKey: ["hitlist-data"] })
-      
-      // 2. Snapshot the previous value
       const previousData = queryClient.getQueryData(["hitlist-data"])
       
-      // 3. Optimistically update the UI to show they voted instantly
       queryClient.setQueryData(["hitlist-data"], (old: any) => ({
          ...old,
          votedIds: newVotes
@@ -101,8 +112,7 @@ export function useHitlist() {
       
       return { previousData }
     },
-    onError: (err: any, newVotes, context) => {
-      // Rollback to snapshot if the server action fails
+    onError: (err: any, _newVotes, context) => {
       queryClient.setQueryData(["hitlist-data"], context?.previousData)
       toast.error(err.message)
     },
@@ -111,6 +121,7 @@ export function useHitlist() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["hitlist-data"] })
+      queryClient.invalidateQueries({ queryKey: ["hitlist-vote-counts"] })
     }
   })
 
@@ -128,6 +139,7 @@ export function useHitlist() {
         () => {
           console.log("⚡ Live vote detected!")
           queryClient.invalidateQueries({ queryKey: ["hitlist-data"] })
+          queryClient.invalidateQueries({ queryKey: ["hitlist-vote-counts"] })
         }
       )
       .subscribe()
@@ -147,7 +159,7 @@ export function useHitlist() {
      if (selected.length === 0) return toast.error("Select at least one song")
      
      voteMutation.mutate(selected)
-  }, [status.isOpen, userEmail, selected, voteMutation.mutate])
+  }, [status.isOpen, userEmail, selected, voteMutation])
 
   const activeSong = useMemo(() => songs[activeIndex] || songs[0], [songs, activeIndex])
   const selectedSongsList = useMemo(() => songs.filter((s) => selected.includes(s.id)), [songs, selected])

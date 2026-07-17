@@ -12,7 +12,7 @@ export function HitlistSection() {
   const { songs, isRefreshing, fetchStatus } = useHitlist()
 
   return (
-    <section id="hitlist" className="bg-[#252525] px-6 py-8 sm:px-10 lg:px-16 lg:py-16">
+    <section id="hitlist" className="bg-[#252525] px-6 py-12 sm:px-10 lg:px-16">
       <div className="mx-auto max-w-7xl">
         <div className="mx-auto max-w-2xl text-center">
           <span className="font-secondary text-xs font-semibold uppercase tracking-[0.25em] text-[#569429]">
@@ -48,7 +48,7 @@ export function HitlistSection() {
               </p>
             </div>
             <Link
-              href="/polls"
+              href="/polls/hitlist"
               className="group mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-[#569429] px-8 py-4 font-secondary text-sm font-bold uppercase tracking-wide text-black transition-all duration-300 hover:bg-[#63a92f] hover:shadow-[0_0_35px_-5px_#569429] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#569429] focus-visible:ring-offset-2 focus-visible:ring-offset-[#191919]"
               >
               Cast Your Vote

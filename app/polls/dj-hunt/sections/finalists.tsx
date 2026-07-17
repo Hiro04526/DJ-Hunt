@@ -36,7 +36,7 @@ export function FinalistsSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="container mx-auto min-h-100 relative flex flex-col items-center justify-center px-6 py-8"
+        className="container mx-auto min-h-100 relative flex flex-col items-center justify-center px-6 py-12"
       >
         <div className="container relative z-10 mx-auto">
           {loading && (

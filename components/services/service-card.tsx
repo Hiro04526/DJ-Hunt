@@ -43,7 +43,7 @@ function ServiceCardComponent({ service, isExpanded, onToggle, onInquireClick }:
               <h2 className="text-2xl font-bold text-white group-hover:text-[#569429] transition-colors">
                 {service.title}
               </h2>
-              <p className="text-gray-400 mt-1 line-clamp-1 md:line-clamp-none font-secondary">
+              <p className="text-sm md:text-base text-gray-400 mt-1 font-secondary leading-relaxed">
                 {service.description}
               </p>
             </div>

@@ -109,7 +109,7 @@ export function RadioTalentSection() {
   };
 
   return (
-    <section id="talent" className="bg-[#191919] px-6 py-8 sm:px-10 lg:px-16 lg:py-16">
+    <section id="talent" className="bg-[#191919] px-6 py-12 sm:px-10 lg:px-16">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col items-center justify-between gap-6 text-center sm:flex-row sm:text-left">
           <div>

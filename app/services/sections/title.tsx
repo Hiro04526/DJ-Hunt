@@ -1,6 +1,6 @@
 export function TitleSection() {
   return (
-    <div className="container mx-auto px-4 pt-12 pb-8 text-center">
+    <div className="relative flex flex-col items-center justify-center overflow-hidden px-6 pt-12 text-center sm:px-10">
       <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
         <span className="text-[#569429]">Services</span>
       </h1>

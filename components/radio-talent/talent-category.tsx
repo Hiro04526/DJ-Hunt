@@ -6,7 +6,7 @@ import { TalentCategoryProps } from "@/types/radio-talent"
 
 function TalentCategoryComponent({ title, members, onSelect }: TalentCategoryProps) {
   return (
-    <div className="space-y-8 mb-8 lg:mb-16">
+    <div className="space-y-8 mb-12">
       <h2 className="text-3xl font-black text-white uppercase tracking-tighter border-l-4 border-[#569429] pl-4">
         {title}
       </h2>

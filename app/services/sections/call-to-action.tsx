@@ -13,7 +13,7 @@ function ServicesCTAComponent({ prefilledSubject }: ServicesCTAProps) {
   const handleReset = useCallback(() => setIsSubmitted(false), [])
 
   return (
-    <div id="contact-section" className="max-w-3xl mx-auto mt-20 bg-linear-to-br from-[#111] to-[#0a0a0a] border border-[#222] rounded-3xl shadow-2xl overflow-hidden">
+    <div id="contact-section" className="max-w-3xl mx-auto bg-linear-to-br from-[#111] to-[#0a0a0a] border border-[#222] rounded-3xl shadow-2xl overflow-hidden">
       <div className="p-8 sm:p-12">
         
         {/* Header Section */}

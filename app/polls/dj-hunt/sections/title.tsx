@@ -10,7 +10,7 @@ export function TitleSection() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       id="home"
-      className="relative flex items-center justify-center overflow-hidden bg-[#191919] px-4 pt-26 pb-10 sm:px-10 lg:px-16"
+      className="relative flex items-center justify-center overflow-hidden bg-[#191919] px-4 pt-28 pb-12 sm:px-10 lg:px-16"
     >
 
       <div className="container relative z-10 mx-auto text-center">

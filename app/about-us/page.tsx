@@ -16,7 +16,7 @@ export default async function AboutUsPage() {
     <div className="min-h-screen bg-[#191919] text-white selection:bg-[#569429] selection:text-black">
       <TitleSection />
 
-      <div className="mx-auto max-w-6xl px-6 pb-24 space-y-12">
+      <div className="mx-auto max-w-6xl px-6 pb-12 space-y-12">
         <hr className="border-[#363636]" />
         <HistorySection />
         <hr className="border-[#363636]" />
