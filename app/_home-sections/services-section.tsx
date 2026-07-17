@@ -18,7 +18,7 @@ export function ServicesSection() {
           </p>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {SERVICES_DATA.map((service, index) => {
             const Icon = service.icon;
             const isLast = index === SERVICES_DATA.length - 1;
@@ -43,7 +43,7 @@ export function ServicesSection() {
           })}
         </div>
 
-        <div className="mt-14 flex justify-center">
+        <div className="mt-12 flex justify-center">
           <Link
             href="/services"
             className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#569429] px-8 py-4 font-secondary text-sm font-bold uppercase tracking-wide text-black transition-all duration-300 hover:bg-[#63a92f] hover:shadow-[0_0_35px_-5px_#569429] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#569429] focus-visible:ring-offset-2 focus-visible:ring-offset-[#191919]"
