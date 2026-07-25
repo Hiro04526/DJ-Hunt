@@ -64,7 +64,7 @@ export function DjHuntSection() {
         <span className="font-kenyan text-[0.6rem] uppercase tracking-wide text-white xs:text-[0.65rem] lg:text-xs">Good Luck!</span>
       </div>
 
-      {/* Bottom Right "You Got This!" Badge - Unhidden */}
+      {/* Bottom Right "You Got This!" Badge */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute bottom-4 right-4 block rounded-full px-2.5 py-1 sm:bottom-3 sm:right-2 sm:px-3 sm:py-1.5 lg:bottom-6 lg:right-5 lg:px-4 lg:py-2"
