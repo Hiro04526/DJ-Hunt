@@ -18,7 +18,7 @@ export default function ExportMenu({ exports, isLoading, downloadingId, onDownlo
     <div className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-600 hover:bg-green-700 transition-colors text-m font-bold cursor-pointer"
+        className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#569429] hover:bg-[#63a92f] transition-colors text-m font-bold cursor-pointer"
       >
         <Download size={16} />
         Export CSV
@@ -56,9 +56,9 @@ export default function ExportMenu({ exports, isLoading, downloadingId, onDownlo
                       className="w-full flex items-center gap-2 text-left px-3 py-2 rounded-lg hover:bg-[#222] transition-colors text-sm text-gray-200 disabled:opacity-50 cursor-pointer"
                     >
                       {downloadingId === exp.id ? (
-                        <RefreshCw size={14} className="animate-spin text-[#1DB954] shrink-0" />
+                        <RefreshCw size={14} className="animate-spin text-[#569429] shrink-0" />
                       ) : (
-                        <FileDown size={14} className="text-[#1DB954] shrink-0" />
+                        <FileDown size={14} className="text-[#569429] shrink-0" />
                       )}
                       <span className="truncate">{exp.filename}</span>
                     </button>
