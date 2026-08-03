@@ -66,7 +66,7 @@ function SortableSongRowComponent({ song, handleDelete, index, showVotes = false
       {showVotes && (
         <div className="flex flex-col items-end mr-4 min-w-15">
            <span className="text-[10px] uppercase text-gray-500 font-bold tracking-wider">Votes</span>
-           <span className="text-sm font-mono text-[#1DB954] font-bold">{song.votes || 0}</span>
+           <span className="text-sm font-mono text-[#569429] font-bold">{song.votes || 0}</span>
         </div>
       )}
 

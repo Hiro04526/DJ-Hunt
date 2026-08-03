@@ -1,12 +1,12 @@
+import { getExecutiveBoardAction } from "@/actions/about-us"
 import { HeaderComponent } from "@/components/about-us/header"
 import { EBMemberGrid } from "@/components/about-us/eb-member-grid"
-import { EBMember } from "@/types/about-us"
 
-interface ExecutiveBoardSectionProps {
-  members: EBMember[]
-}
+export async function ExecutiveBoardSection() {
+  const [ebRes] = await Promise.all([getExecutiveBoardAction()])
 
-export function ExecutiveBoardSection({ members }: ExecutiveBoardSectionProps) {
+  const members = ebRes.success && ebRes.data ? ebRes.data : []
+  
   const top3 = members.filter((m) => {
     const roleCheck = (m.position || "").toLowerCase()
     return roleCheck === "president" || roleCheck.includes("president")

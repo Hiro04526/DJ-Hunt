@@ -3,9 +3,11 @@ import { toast } from "sonner"
 import { arrayMove } from "@dnd-kit/sortable"
 import { 
   addSongServerAction, searchSongsAction, getHitlistSongsAction, 
-  deleteSongAction, deleteAllSongsAction, updateSongOrderAction, exportHitlistToCSV 
+  deleteSongAction, deleteAllSongsAction, updateSongOrderAction,
+  getHitlistExportsAction, downloadHitlistExportAction
 } from "@/actions/admin"
 import { Song } from "@/types/hitlist"
+import { HitlistExport } from "@/types/hitlist-admin"
 
 interface HitlistState {
   query: string;
@@ -15,7 +17,9 @@ interface HitlistState {
   showRankings: boolean;
   loadingSearch: boolean;
   isRefreshing: boolean;
-  isExporting: boolean;
+  exportsList: HitlistExport[];
+  isLoadingExports: boolean;
+  downloadingId: number | null;
 }
 
 // 1. Apply the type to the Initial State
@@ -27,7 +31,9 @@ const initialState: HitlistState = {
   showRankings: false,
   loadingSearch: false,
   isRefreshing: false,
-  isExporting: false,
+  exportsList: [],
+  isLoadingExports: false,
+  downloadingId: null,
 }
 
 // 2. The Reducer
@@ -53,10 +59,16 @@ function hitlistReducer(state: HitlistState, action: any): HitlistState {
       return { ...state, activeSongs: action.payload }
     case "SET_FUTURE_SONGS":
       return { ...state, futureSongs: action.payload }
-    case "EXPORT_START":
-      return { ...state, isExporting: true }
-    case "EXPORT_FINISH":
-      return { ...state, isExporting: false }
+    case "FETCH_EXPORTS_START":
+      return { ...state, isLoadingExports: true }
+    case "FETCH_EXPORTS_SUCCESS":
+      return { ...state, isLoadingExports: false, exportsList: action.payload }
+    case "FETCH_EXPORTS_FAIL":
+      return { ...state, isLoadingExports: false }
+    case "DOWNLOAD_START":
+      return { ...state, downloadingId: action.payload }
+    case "DOWNLOAD_FINISH":
+      return { ...state, downloadingId: null }
     default:
       return state
   }
@@ -65,7 +77,10 @@ function hitlistReducer(state: HitlistState, action: any): HitlistState {
 export function useHitlistAdmin() {
   const [state, dispatch] = useReducer(hitlistReducer, initialState)
 
-  const { query, searchResults, activeSongs, futureSongs, showRankings, loadingSearch, isRefreshing, isExporting } = state
+  const {
+    query, searchResults, activeSongs, futureSongs, showRankings, loadingSearch, isRefreshing,
+    exportsList, isLoadingExports, downloadingId
+  } = state
 
   const setQuery = useCallback((newQuery: string) => {
     dispatch({ type: "SET_QUERY", payload: newQuery })
@@ -99,6 +114,22 @@ export function useHitlistAdmin() {
   useEffect(() => {
     fetchAllSongs()
   }, [fetchAllSongs])
+
+  // Load the list of past CSV exports (populated automatically each time a cycle resets)
+  const fetchExports = useCallback(async () => {
+    dispatch({ type: "FETCH_EXPORTS_START" })
+    const res = await getHitlistExportsAction()
+    if (res.success) {
+      dispatch({ type: "FETCH_EXPORTS_SUCCESS", payload: res.exports || [] })
+    } else {
+      toast.error("Failed to load past exports")
+      dispatch({ type: "FETCH_EXPORTS_FAIL" })
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchExports()
+  }, [fetchExports])
 
   const toggleRankings = useCallback(() => {
     const nextState = !showRankings
@@ -256,40 +287,47 @@ export function useHitlistAdmin() {
     if (!result.success) toast.error("Failed to save Future order")
   }, [futureSongs])
 
-  const handleExport = useCallback(async () => {
-    dispatch({ type: "EXPORT_START" })
+  // Downloads a previously saved CSV snapshot (created automatically on each cycle reset)
+  const handleDownloadExport = useCallback(async (id: number) => {
+    dispatch({ type: "DOWNLOAD_START", payload: id })
     try {
-      const result = await exportHitlistToCSV()
+      const result = await downloadHitlistExportAction(id)
       if (result.success && result.csv) {
         const blob = new Blob([result.csv], { type: "text/csv" })
         const url = window.URL.createObjectURL(blob)
         const a = document.createElement("a")
-        
-        const date = new Date().toISOString().split('T')[0]
+
+        // Filenames can't contain ":" on most filesystems — sanitize for the actual download,
+        // while the display label in the menu keeps the "Hitlist Votes: ..." format.
+        const safeName = (result.filename || "hitlist-export")
+          .replace(/:/g, "")
+          .replace(/\s+/g, "-")
+
         a.href = url
-        a.download = `hitlist-top20-${date}.csv`
-        
+        a.download = `${safeName}.csv`
+
         document.body.appendChild(a)
         a.click()
-        
+
         window.URL.revokeObjectURL(url)
         document.body.removeChild(a)
-        toast.success("Export successful")
+        toast.success("Export downloaded")
       } else {
-        toast.error("Export failed: " + result.error)
+        toast.error("Download failed: " + result.error)
       }
     } catch (e) {
-      toast.error("Export encountered an error")
+      toast.error("Download encountered an error")
     } finally {
-      dispatch({ type: "EXPORT_FINISH" })
+      dispatch({ type: "DOWNLOAD_FINISH" })
     }
   }, [])
 
   return {
     query, setQuery,
     searchResults, activeSongs, futureSongs,
-    showRankings, loadingSearch, isRefreshing, isExporting,
+    showRankings, loadingSearch, isRefreshing,
     fetchAllSongs, toggleRankings, addSongToActive, addSongToFuture,
-    handleDelete, handleClearAll, handleDragEndActive, handleDragEndFuture, handleExport
+    handleDelete, handleClearAll, handleDragEndActive, handleDragEndFuture,
+    exportsList, isLoadingExports, downloadingId, handleDownloadExport, fetchExports
   }
 }

@@ -171,7 +171,7 @@ function PoolCardComponent({
       {/* Closed Description Preview */}
       {!isOpen && (
         <div className="px-5 pb-5">
-          <p className="font-secondary text-sm text-[#a8a8a8] line-clamp-1 italic">&ldquo;{description}&rdquo;</p>
+          <p className="font-secondary text-sm text-[#a8a8a8] line-clamp-1 lg:line-clamp-2 italic">{description}</p>
         </div>
       )}
 

@@ -7,3 +7,12 @@ export interface SortableSongRowProps {
   index?: number 
   showVotes?: boolean 
 }
+
+// --- PAST CSV EXPORTS ---
+export interface HitlistExport {
+  id: number
+  filename: string
+  cycle_start: string
+  cycle_end: string
+  created_at: string
+}

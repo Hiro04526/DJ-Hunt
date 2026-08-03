@@ -3,8 +3,9 @@
 import { useCallback } from "react"
 import dynamic from "next/dynamic"
 import { useHitlistAdmin } from "@/hooks/admin/hitlist/use-hitlist-admin"
-import { Search, Music, RefreshCw, Layers, Trash2, Eye, EyeOff, Download } from "lucide-react"
+import { Search, Music, RefreshCw, Layers, Trash2, Eye, EyeOff } from "lucide-react"
 import { FaSpotify } from "react-icons/fa"
+import ExportMenu from "@/components/admin/hitlist/export-menu"
 
 const DraggableList = dynamic(() => import("@/components/admin/hitlist/draggable-list"), { 
   ssr: false,
@@ -14,9 +15,10 @@ const DraggableList = dynamic(() => import("@/components/admin/hitlist/draggable
 export default function AddSongsClientComponent() {
   const {
     query, setQuery, searchResults, activeSongs, futureSongs,
-    showRankings, loadingSearch, isRefreshing, isExporting,
+    showRankings, loadingSearch, isRefreshing,
     fetchAllSongs, toggleRankings, addSongToActive, addSongToFuture,
-    handleDelete, handleClearAll, handleDragEndActive, handleDragEndFuture, handleExport
+    handleDelete, handleClearAll, handleDragEndActive, handleDragEndFuture,
+    exportsList, isLoadingExports, downloadingId, handleDownloadExport
   } = useHitlistAdmin()
 
   const handleDeleteActive = useCallback((id: number) => {
@@ -30,28 +32,22 @@ export default function AddSongsClientComponent() {
   return (
     <div className="min-h-screen bg-black text-white p-6 md:p-8 mt-14">
       <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
-        <h1 className="text-3xl font-bold text-[#1DB954]">Hitlist Manager</h1>
+        <h1 className="text-3xl font-bold text-[#569429]">Hitlist Manager</h1>
         
         <div className="flex items-center gap-3">
-            <button
-                onClick={handleExport}
-                disabled={isExporting}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-600 hover:bg-green-700 transition-colors text-m font-bold cursor-pointer disabled:opacity-50"
-            >
-                {isExporting ? (
-                    <RefreshCw size={16} className="animate-spin" />
-                ) : (
-                    <Download size={16} />
-                )}
-                Export CSV
-            </button>
-            
+            <ExportMenu
+              exports={exportsList}
+              isLoading={isLoadingExports}
+              downloadingId={downloadingId}
+              onDownload={handleDownloadExport}
+            />
+
             <button 
             onClick={fetchAllSongs}
             disabled={isRefreshing}
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#222] hover:bg-[#333] transition-colors text-m font-bold cursor-pointer disabled:opacity-50"
             >
-            <RefreshCw size={16} className={isRefreshing ? "animate-spin text-[#1DB954]" : ""} />
+            <RefreshCw size={16} className={isRefreshing ? "animate-spin text-[#569429]" : ""} />
             Refresh All
             </button>
         </div>
@@ -73,7 +69,7 @@ export default function AddSongsClientComponent() {
               className="w-full p-3 pl-10 rounded bg-[#222] border border-[#333] text-white focus:outline-none focus:border-[#1DB954] transition-colors"
             />
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-              {loadingSearch ? <RefreshCw size={18} className="animate-spin text-[#1DB954]" /> : <Search size={18} />}
+              {loadingSearch ? <RefreshCw size={18} className="animate-spin text-[#569429]" /> : <Search size={18} />}
             </div>
           </div>
           <div className="space-y-3 overflow-y-auto pr-2 custom-scrollbar flex-1">
@@ -100,7 +96,7 @@ export default function AddSongsClientComponent() {
                       onClick={() => addSongToFuture(track)}
                       disabled={inFuture}
                       className={`px-3 py-1 rounded text-[10px] font-bold flex items-center justify-center gap-1 transition-all w-20
-                        ${inFuture ? "bg-blue-900/30 text-blue-400 border border-blue-900 cursor-not-allowed" : "bg-[#2E77D0] text-white hover:bg-blue-500 cursor-pointer"}`}
+                        ${inFuture ? "bg-blue-900/30 text-[#2173ff] border border-blue-900 cursor-not-allowed" : "bg-[#2173ff] text-white hover:bg-blue-500 cursor-pointer"}`}
                     >
                       {inFuture ? "Future ✓" : "+ Future"}
                     </button>
@@ -115,14 +111,14 @@ export default function AddSongsClientComponent() {
         <div className="flex flex-col h-[calc(100vh-150px)]">
           <div className="flex items-center justify-between mb-4 shrink-0">
             <h2 className="text-xl font-bold flex items-center gap-2 text-white">
-              <Music className="w-5 h-5 text-[#1DB954]" /> Active ({activeSongs.length})
+              <Music className="w-5 h-5 text-[#569429]" /> Active ({activeSongs.length})
             </h2>
             <div className="flex items-center gap-1">
               {activeSongs.length > 0 && (
                 <button 
                   onClick={toggleRankings}
                   title={showRankings ? "Switch to Manual Order" : "Switch to Vote Order"}
-                  className={`p-2 rounded transition-colors cursor-pointer ${showRankings ? "text-[#1DB954] bg-green-500/10" : "text-gray-400 hover:text-white hover:bg-[#333]"}`}
+                  className={`p-2 rounded transition-colors cursor-pointer ${showRankings ? "text-[#569429] bg-green-500/10" : "text-gray-400 hover:text-white hover:bg-[#333]"}`}
                 >
                   {showRankings ? <Eye size={16} /> : <EyeOff size={16} />}
                 </button>
@@ -161,7 +157,7 @@ export default function AddSongsClientComponent() {
         <div className="flex flex-col h-[calc(100vh-150px)]">
           <div className="flex items-center justify-between mb-4 shrink-0">
             <h2 className="text-xl font-bold flex items-center gap-2 text-white">
-              <Layers className="w-5 h-5 text-blue-400" /> Future ({futureSongs.length})
+              <Layers className="w-5 h-5 text-[#2173ff]" /> Future ({futureSongs.length})
             </h2>
             {futureSongs.length > 0 && (
               <button 
