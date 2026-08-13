@@ -16,7 +16,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
 export function Footer() {
   return (
     <footer className="w-full">
-      <div className="bg-[#F5F2E9] text-black dark:bg-[#191919] dark:text-white border-t border-black/5 dark:border-white/5">
+      <div className="bg-[#F5F2E9] text-black dark:bg-[#111111] dark:text-white border-t border-black/5 dark:border-white/5">
         <div className="mx-auto w-full max-w-7xl px-6 py-12 md:py-16">
           
           {/* Main Row: Uses xl:items-stretch to force all 3 columns to match the tallest element's height */}
@@ -61,7 +61,7 @@ export function Footer() {
                       target={link.external ? "_blank" : undefined}
                       rel={link.external ? "noopener noreferrer" : undefined}
                       aria-label={link.label}
-                      className="inline-flex items-center justify-center shrink-0 hover:scale-110 rounded-full text-[#569429] hover:opacity-90 transition-all h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 bg-black/5 dark:bg-white/5 xl:bg-transparent"
+                      className="inline-flex items-center justify-center shrink-0 hover:scale-110 rounded-full text-[#569429] hover:opacity-90 transition-all h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 bg-black/5 dark:bg-white/5 xl:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#569429] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F2E9] dark:focus-visible:ring-offset-[#111111]"
                     >
                       <IconComponent className="text-2xl sm:text-3xl md:text-4xl" />
                     </a>
@@ -75,7 +75,7 @@ export function Footer() {
               
               {/* Address */}
               <div className="flex flex-col w-full">
-                <span className="text-[16px] uppercase tracking-widest text-gray-500 dark:text-white mb-1.5">
+                <span className="text-[16px] uppercase tracking-widest text-gray-600 dark:text-gray-400 mb-1.5">
                   Address
                 </span>
                 <span className="text-[13px] font-secondary leading-snug max-w-70.5 text-gray-800 dark:text-gray-200">
@@ -85,14 +85,14 @@ export function Footer() {
               
               {/* Contact */}
               <div className="flex flex-col w-full">
-                <span className="text-[16px] uppercase tracking-widest text-gray-500 dark:text-white mb-1.5">
+                <span className="text-[16px] uppercase tracking-widest text-gray-600 dark:text-gray-400 mb-1.5">
                   Contact
                 </span>
                 <a
                   href={FOOTER_INFO.emailHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[13px] font-secondary text-[#569429] hover:text-black dark:hover:text-white transition-colors"
+                  className="text-[13px] font-secondary text-[#3f6f1e] hover:text-black dark:text-[#7cbf4c] dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#569429] focus-visible:ring-offset-2 focus-visible:ring-offset-[#F5F2E9] dark:focus-visible:ring-offset-[#111111] rounded-sm"
                 >
                   {FOOTER_INFO.email}
                 </a>

@@ -66,7 +66,7 @@ export default function AddSongsClientComponent() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Enter a song title..."
-              className="w-full p-3 pl-10 rounded bg-[#222] border border-[#333] text-white focus:outline-none focus:border-[#1DB954] transition-colors"
+              className="w-full p-3 pl-10 rounded bg-[#222] border border-[#333] text-white focus:outline-none focus:border-[#569429] transition-colors"
             />
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
               {loadingSearch ? <RefreshCw size={18} className="animate-spin text-[#569429]" /> : <Search size={18} />}
@@ -88,7 +88,7 @@ export default function AddSongsClientComponent() {
                       onClick={() => addSongToActive(track)}
                       disabled={inActive}
                       className={`px-3 py-1 rounded text-[10px] font-bold flex items-center justify-center gap-1 transition-all w-20
-                        ${inActive ? "bg-green-900/30 text-green-500 border border-green-900 cursor-not-allowed" : "bg-[#1DB954] text-black hover:bg-[#1ed760] cursor-pointer"}`}
+                        ${inActive ? "bg-[#569429]/15 text-[#569429] border border-[#569429]/40 cursor-not-allowed" : "bg-[#569429] text-black hover:bg-[#63a92f] cursor-pointer"}`}
                     >
                       {inActive ? "Active ✓" : "+ Active"}
                     </button>
@@ -96,7 +96,7 @@ export default function AddSongsClientComponent() {
                       onClick={() => addSongToFuture(track)}
                       disabled={inFuture}
                       className={`px-3 py-1 rounded text-[10px] font-bold flex items-center justify-center gap-1 transition-all w-20
-                        ${inFuture ? "bg-blue-900/30 text-[#2173ff] border border-blue-900 cursor-not-allowed" : "bg-[#2173ff] text-white hover:bg-blue-500 cursor-pointer"}`}
+                        ${inFuture ? "bg-[#2173ff]/15 text-[#2173ff] border border-[#2173ff]/40 cursor-not-allowed" : "bg-[#2173ff] text-white hover:bg-[#4d8fff] cursor-pointer"}`}
                     >
                       {inFuture ? "Future ✓" : "+ Future"}
                     </button>
@@ -118,7 +118,7 @@ export default function AddSongsClientComponent() {
                 <button 
                   onClick={toggleRankings}
                   title={showRankings ? "Switch to Manual Order" : "Switch to Vote Order"}
-                  className={`p-2 rounded transition-colors cursor-pointer ${showRankings ? "text-[#569429] bg-green-500/10" : "text-gray-400 hover:text-white hover:bg-[#333]"}`}
+                  className={`p-2 rounded transition-colors cursor-pointer ${showRankings ? "text-[#569429] bg-[#569429]/15" : "text-gray-400 hover:text-white hover:bg-[#333]"}`}
                 >
                   {showRankings ? <Eye size={16} /> : <EyeOff size={16} />}
                 </button>

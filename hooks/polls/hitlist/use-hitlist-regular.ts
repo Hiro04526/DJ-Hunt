@@ -33,7 +33,7 @@ export function useHitlist() {
     }
   })
 
-  // NEW: Fetch the tally dictionary for each song
+  // Fetch the tally dictionary for each song
   const { data: voteCounts = {} } = useQuery({
     queryKey: ["hitlist-vote-counts"],
     queryFn: async () => {
@@ -50,7 +50,7 @@ export function useHitlist() {
     }
   }, [data?.votedIds, selected.length])
 
-  // NEW: Merge the live vote counts directly into the songs array
+  // Merge the live vote counts directly into the songs array
   const songs: Song[] = useMemo(() => {
     return data?.songs?.map((s: any) => ({ 
       ...s, 
