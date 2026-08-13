@@ -85,14 +85,6 @@
   background-size: 24px 24px;
 }
 
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;         
-}
-
 /* ===============================
    VINYL BACKGROUND + ANIMATION
    =============================== */
@@ -253,4 +245,14 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+html, body {
+  -ms-overflow-style: none;  /* IE and legacy Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
 }
