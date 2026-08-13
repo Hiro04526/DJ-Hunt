@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback, useMemo } from "react"
+import { useEffect, useState, useCallback, useMemo, useRef } from "react"
 import { toast } from "sonner"
 import { supabase } from "@/lib/supabase/client"
 import { googleLogout } from "@react-oauth/google"
@@ -126,9 +126,19 @@ export function useHitlist() {
   })
 
   // --- EFFECT: REALTIME UPDATES ---
+  const channelSuffixRef = useRef<string | null>(null)
+  if (channelSuffixRef.current === null) {
+    channelSuffixRef.current =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : Math.random().toString(36).slice(2)
+  }
+
   useEffect(() => {
+    const channelName = `${HITLIST_DB.CHANNEL_NAME}-${channelSuffixRef.current}`
+
     const channel = supabase
-      .channel(HITLIST_DB.CHANNEL_NAME) 
+      .channel(channelName)
       .on(
         'postgres_changes', 
         { 
